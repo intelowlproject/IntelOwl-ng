@@ -1,0 +1,17 @@
+@import '../../styles/themes';
+
+@include nb-install-component() {
+  nb-card-header {
+    display: flex;
+    align-items: center !important;
+    justify-content: space-between;
+  }
+
+  nb-icon {
+    cursor: pointer;
+  } 
+}
+
+.echart {
+  min-height: 250px;
+}

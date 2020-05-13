@@ -1,0 +1,23 @@
+<div class="header-container">
+	<div class="logo-container">
+		<a (click)="toggleSidebar()" class="sidebar-toggle" href="#">
+			<nb-icon icon="menu-2-outline"></nb-icon>
+		</a>
+		<a (click)="navigateHome()" class="logo" href="#">
+			<img *ngIf="currentTheme==='dark'" src="../../../../assets/intel_owl.png">
+			<img *ngIf="currentTheme!='dark'" src="../../../../assets/intel_owl-black.png">
+		</a>
+	</div>
+	<nb-select [(selected)]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
+		<nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
+	</nb-select>
+</div>
+
+<div class="header-container">
+	<nb-actions size="small" *ngIf="(userService.user$ | async) as user">
+		<nb-action *nbIsGranted="['view', 'user']" class="user-action">
+			<nb-user [name]="user?.username" [nbContextMenu]="userMenu" [onlyPicture]="userPictureOnly" nbContextMenuTag="user">
+			</nb-user>
+		</nb-action>
+	</nb-actions>
+</div>

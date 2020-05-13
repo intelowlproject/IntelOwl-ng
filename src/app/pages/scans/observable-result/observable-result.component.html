@@ -1,0 +1,107 @@
+<div>
+
+    <!-- Status Cards -->
+
+    <div class="status-cards row">
+        <nb-card class="col-1">
+            <nb-card-header>Job ID</nb-card-header>
+            <nb-card-body>{{ table_data['id'] }}</nb-card-body>
+        </nb-card>
+        <nb-card class="col-2">
+            <nb-card-header>
+                <span>
+                    <nb-icon *ngIf="table_data['status'] === 'failed'" icon="close-circle-outline" status="danger">
+                    </nb-icon>
+                    <nb-icon *ngIf="table_data['status'] === 'running'" icon="pause-circle-outline" status="warning">
+                    </nb-icon>
+                    <nb-icon *ngIf="table_data['status'] === 'reported_without_fails'" icon="checkmark-circle-outline"
+                        status="success"></nb-icon>
+                    Status
+                </span>
+            </nb-card-header>
+            <nb-card-body>
+                {{ table_data['status'] | ngxCapitalize }}
+            </nb-card-body>
+        </nb-card>
+        <nb-card class="col-2">
+            <nb-card-header>Observable</nb-card-header>
+            <nb-card-body>{{ table_data['observable_name'] }}</nb-card-body>
+        </nb-card>
+        <nb-card class="col-2">
+            <nb-card-header>Classification</nb-card-header>
+            <nb-card-body>{{ table_data['observable_classification'] | uppercase }}</nb-card-body>
+        </nb-card>
+        <nb-card class="col-3">
+            <nb-card-header>md5</nb-card-header>
+            <nb-card-body style="font-size: initial;">{{ table_data['md5'] }}</nb-card-body>
+        </nb-card>
+        <nb-card class="col-2">
+            <nb-card-header>Time Taken</nb-card-header>
+            <nb-card-body>{{ diffTime | timing }} minutes</nb-card-body>
+        </nb-card>
+    </div>
+
+    <!-- Result -->
+
+    <div class="row">
+
+        <!-- Table/Tree -->
+
+        <div class="col-7">
+
+            <nb-card>
+                <nb-card-body>
+                    <nb-tabset>
+                        <nb-tab tabIcon="list-outline">
+                            <ng2-smart-table (rowSelect)="onRowSelect($event)" [settings]="settings"
+                                [source]="table_data?.analysis_reports">
+                            </ng2-smart-table>
+                        </nb-tab>
+                        <nb-tab tabIcon="grid-outline">
+                            <h6>To-do: Grid/Tree</h6>
+                        </nb-tab>
+                    </nb-tabset>
+                </nb-card-body>
+            </nb-card>
+
+        </div>
+
+        <!-- Selected Result -->
+
+        <div class="col-5">
+            <nb-card>
+                <nb-card-header>
+                    Selected Result
+                </nb-card-header>
+                <nb-card-body>
+                    <ng-template *ngTemplateOutlet="resultList; context: {object: selected_row, card_size: 'large'}">
+                    </ng-template>
+                </nb-card-body>
+            </nb-card>
+        </div>
+
+    </div>
+
+    <!-- Template -->
+
+    <ng-template #resultList let-obj="object" let-size="card_size">
+        <nb-card [size]="size">
+            <nb-card-body>
+                <nb-list>
+                    <nb-list-item *ngFor="let item of obj | keyvalue">
+                        {{item?.key}}
+                        <span *ngIf="!isObject(item?.value)">
+                            <strong>{{item?.value | json}}</strong>
+                        </span>
+                        <span *ngIf="isObject(item?.value)">
+                            <ng-template
+                                *ngTemplateOutlet="resultList; context: {object: item?.value, card_size: tiny}">
+                            </ng-template>
+                        </span>
+                    </nb-list-item>
+                </nb-list>
+            </nb-card-body>
+        </nb-card>
+    </ng-template>
+
+</div>

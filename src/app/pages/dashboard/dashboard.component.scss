@@ -1,0 +1,30 @@
+@import '../../@theme/styles/themes';
+
+@include nb-install-component() {
+  ngx-echarts-pie {
+    display: block;
+    width: 100%;
+  }
+
+  nb-card-header {
+    display: flex;
+    align-items: center !important;
+    justify-content: space-between;
+  }
+
+  nb-alert {
+    width: fit-content;
+    display: inline-block !important;
+    font-size: smaller;
+    padding: 0.6rem;
+  }
+
+  nb-alert span {
+    margin: 0 3px;
+  }
+
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
