@@ -5,5 +5,6 @@
  */
 export const environment = {
   production: true,
-  api: 'https://intelowl.com/api/',
+  api: 'http://localhost:80/api/',
+  // api: 'https://intelowl.com/api/',
 };

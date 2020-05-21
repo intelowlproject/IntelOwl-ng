@@ -9,6 +9,8 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: NbAuthService, private router: Router) {
   }
 
+  /* canActivate guard to redirect users to login page..
+     .. if they are unauthenticated */
   canActivate() {
     return this.authService.isAuthenticated()
       .pipe(

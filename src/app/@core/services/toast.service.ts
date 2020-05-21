@@ -1,12 +1,11 @@
 import {Injectable} from '@angular/core';
 import {NbToastrService} from '@nebular/theme';
-import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToastService {
-  config = {
+  private config = {
     destroyByClick: true,
     duration: 5000,
     preventDuplicates: false,
@@ -15,17 +14,20 @@ export class ToastService {
   constructor(private toastrService: NbToastrService) {
   }
 
-  showToast(message: string, title: string, isError: boolean, error?: HttpErrorResponse) {
-    if (isError) {
-      console.error(error);
-      this.toastrService.danger(message, title, this.config);
-    } else {
+  public showToast(message: string, title: string, status: string) {
+    if (status === 'error') {
+      this.toastrService.danger(message.toString(), title, this.config);
+    } else if (status === 'success') {
       this.toastrService.success(message, title, this.config);
+    } else if (status === 'warning') {
+      this.toastrService.warning(message, title, this.config);
+    } else {
+      this.toastrService.primary(message, title, this.config);
     }
 
   }
 
-  infiniteNotification(title: string, message: string, iconName: string) {
+  public infiniteNotification(title: string, message: string, iconName: string) {
     this.toastrService.show(
       message,
       title,

@@ -4,12 +4,25 @@ import { DexieService } from './dexie.service';
 @Injectable()
 export class IndexedDbService {
 
-  tables: string[] = ['user', 'tags', 'jobs'];
+  tables: string[] = ['user', 'recent_scans'];
 
-  constructor(public dexieService: DexieService) {}
+  constructor(private dexieService: DexieService) {}
 
   async getOne(tableName: string, key: string | number) {
     return await this.dexieService.table(tableName).get(key);
+  }
+
+  async getRecentScans() {
+    return await this.dexieService.table('recent_scans').reverse().toArray();
+  }
+
+  async addToRecentScans(obj) {
+    const table = this.dexieService.table('recent_scans');
+    if ((await table.count()) > 10) {
+      // at a time, there shouldn't be more than 10 entries
+      await table.limit(3).delete();
+    }
+    await table.put(obj);
   }
 
   async addOrReplaceOne(tableName: string, obj: any, forceUpdate?: boolean) {

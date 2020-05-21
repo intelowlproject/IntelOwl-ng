@@ -8,6 +8,7 @@ import {IndexedDbService} from './indexdb.service';
 @Injectable()
 export class DataService extends HttpService<any> {
 
+  // simple data service to make http calls
   constructor(public http: HttpClient, public indexDB: IndexedDbService) {
     super(http, {
       path: '',

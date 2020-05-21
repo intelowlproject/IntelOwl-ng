@@ -32,13 +32,13 @@ export class UserService extends HttpService<any> {
     });
   }
 
-  async getUser(): Promise<User> {
+  async getUserInfo(): Promise<User> {
     return this.query({}, 'auth/user');
   }
 
   async init() {
     try {
-      const user = await this.getUser();
+      const user = await this.getUserInfo();
       const token = await this.nbAuth.getToken().toPromise();
       this.indexDB.getTableInstance('user').clear().then(() => {
         user.token = token.getValue();
@@ -68,12 +68,12 @@ export class UserService extends HttpService<any> {
     this.nbAuth.logout('email').subscribe(
       () => {
         localStorage.removeItem('auth_app_token');
-        this.indexDB.getTableInstance('user').clear();
+        // this.indexDB.getTableInstance('user').clear();
         location.reload();
       },
       () => {
         localStorage.removeItem('auth_app_token');
-        this.indexDB.getTableInstance('user').clear();
+        // this.indexDB.getTableInstance('user').clear();
         location.reload();
       },
     );

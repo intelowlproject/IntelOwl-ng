@@ -21,7 +21,7 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
 
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
       const colors = config.variables;
-      const echarts: any = config.variables.echarts;
+      // const echarts: any = config.variables.echarts;
 
       this.options = {
         tooltip: {

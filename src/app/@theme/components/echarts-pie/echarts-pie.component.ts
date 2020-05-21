@@ -40,10 +40,10 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
         backgroundColor: echarts.bg,
         color: [
           colors.warningLight,
-          colors.infoLight,
           colors.dangerLight,
           colors.primaryLight,
           colors.successLight,
+          colors.infoLight,
         ],
         tooltip: {
           trigger: 'item',

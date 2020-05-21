@@ -36,7 +36,7 @@ export class JobService extends HttpService<any> {
 
   async init() {
     try {
-      const result: Job[] = await this.query({}, 'jobs').then(res => res.data);
+      const result: Job[] = await this.query({}, 'jobs');
       result.map( (job) => {
         if (job.observable_name) {
           job['type'] = 'observable';
@@ -49,12 +49,12 @@ export class JobService extends HttpService<any> {
     } catch (e) {
       console.error(e);
       if (e.status >= 500) {
-        this.offlineInit();
+        // this.offlineInit();
       }
     }
   }
 
-  offlineInit() {
+  private async offlineInit() {
     this.indexDB.getAllInstances('jobs').then(res => {
       this.jobs = res;
       this.jobs$.next(res);

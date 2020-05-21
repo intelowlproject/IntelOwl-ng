@@ -4,11 +4,11 @@ import { JobService } from '../../../@core/services/job.service';
 import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table.component';
 
 @Component({
-  selector: 'observable-result',
-  templateUrl: './observable-result.component.html',
-  styleUrls: ['./observable-result.component.scss'],
+  selector: 'job-result',
+  templateUrl: './job-result.component.html',
+  styleUrls: ['./job-result.component.scss'],
 })
-export class ObservableResultComponent implements OnInit {
+export class JobResultComponent implements OnInit {
 
   settings = {
     hideSubHeader: true,

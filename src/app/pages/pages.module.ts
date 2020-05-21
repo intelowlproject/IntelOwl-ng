@@ -7,6 +7,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { ScansModule } from './scans/scans.module';
 import { NbMenuModule } from '@nebular/theme';
 
+
 @NgModule({
   imports: [
     NbMenuModule,

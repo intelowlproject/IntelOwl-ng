@@ -105,7 +105,7 @@ export abstract class HttpService<T> {
   public query(query?: IRestQuery, url?: string): Promise<T> {
     const request: Observable<any> = this.http.get(this.buildUrl(undefined, url), HttpService.buildRequestOptions(query));
     return new Promise((resolve, reject) => request.subscribe(res => {
-      this.indexDB.addOrReplaceBulk(url, res.data).then();
+      this.indexDB.addOrReplaceBulk(url, res).then();
       return resolve(res);
     }, (err) => {
       HttpService.catchError(err);
@@ -139,7 +139,7 @@ export abstract class HttpService<T> {
     const request: Observable<any> = this.http.post(this.buildUrl(undefined, url), obj,
       HttpService.buildRequestOptions(query));
     return new Promise((resolve, reject) => request.subscribe(res => {
-      return resolve(res.data);
+      return resolve(res);
     }, (err) => {
       HttpService.catchError(err);
       return reject(err);
@@ -147,7 +147,7 @@ export abstract class HttpService<T> {
   }
 
   public update(id: string | number, obj: T, query?: IRestQuery, url?: string): Promise<T> {
-    const request: Observable<any> = this.http.patch(this.buildUrl(id, url), obj, HttpService.buildRequestOptions(query));
+    const request: Observable<any> = this.http.put(this.buildUrl(id, url), obj, HttpService.buildRequestOptions(query));
     return new Promise((resolve, reject) => request.subscribe(res => {
       return resolve(res);
     }, (err) => {
@@ -156,10 +156,10 @@ export abstract class HttpService<T> {
     }));
   }
 
-  public put(obj: T, query?: IRestQuery, url?: string): Promise<T> {
+  public patch(obj: T, query?: IRestQuery, url?: string): Promise<T> {
     const request: Observable<any> = this.http.put(this.buildUrl(undefined, url), obj, HttpService.buildRequestOptions(query));
     return new Promise((resolve, reject) => request.subscribe(res => {
-      return resolve(res.data);
+      return resolve(res);
     }, (err) => {
       HttpService.catchError(err);
       return reject(err);

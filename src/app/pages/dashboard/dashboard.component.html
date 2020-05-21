@@ -6,7 +6,7 @@
 
     <!-- Chart 1 -->
 
-    <div class="col-3">
+    <div class="col-sm-3">
       <ngx-echarts-pie (onPieSelect)="filterJobsByField($event, 'status')" 
         [pieChartName]="'Jobs by Status'"
         [pieChartData]="pieChartData['status']"></ngx-echarts-pie>
@@ -14,7 +14,7 @@
 
     <!-- Chart 2 -->
 
-    <div class="col-3">
+    <div class="col-sm-3">
       <ngx-echarts-pie (onPieSelect)="filterJobsByField($event, 'type')"
           [pieChartName]="'Jobs by Classification'" 
           [pieChartData]="pieChartData['type']"></ngx-echarts-pie>
@@ -22,7 +22,7 @@
 
     <!-- Chart 3 -->
 
-    <div class="col-3">
+    <div class="col-sm-3">
       <ngx-echarts-pie (onPieSelect)="filterJobsByField($event, 'observable_classification')"
       [pieChartName]="'Jobs by Observable type'"
       [pieChartData]="pieChartData['observable_classification']"></ngx-echarts-pie>
@@ -30,7 +30,7 @@
 
     <!-- Chart 4-->
 
-    <div class="col-3">
+    <div class="col-sm-3">
       <ngx-echarts-pie  (onPieSelect)="filterJobsByField($event, 'file_mimetype')"
       [pieChartName]="'Jobs by File mimetype'"
       [pieChartData]="pieChartData['file_mimetype']"></ngx-echarts-pie>
@@ -52,7 +52,7 @@
 
   <div class="row">
 
-    <div class="col-12">
+    <div class="col-sm-12">
       <nb-card fullWidth>
         <nb-card-header>
           <span>Jobs</span>
