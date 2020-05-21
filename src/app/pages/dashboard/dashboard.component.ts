@@ -25,7 +25,7 @@ export class DashboardComponent implements OnDestroy {
 
   // ng2-smart-table settings
   settings = {
-    hideSubHeader: true,
+    // hideSubHeader: true,
     actions: {
       add: false,
       edit: false,
@@ -62,11 +62,13 @@ export class DashboardComponent implements OnDestroy {
       observable_classification: {
         title: 'Type',
         width: '20%',
+        filter: false,
         valuePrepareFunction: (c, r) => (r.observable_classification || r.file_mimetype),
       },
       analyzers_requested: {
         title: 'Analyzers Called',
         width: '10%',
+        filter: false,
         valuePrepareFunction: (c, r) => {
           const n1 = r.analyzers_to_execute.length;
           const n2 = r.analyzers_requested.length;
@@ -76,6 +78,7 @@ export class DashboardComponent implements OnDestroy {
       process_time: {
         title: 'Process Time (s)',
         width: '10%',
+        filter: false,
         valuePrepareFunction: (c, r) => {
           const date1 = new Date(r.received_request_time).getUTCSeconds();
           const date2 = new Date(r.finished_analysis_time).getUTCSeconds();
@@ -86,6 +89,7 @@ export class DashboardComponent implements OnDestroy {
         title: 'Success',
         type: 'custom',
         width: '5%',
+        filter: false,
         renderComponent: JobStatusIconRenderComponent,
       },
     },

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
 import { Router } from '@angular/router';
 
@@ -56,7 +56,7 @@ export class ViewResultButtonComponent implements ViewCell, OnInit {
 
   async onRowSelect(id) {
     try {
-      this.router.navigate([`/pages/result/observable/${id}/`]).then();
+      this.router.navigate([`/pages/scan/result/${id}/`]).then();
     } catch (e) {
       console.error(e);
     }
@@ -67,7 +67,7 @@ export class ViewResultButtonComponent implements ViewCell, OnInit {
 // Tags badges Renderer
 @Component({
   template: `
-  <strong style="background-color: {{ tag.color }};"
+  <strong style="color: white; background-color: {{ tag.color }};"
           class="p-1 mx-1 badge"
           *ngFor="let tag of value">
     {{ tag.label }}

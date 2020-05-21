@@ -4,7 +4,6 @@ import {
   NbActionsModule,
   NbMenuModule,
   NbSidebarModule,
-  NbCardModule,
   NbUserModule,
   NbContextMenuModule,
   NbThemeModule,
@@ -55,6 +54,7 @@ const COMPONENTS = [
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
 ];
+
 const PIPES = [
   CapitalizePipe,
   PluralPipe,
@@ -66,7 +66,7 @@ const PIPES = [
 const ANGULAR_MODULES = [FormsModule];
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES, ...ANGULAR_MODULES, NbCardModule],
+  imports: [CommonModule, ...NB_MODULES, ...ANGULAR_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES],
 })

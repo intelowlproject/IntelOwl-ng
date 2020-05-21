@@ -1,0 +1,83 @@
+<div class="tag tag-display">
+  <button nbButton outline status="info" 
+          size="small" class="mr-2"
+          nbPopoverTrigger="noop" nbPopoverPlacement="left"
+          [nbPopover]="NgxTaggerTemplateRef" (click)="open()">
+    <nb-icon icon="plus-outline"></nb-icon>
+  </button>
+  <span class="tag-label" *ngFor="let t of selectedTags" [ngStyle]="{'background-color': t?.color}" >
+    {{ t?.label }}
+  </span>
+</div>
+
+
+<!-- Popover Template -->
+
+<ng-template #NgxTaggerTemplateRef>
+<nb-flip-card [showToggleButton]="false" [flipped]="editMode" >
+  <nb-card-front>
+    <nb-card [ngStyle]="{'display': editMode? 'none':''}">
+      <nb-card-header class="d-flex justify-content-between">
+        <span></span>
+        <span>Tags</span>
+        <nb-icon (click)="close()" icon="close-outline"></nb-icon>
+      </nb-card-header>
+      <nb-card-body id="tags-container">
+        <div class="tag tag-selector" *ngFor="let t of tags">
+          <span class="tag-label"
+              [ngStyle]="{'background-color': t?.color}"
+              (click)="onTagClick(t)">
+              {{ t?.label }}
+              <nb-icon *ngIf="selectedTags.has(t)" icon="checkmark-outline"></nb-icon>
+          </span>
+          <nb-icon (click)="editTag(t)" icon="edit-outline"></nb-icon>
+        </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <button nbButton fullWidth outline
+            shape="round" status="info"
+            size="small" (click)="newTag()">
+            Create a new tag
+        </button>
+      </nb-card-footer>
+    </nb-card>
+  </nb-card-front>
+  <nb-card-back>
+    <nb-card [ngStyle]="{'display': editMode? '':'none'}" >
+      <nb-card-header class="d-flex justify-content-between">
+        <nb-icon icon="arrow-ios-back-outline" (click)="editMode=false"></nb-icon>
+        <span>Create/Edit Tag</span>
+        <span></span>
+      </nb-card-header>
+      <nb-card-body>
+          <form #tagForm=ngForm class="form">
+                <div class="form-group">
+                  <label class="label form-control-label">Label</label>
+                  <input size="small" class="form-control" nbInput #label=ngModel [(ngModel)]="mutableTag.label" fullWidth minlength="3"
+                    name="label" required="true" shape="rectangle" type="text">
+    
+                  <div *ngIf="label.invalid && (label.dirty || label.touched)" class="alert alert-danger mt-3">
+                    <div *ngIf="label.errors.required">
+                      Label is required.
+                    </div>
+                    <div *ngIf="label.errors.minlength">
+                      Label must be at least 3 characters long.
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="form-group">
+                  <label class="label form-control-label">Color</label>
+                  <input class="form-control" nbInput fullWidth #color=ngModel [(ngModel)]="mutableTag.color" name="color" 
+                    required="true" shape="rectangle" type="color">
+                </div>
+          </form>
+          <button nbButton size="tiny" class="col-3" (click)="updateTag()"
+                  [disabled]="tagForm.form.invalid" status="primary">
+            Save
+          </button>
+      </nb-card-body>
+    </nb-card>
+  </nb-card-back>
+</nb-flip-card>
+</ng-template>

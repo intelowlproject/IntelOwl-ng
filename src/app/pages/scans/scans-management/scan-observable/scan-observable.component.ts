@@ -1,58 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ObservableForm } from '../../../../@core/models/models';
-import { ToastService } from '../../../../@core/services/toast.service';
+
 
 @Component({
   selector: 'intelowl-scan-observable',
   templateUrl: './scan-observable.component.html',
-  styleUrls: ['./scan-observable.component.scss'],
 })
-export class ScanObservableComponent implements OnInit {
+export class ScanObservableComponent {
 
-  ip_analyzers_list: string[] = [
-    'Shodan',
-    'HoneyDB',
-    'VirusTotal_v3_Get_Observable',
-    'VirusTotal_v2_Get_Observable',
-    'TalosReputation',
-    'Robtex_Reverse_PDNS_Query',
-    'Robtex_IP_Query',
-    'OTXQuery',
-    'AbuseIPDB',
-    'TorProject',
-    'GreyNoiseAlpha',
-    'HybridAnalysis',
-    'MaxMindGeoIP',
-  ];
+  formData: ObservableForm;
 
-  formData: ObservableForm = {
-    classifier: 'ip',
-    value: '127.0.0.1',
-    analyzers_list: [],
-    force_privacy: false,
-    disable_external_analyzers: false,
-  } as ObservableForm;
-
-  constructor(private toastr: ToastService) { }
-
-  ngOnInit() {
-
+  constructor() {
     this.formData = {
-      classifier: 'ip',
-      value: '127.0.0.1',
-      analyzers_list: ['Shodan', 'HoneyDB', 'TorProject'],
+      is_sample: false,
+      observable_classification: 'ip',
+      observable_name: null,
+      analyzers_requested: [],
       force_privacy: false,
       disable_external_analyzers: false,
-    };
-
-  }
-
-  async scan() {
-    try {
-      this.toastr.showToast('Scan Requested!', 'Scan Requested!', false);
-    } catch (e) {
-      console.error(e);
-    }
+      running_only: false,
+      run_all_available_analyzers: true,
+      tags_id: [],
+    } as ObservableForm;
   }
 
 }

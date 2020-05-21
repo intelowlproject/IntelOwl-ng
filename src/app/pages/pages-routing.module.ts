@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ObservableResultComponent } from './scans/observable-result/observable-result.component';
 import { AnalyzersManagementComponent } from './dashboard/analyzers-management/analyzers-management.component';
 import { AuthGuard } from '../@core/services/auth-gaurd.service';
+import { JobResultComponent } from './scans/job-result/job-result.component';
 
 const routes: Routes = [{
   path: '',
@@ -29,8 +29,8 @@ const routes: Routes = [{
       canActivate: [AuthGuard],
     },
     {
-      path: 'result/observable/:jobId',
-      component: ObservableResultComponent,
+      path: 'scan/result/:jobId',
+      component: JobResultComponent,
     },
   ],
 }];
