@@ -9,11 +9,20 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
     title: 'Analyzers Management',
-    icon: 'list-outline',
-    link: '/pages/analyzers',
+    group: true,
   },
   {
-    title: 'Tasks',
+    title: 'Table View',
+    icon: 'list-outline',
+    link: '/pages/analyzers/table',
+  },
+  {
+    title: 'Tree View',
+    icon: 'funnel',
+    link: '/pages/analyzers/tree',
+  },
+  {
+    title: 'Scans Management',
     group: true,
   },
   {

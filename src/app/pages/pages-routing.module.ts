@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AnalyzersManagementComponent } from './dashboard/analyzers-management/analyzers-management.component';
-import { AuthGuard } from '../@core/services/auth-gaurd.service';
 import { JobResultComponent } from './scans/job-result/job-result.component';
 
 const routes: Routes = [{
@@ -21,12 +19,13 @@ const routes: Routes = [{
     },
     {
       path: 'analyzers',
-      component: AnalyzersManagementComponent,
+      loadChildren: () => import('./analyzers/analyzers.module')
+        .then(m => m.AnalyzersModule),
     },
     {
-      path: 'scan', loadChildren: () => import('./scans/scans.module')
+      path: 'scan',
+      loadChildren: () => import('./scans/scans.module')
         .then(m => m.ScansModule),
-      canActivate: [AuthGuard],
     },
     {
       path: 'scan/result/:jobId',
@@ -39,5 +38,4 @@ const routes: Routes = [{
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PagesRoutingModule {
-}
+export class PagesRoutingModule {}
