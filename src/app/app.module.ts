@@ -21,7 +21,6 @@ import {
 import { Interceptor } from './@core/services/http.intercepter';
 import { NB_AUTH_TOKEN_INTERCEPTOR_FILTER } from '@nebular/auth';
 import { APP_BASE_HREF } from '@angular/common';
-import { DataService } from './@core/services/data.service';
 import { AuthGuard } from './@core/services/auth-gaurd.service';
 import { UserService } from './@core/services/user.service';
 import { DexieService } from './@core/services/dexie.service';
@@ -47,11 +46,10 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
   bootstrap: [AppComponent],
   providers:
   [
-    DataService, AuthGuard, UserService, DexieService, IndexedDbService,
+    AuthGuard, UserService, DexieService, IndexedDbService,
     { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true},
     { provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER, useValue: function () { return false; } },
     { provide: APP_BASE_HREF, useValue: '/' },
   ],
 })
-export class AppModule {
-}
+export class AppModule {}

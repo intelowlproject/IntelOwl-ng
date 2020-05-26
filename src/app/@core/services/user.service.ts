@@ -13,12 +13,12 @@ export class UserService extends HttpService<any> {
   user$: Subject<any> = new Subject() as Subject<any>;
 
   constructor(
-    private httpClient: HttpClient,
+    private _httpClient: HttpClient,
     private nbAuth: NbAuthService,
     public indexDB: IndexedDbService,
   ) {
     super(
-      httpClient,
+      _httpClient,
       {
         path: '/',
       },
@@ -39,9 +39,7 @@ export class UserService extends HttpService<any> {
   async init() {
     try {
       const user = await this.getUserInfo();
-      const token = await this.nbAuth.getToken().toPromise();
       this.indexDB.getTableInstance('user').clear().then(() => {
-        user.token = token.getValue();
         this.indexDB.addOrReplaceOne('user', user);
       });
       this.user$.next(user);
@@ -57,8 +55,7 @@ export class UserService extends HttpService<any> {
 
 
   offlineInit() {
-    const token: string = JSON.parse(localStorage.getItem('auth_app_token'))['value'];
-    this.indexDB.getTableInstance('user').get({ token: token }).then(res => {
+    this.indexDB.getTableInstance('user').limit(1).first().then(res => {
       this.user$.next(res);
     });
   }
@@ -68,12 +65,12 @@ export class UserService extends HttpService<any> {
     this.nbAuth.logout('email').subscribe(
       () => {
         localStorage.removeItem('auth_app_token');
-        // this.indexDB.getTableInstance('user').clear();
+        this.indexDB.getTableInstance('user').clear();
         location.reload();
       },
       () => {
         localStorage.removeItem('auth_app_token');
-        // this.indexDB.getTableInstance('user').clear();
+        this.indexDB.getTableInstance('user').clear();
         location.reload();
       },
     );

@@ -5,6 +5,7 @@ import {
   OnChanges,
   Output,
   EventEmitter,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 
@@ -12,6 +13,7 @@ import { NbThemeService } from '@nebular/theme';
   selector: 'ngx-echarts-pie',
   templateUrl: './echarts-pie.component.html',
   styleUrls: ['./echarts-pie.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EchartsPieComponent implements OnChanges, OnDestroy {
   options: any = {};
@@ -28,11 +30,11 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(): void {
-
+    if (this.pieChartData === null || this.pieChartData === undefined) {
+      return;
+    }
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
-      if (this.pieChartData === null || this.pieChartData === undefined) {
-        return;
-      }
+
       const colors = config.variables;
       const echarts: any = config.variables.echarts;
 
@@ -95,7 +97,7 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.themeSubscription.unsubscribe();
+    this.themeSubscription && this.themeSubscription.unsubscribe();
   }
 
   onChartMouseDown(event) {

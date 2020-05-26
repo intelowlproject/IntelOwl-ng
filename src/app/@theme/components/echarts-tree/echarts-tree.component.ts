@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 
 @Component({
   selector: 'echarts-tree',
   template: `
-    <div echarts [options]="options" class="echart" style="height: 700px;">
+    <div echarts *ngIf="treeInputData!==undefined" [options]="options" class="echart" style="height: 700px;">
     </div>
   `,
 })
@@ -13,93 +13,77 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
 
   themeSubscription: any;
 
-  @Input() tree_data: any;
+  @Input() treeInputData: any;
 
   constructor(private theme: NbThemeService) { }
 
-  ngOnInit() {
-
+  ngOnInit(): void {
+    if (this.treeInputData === null || this.treeInputData === undefined) {
+      return;
+    }
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
       const colors = config.variables;
-      // const echarts: any = config.variables.echarts;
 
       this.options = {
         tooltip: {
           trigger: 'item',
         },
-        // color: [
-        //   colors.primaryLight,
-        //   colors.successLight,
-        //   colors.infoLight,
-        //   colors.dangerLight,
-        //   colors.warningLight
-        // ],
         series: [
           {
             type: 'tree',
             name: 'Integrations Tree',
             // orient: "TB",
-            data: [this.tree_data],
-
+            data: [this.treeInputData],
             top: '0%',
             left: '5%',
             right: '40%',
             bottom: '0%',
-
             // height: "1000",
-
             initialTreeDepth: 2,
-
             symbolSize: 12,
             symbol: 'emptyCircle',
-            symbolRotate: 270,
+            expandAndCollapse: true,
+            animationDuration: 550,
+            animationDurationUpdate: 750,
 
             lineStyle: {
-              color: colors.primaryLight,
+              color: colors.successLight,
               curveness: 0.5,
               width: 0.4,
             },
-
             itemStyle: {
               color: '#000',
               borderColor: '#fff',
             },
-
             label: {
               normal: {
                 position: 'top',
                 verticalAlign: 'top',
                 align: 'center',
                 color: '#fff',
-                lineHeight: 10,
-                fontSize: 15,
+                lineHeight: 15,
+                fontSize: 16,
               },
             },
-
             leaves: {
               label: {
                 normal: {
                   position: 'right',
                   verticalAlign: 'medium',
                   align: 'left',
-                  color: colors.successLight,
-                  fontSize: 12,
+                  color: colors.infoLight,
+                  fontSize: 11,
                 },
               },
             },
-            expandAndCollapse: true,
-            animationDuration: 550,
-            animationDurationUpdate: 750,
-
           },
         ],
       };
     });
-
   }
 
   ngOnDestroy(): void {
-    this.themeSubscription.unsubscribe();
+    this.themeSubscription && this.themeSubscription.unsubscribe();
   }
 
 }

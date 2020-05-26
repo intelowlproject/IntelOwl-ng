@@ -13,15 +13,15 @@ import { scan } from 'rxjs/operators';
 })
 export class ScanService extends HttpService<any> {
 
-  public _recentScans$: ReplaySubject<any> = new ReplaySubject<any>(10);
+  private _recentScans$: ReplaySubject<any> = new ReplaySubject<any>(10);
 
   constructor(
     private toastr: ToastService,
-    private httpClient: HttpClient,
+    private _httpClient: HttpClient,
     protected indexDB: IndexedDbService,
   ) {
     super(
-      httpClient,
+      _httpClient,
       {
         path: '',
       },
