@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { FileForm } from '../../../../@core/models/models';
+import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
 
 @Component({
-  selector: 'scan-file',
+  selector: 'intelowl-scan-file',
   templateUrl: './scan-file.component.html',
 })
 export class ScanFileComponent {
-
   formData: FileForm;
 
-  constructor() {
+  constructor(public analyzersService: AnalyzerConfigService) {
     this.formData = {
       is_sample: true,
       file: null,

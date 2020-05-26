@@ -1,9 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ScanService } from '../../../@core/services/scan.service';
 import { NgForm } from '@angular/forms';
 import { Md5 } from 'ts-md5';
-import { file_analyzers } from '../../../../assets/analyzers_list';
-import { observable_analyzers } from '../../../../assets/analyzers_list';
 
 @Component({
   selector: 'scans-management',
@@ -42,23 +40,14 @@ export class ScansManagementComponent {
     }`,
   ],
 })
-export class BaseScanFormComponent implements OnInit {
+export class BaseScanFormComponent {
 
   @Input() scanForm: NgForm;
   @Input() formData: any;
   forceNewScanBool: boolean;
   formDebugBool: boolean;
-  analyzers_list: string[];
 
   constructor(private scanService: ScanService) {}
-
-  ngOnInit(): void {
-    if (this.formData.is_sample) {
-      this.analyzers_list = file_analyzers.map(analyzer => analyzer.name);
-    } else {
-      this.analyzers_list = observable_analyzers.map(analyzer => analyzer.name);
-    }
-  }
 
   isError816() {
     return (
