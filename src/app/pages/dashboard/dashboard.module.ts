@@ -9,18 +9,13 @@ import {
 } from '@nebular/theme';
 import { ThemeModule } from '../../@theme/theme.module';
 import { DashboardComponent } from './dashboard.component';
-import { EchartsTreeComponent } from '../../@theme/components/echarts-tree/echarts-tree.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EchartsPieComponent } from '../../@theme/components/echarts-pie/echarts-pie.component';
-import { AnalyzersManagementComponent } from './analyzers-management/analyzers-management.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { ViewResultButtonComponent, TagsRenderComponent } from '../../@theme/components/smart-table/smart-table.component';
+import { ViewResultButtonComponent, TagsRenderComponent } from '../../@theme/components/smart-table/smart-table';
 import { JobService } from '../../@core/services/job.service';
 
 @NgModule({
-  entryComponents: [
-    ViewResultButtonComponent,
-  ],
   imports: [
     ThemeModule,
     NbCardModule,
@@ -33,11 +28,9 @@ import { JobService } from '../../@core/services/job.service';
     NgxEchartsModule,
   ],
   declarations: [
+    DashboardComponent,
     ViewResultButtonComponent,
     TagsRenderComponent,
-    DashboardComponent,
-    AnalyzersManagementComponent,
-    EchartsTreeComponent,
     EchartsPieComponent,
   ],
   providers: [

@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { HttpService } from './http.service';
 import { IndexedDbService } from './indexdb.service';
-
 import { Job } from '../models/models';
 
 

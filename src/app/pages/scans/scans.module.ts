@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ThemeModule } from '../../@theme/theme.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
   NbCardModule,
   NbInputModule,
@@ -15,7 +15,7 @@ import {
   NbToggleModule,
   NbPopoverModule,
 } from '@nebular/theme';
-import { JobStatusIconRenderComponent } from '../../@theme/components/smart-table/smart-table.component';
+import { JobStatusIconRenderComponent } from '../../@theme/components/smart-table/smart-table';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ScansManagementComponent, BaseScanFormComponent } from './scans-management/scans-management.component';
 import { ScanFileComponent } from './scans-management/scan-file/scan-file.component';
@@ -40,7 +40,6 @@ import { JobResultComponent } from './job-result/job-result.component';
     ScansRoutingModule,
     ThemeModule,
     FormsModule,
-    ReactiveFormsModule,
     NbCardModule,
     NbInputModule,
     NbTabsetModule,

@@ -62,3 +62,10 @@ export interface IRecentScan {
     jobId: number | string;
     status: string;
 }
+
+export interface IObservableAnalyzers {
+    ip: any[];
+    hash: any[];
+    domain: any[];
+    url: any[];
+}

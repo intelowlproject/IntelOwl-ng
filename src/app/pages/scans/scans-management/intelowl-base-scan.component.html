@@ -17,22 +17,11 @@
               <!-- Form specific fields -->
               <ng-content></ng-content>
               <!-- /Form specific fields -->
-
-              <!-- Analyzers select field -->
-              <div class="form-group">
-                <label class="label form-control-label">Select Analyzers</label>
-                <nb-select [(selected)]="formData.analyzers_requested"
-                  name="analyzers" placeholder="Analyzers To Request"
-                  fullWidth multiple>
-                  <nb-option *ngFor="let analyzer of analyzers_list" [value]="analyzer">{{ analyzer }}</nb-option>
-                </nb-select>
           
                 <div *ngIf="!isError816()" class="alert alert-danger mt-3 flex-wrap">
                     either you specify a list of requested analyzers or the
                     'run_all_available_analyzers' parameter, not both.
                 </div>
-              </div>
-              <!-- /Analyzers select field -->
 
               <div class="form-group">
                 <nb-checkbox class="col-md-6" [(ngModel)]="formData.force_privacy" name="force_privacy">disable

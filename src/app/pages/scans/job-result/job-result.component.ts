@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../@core/services/job.service';
-import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table.component';
+import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
+
 
 @Component({
-  selector: 'job-result',
+  selector: 'ngx-job-result',
   templateUrl: './job-result.component.html',
   styleUrls: ['./job-result.component.scss'],
 })

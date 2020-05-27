@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { JobStatusIconRenderComponent, ViewResultButtonComponent, TagsRenderComponent } from '../../@theme/components/smart-table/smart-table.component';
+import { JobStatusIconRenderComponent, ViewResultButtonComponent, TagsRenderComponent } from '../../@theme/components/smart-table/smart-table';
 import { LocalDataSource } from 'ng2-smart-table';
 import { JobService } from '../../@core/services/job.service';
 import { Job } from '../../@core/models/models';
