@@ -5,8 +5,9 @@ import { Router } from '@angular/router';
 
 // Job Status Icon Renderer
 @Component({
+  selector: 'intelowl-job-status-icon',
   template: `
-    <nb-icon [icon]="iconName" [status]="iconStatus" pack="eva"></nb-icon>
+    <nb-icon [nbTooltip]="value" [icon]="iconName" [status]="iconStatus" pack="eva"></nb-icon>
   `,
 })
 export class JobStatusIconRenderComponent implements ViewCell, OnInit {
@@ -22,8 +23,11 @@ export class JobStatusIconRenderComponent implements ViewCell, OnInit {
     if (value === 'true' || value === 'success' || value === 'reported_without_fails') {
       this.iconName = 'checkmark-circle-2-outline';
       this.iconStatus = 'success';
-    } else if (value === 'running' || value === 'pending' || value === 'reported_with_fails') {
+    } else if (value === 'running' || value === 'pending') {
       this.iconName = 'loader-outline';
+      this.iconStatus = 'warning';
+    } else if (value === 'reported_with_fails') {
+      this.iconName = 'alert-triangle-outline';
       this.iconStatus = 'warning';
     } else {
       this.iconName = 'close-circle-outline';
@@ -91,6 +95,7 @@ export class ViewResultButtonComponent implements ViewCell {
 
 // Tags badges Renderer
 @Component({
+  selector: 'intelowl-job-tags',
   template: `
   <strong style="color: white; background-color: {{ tag.color }};"
           class="p-1 mx-1 badge"
@@ -109,14 +114,8 @@ export class TagsRenderComponent implements ViewCell {
 // JSON Object Renderer
 @Component({
   template: `
-    <pre class="json-text">{{ value | json }}</pre>
+    <pre class="text-json">{{ value | json }}</pre>
   `,
-  styles: [`
-    .json-text {
-      color: #fff;
-      font-size: 10px;
-    }
-  `],
 })
 export class JSONRenderComponent implements ViewCell {
 

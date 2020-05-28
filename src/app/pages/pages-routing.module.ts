@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { JobResultComponent } from './scans/job-result/job-result.component';
+import { JobResultComponent } from './dashboard/job-result/job-result.component';
 
 const routes: Routes = [{
   path: '',
