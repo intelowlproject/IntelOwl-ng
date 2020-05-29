@@ -1,0 +1,161 @@
+<ng-container *ngIf="jobTableData">
+
+  <div class="col-md-12 row">
+
+      <!-- Job Information List -->
+      <div class="col-md-5">
+        <nb-card>
+          <nb-card-header>
+              <h5 class="d-flex justify-content-between">
+                <span *ngIf="jobTableData['is_sample']">
+                  <nb-icon icon="file-outline"></nb-icon>
+                  {{ jobTableData?.file_name }}
+                </span>
+                <span *ngIf="!jobTableData['is_sample']">
+                  <nb-icon icon="globe-outline"></nb-icon>
+                  {{ jobTableData?.observable_name }}
+                </span>
+                <span>
+                  <a *ngIf="jobTableData['is_sample']" 
+                    id="dl-file-link"
+                    target="_blank" [attr.href]="jobTableData?.file">
+                    <nb-icon nbTooltip="Download File" icon="download-outline"></nb-icon>
+                  </a>
+                  <intelowl-job-status-icon [value]="jobTableData?.status" rowData="" ></intelowl-job-status-icon>
+                </span>
+              </h5>
+              <intelowl-job-tags [value]="jobTableData?.tags" rowData="" ></intelowl-job-tags>
+          </nb-card-header>
+          <nb-card-body class="pt-0">
+            <nb-list>
+            <!-- Job ID -->
+              <nb-list-item>
+                Job ID
+                <strong>{{ jobTableData?.id }}</strong>
+              </nb-list-item>
+             <!-- Source -->
+              <nb-list-item>
+                Source
+                <strong>{{ jobTableData?.source }}</strong>
+              </nb-list-item>
+            <!-- Status -->
+              <nb-list-item>
+                Status
+                <strong>{{ jobTableData?.status }}</strong>
+              </nb-list-item>
+            <!-- MD5 hash -->
+              <nb-list-item>
+                md5
+                <pre class="text-json">{{ jobTableData?.md5 | json }}</pre>
+              </nb-list-item>
+            <!-- Observable or File ? -->
+              <nb-list-item *ngIf="!jobTableData['is_sample']">
+                Observable
+                <strong>{{ jobTableData?.observable_name }}</strong>
+              </nb-list-item>
+              <nb-list-item *ngIf="!jobTableData['is_sample']">
+                Classification
+                <strong>{{ jobTableData?.observable_classification }}</strong>
+              </nb-list-item>
+              <nb-list-item *ngIf="jobTableData['is_sample']">
+                File Name
+                <strong>{{ jobTableData?.file_name }}</strong>
+              </nb-list-item>
+              <nb-list-item *ngIf="jobTableData['is_sample']">
+                File Mimetype
+                <strong>{{ jobTableData?.file_mimetype }}</strong>
+              </nb-list-item>
+            <!-- Requested Analyzers -->
+              <nb-list-item>
+                Requested Analyzers
+                <pre class="text-json">{{ jobTableData?.analyzers_requested | json }}</pre>
+              </nb-list-item>
+             <!-- Executed Analyzer -->
+              <nb-list-item>
+                Executed Analyzers
+                <pre class="text-json">{{ jobTableData?.analyzers_to_execute | json }}</pre>
+              </nb-list-item>
+            <!-- Received Request Time -->
+            <nb-list-item>
+              Received Request Time
+              <strong>{{ jobTableData?.received_request_time }}</strong>
+            </nb-list-item>
+            <!-- Finished Analysis Time -->
+              <nb-list-item>
+                Finished Analysis Time
+                <strong>{{ jobTableData?.finished_analysis_time }}</strong>
+              </nb-list-item>
+            <!-- Time taken to finish analysis -->
+              <nb-list-item>
+                Process Time
+                <strong>{{ jobTableData?.job_process_time | timing }} minutes</strong>
+              </nb-list-item>
+            </nb-list>
+          </nb-card-body>
+        </nb-card>
+      </div>
+
+      <!-- Job Analysis Result Table -->
+      <div class="col-md-7">
+        <nb-card>
+          <nb-card-body>
+            <ng2-smart-table (rowSelect)="onRowSelect($event)" [settings]="settings"
+              [source]="tableDatasource">
+            </ng2-smart-table>
+          </nb-card-body>
+        </nb-card>
+      </div>
+
+  </div>
+
+
+  <!-- Selected Row's Result/Error -->
+
+  <nb-card fullWidth>
+    <nb-card-header>
+      Selected: <strong>{{ selectedRowName }}</strong>
+    </nb-card-header>
+    <nb-card-body>
+      <nb-tabset>
+        <!-- Carded List view -->
+        <nb-tab tabIcon="list-outline">
+          <ng-template *ngTemplateOutlet="cardedResultListRef; context: {object: selectedRowData, card_size: 'large'}">
+          </ng-template>
+        </nb-tab>
+        <nb-tab tabIcon="code-outline">
+          <!-- JSON view -->
+          <div id="result-json-viewer">
+            <ngx-json-viewer [json]="selectedRowData"></ngx-json-viewer>
+          </div>
+        </nb-tab>
+      </nb-tabset>
+    </nb-card-body>
+  </nb-card>
+
+  <!-- Here be dragons. DO NOT TOUCH. -->
+  <!-- Template used to recurse over job's JSON report for carded list view -->
+
+  <ng-template #cardedResultListRef let-obj="object" let-size="card_size">
+    <nb-card [size]="size">
+      <nb-card-body>
+        <nb-list>
+          <nb-list-item *ngFor="let item of obj | keyvalue">
+            <strong style="font-size: smaller;">{{ item?.key }}</strong>
+            <span [ngSwitch]="getObjectType(item?.value)">
+              <span class="text-json" *ngSwitchCase="'string'">{{ item?.value | json }}</span>
+              <span *ngSwitchCase="'object'">
+                <ng-template *ngTemplateOutlet="cardedResultListRef; context: {object: item?.value, card_size: tiny}">
+                </ng-template>
+              </span>
+              <span *ngSwitchCase="'object_array'">
+                <ng-template *ngTemplateOutlet="cardedResultListRef; context: {object: item?.value[0], card_size: tiny}">
+                </ng-template>
+              </span>
+            </span>
+          </nb-list-item>
+        </nb-list>
+      </nb-card-body>
+    </nb-card>
+  </ng-template>
+
+</ng-container>

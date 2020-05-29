@@ -8,4 +8,13 @@
       right: 0.41rem !important;
     }
   }
+
+  .text-json {
+    font-size: smaller;
+    color: nb-theme(text-basic-color);
+  }
+
+  .cursor-pointer {
+    cursor: pointer !important;
+  }
 }

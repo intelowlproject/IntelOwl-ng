@@ -1,0 +1,25 @@
+nb-list-item {
+  display: flex;
+  padding: 0.5rem;
+  align-items: center !important;
+  align-content: center !important;
+  justify-content: space-between;
+  margin: 0 !important;
+}
+
+#result-json-viewer {
+  margin: 0px;
+  background-color: #fff !important;
+  padding: 5px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  box-shadow: 0 0.5px 2px 0.5px #000;
+}
+
+#dl-file-link {
+  margin-right: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
