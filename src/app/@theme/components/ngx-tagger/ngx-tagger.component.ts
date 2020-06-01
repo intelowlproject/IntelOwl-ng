@@ -11,7 +11,6 @@ import { NbPopoverDirective } from '@nebular/theme';
   styleUrls: ['./ngx-tagger.component.scss'],
 })
 export class NgxTaggerComponent implements OnInit, OnDestroy {
-
   @ViewChild(NbPopoverDirective) popover: NbPopoverDirective;
   @Output() tagWasClicked: EventEmitter<any> = new EventEmitter<any>();
 
@@ -24,12 +23,11 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
   } as Tag;
   editMode: boolean = false;
 
-
-  constructor(private tagService: TagService) { }
+  constructor(private tagService: TagService) {}
 
   ngOnInit(): void {
     this.tags = this.tagService.tags;
-    this.sub = this.tagService.tags$.subscribe(res => this.tags = res);
+    this.sub = this.tagService.tags$.subscribe((res) => (this.tags = res));
   }
 
   // Popover
@@ -40,7 +38,7 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
 
   close() {
     const tagstoOutput: number[] = new Array();
-    this.selectedTags.forEach(tag => tagstoOutput.push(tag.id));
+    this.selectedTags.forEach((tag) => tagstoOutput.push(tag.id));
     this.tagWasClicked.emit(tagstoOutput);
     this.popover.hide();
   }
@@ -83,5 +81,4 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
-
 }

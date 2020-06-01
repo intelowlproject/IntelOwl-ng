@@ -27,7 +27,6 @@ import { DexieService } from './@core/services/dexie.service';
 import { IndexedDbService } from './@core/services/indexdb.service';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -44,11 +43,18 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
     ThemeModule.forRoot(),
   ],
   bootstrap: [AppComponent],
-  providers:
-  [
-    AuthGuard, UserService, DexieService, IndexedDbService,
-    { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true},
-    { provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER, useValue: function () { return false; } },
+  providers: [
+    AuthGuard,
+    UserService,
+    DexieService,
+    IndexedDbService,
+    { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
+    {
+      provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER,
+      useValue: function () {
+        return false;
+      },
+    },
     { provide: APP_BASE_HREF, useValue: '/' },
   ],
 })

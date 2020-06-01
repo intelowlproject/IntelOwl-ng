@@ -2,12 +2,14 @@ import {
   Component,
   OnDestroy,
   Input,
-  OnChanges,
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
+  OnChanges,
 } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
+import { EChartOption } from 'echarts';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ngx-echarts-pie',
@@ -16,8 +18,8 @@ import { NbThemeService } from '@nebular/theme';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EchartsPieComponent implements OnChanges, OnDestroy {
-  options: any = {};
-  themeSubscription: any;
+  options: EChartOption;
+  private themeSubscription: Subscription;
 
   @Input() pieChartData: any;
   @Input() pieChartName: any;
@@ -25,27 +27,30 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
 
   constructor(private theme: NbThemeService) {}
 
-  downloadPieChart() {
+  downloadPieChart(): void {
     alert('Right click on the chart -> "Save image as"');
   }
 
   ngOnChanges(): void {
-    if (this.pieChartData === null || this.pieChartData === undefined) {
+    if (
+      this.pieChartData === null ||
+      this.pieChartData === undefined ||
+      this.options
+    ) {
       return;
     }
-    this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
-
+    this.themeSubscription = this.theme.getJsTheme().subscribe((config) => {
       const colors = config.variables;
       const echarts: any = config.variables.echarts;
 
       this.options = {
         backgroundColor: echarts.bg,
         color: [
-          colors.warningLight,
-          colors.dangerLight,
-          colors.primaryLight,
-          colors.successLight,
-          colors.infoLight,
+          colors.warningLight as string,
+          colors.dangerLight as string,
+          colors.primaryLight as string,
+          colors.successLight as string,
+          colors.infoLight as string,
         ],
         tooltip: {
           trigger: 'item',
@@ -53,8 +58,7 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
         },
         legend: {
           orient: 'horizontal',
-          center: 'top',
-          data: this.pieChartData.map(d => {
+          data: this.pieChartData.map((d) => {
             return d.name;
           }),
           textStyle: {
@@ -100,9 +104,7 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
     this.themeSubscription && this.themeSubscription.unsubscribe();
   }
 
-  onChartMouseDown(event) {
+  onChartMouseDown(event): void {
     this.onPieSelect.emit(event.data);
   }
-
-
 }

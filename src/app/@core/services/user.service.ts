@@ -15,14 +15,14 @@ export class UserService extends HttpService<any> {
   constructor(
     private _httpClient: HttpClient,
     private nbAuth: NbAuthService,
-    public indexDB: IndexedDbService,
+    public indexDB: IndexedDbService
   ) {
     super(
       _httpClient,
       {
         path: '/',
       },
-      indexDB,
+      indexDB
     );
 
     this.nbAuth.onTokenChange().subscribe((res) => {
@@ -39,9 +39,12 @@ export class UserService extends HttpService<any> {
   async init() {
     try {
       const user = await this.getUserInfo();
-      this.indexDB.getTableInstance('user').clear().then(() => {
-        this.indexDB.addOrReplaceOne('user', user);
-      });
+      this.indexDB
+        .getTableInstance('user')
+        .clear()
+        .then(() => {
+          this.indexDB.addOrReplaceOne('user', user);
+        });
       this.user$.next(user);
     } catch (e) {
       console.error(e);
@@ -53,13 +56,15 @@ export class UserService extends HttpService<any> {
     }
   }
 
-
   offlineInit() {
-    this.indexDB.getTableInstance('user').limit(1).first().then(res => {
-      this.user$.next(res);
-    });
+    this.indexDB
+      .getTableInstance('user')
+      .limit(1)
+      .first()
+      .then((res) => {
+        this.user$.next(res);
+      });
   }
-
 
   logOut() {
     this.nbAuth.logout('email').subscribe(
@@ -72,8 +77,7 @@ export class UserService extends HttpService<any> {
         localStorage.removeItem('auth_app_token');
         this.indexDB.getTableInstance('user').clear();
         location.reload();
-      },
+      }
     );
   }
-
 }

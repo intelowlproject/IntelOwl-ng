@@ -40,15 +40,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private sidebarService: NbSidebarService,
     private nbMenuService: NbMenuService,
     public userService: UserService,
-    private themeService: NbThemeService,
+    private themeService: NbThemeService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.nbMenuService
       .onItemClick()
       .pipe(
         filter(({ tag }) => tag === 'user'),
-        map(({ item }) => item),
+        map(({ item }) => item)
       )
       .subscribe(async (item) => {
         switch (item.title) {
@@ -65,14 +65,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.themeService.onThemeChange()
-        .pipe(
-          map(({ name }) => name),
-          takeUntil(this.destroy$),
-        )
-        .subscribe(themeName => this.currentTheme = themeName);
+    this.themeService
+      .onThemeChange()
+      .pipe(
+        map(({ name }) => name),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((themeName) => (this.currentTheme = themeName));
   }
-
 
   changeTheme(themeName: string) {
     this.themeService.changeTheme(themeName);
@@ -83,14 +83,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  navigateHome() {
+  navigateHome(): boolean {
     this.nbMenuService.navigateHome();
     return false;
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 }

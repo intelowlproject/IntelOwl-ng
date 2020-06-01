@@ -10,9 +10,9 @@ import { AuthGuard } from './@core/services/auth-gaurd.service';
 export const routes: Routes = [
   {
     path: 'pages',
-    canActivate: [ AuthGuard ],
-    loadChildren: () => import('./pages/pages.module')
-      .then(m => m.PagesModule),
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./pages/pages.module').then((m) => m.PagesModule),
   },
   {
     path: 'auth',

@@ -1,13 +1,11 @@
 import Dexie from 'dexie';
 
 export class DexieService extends Dexie {
-
   constructor() {
-
     super('IntelOwlAppDatabase');
 
     this.version(1).stores({
-      user: '++id,username,email',
+      user: '++id,username',
       recent_scans: '++jobId,status',
       /*
       tags: '++label,color',

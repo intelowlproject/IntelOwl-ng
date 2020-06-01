@@ -1,15 +1,11 @@
-@import '../../styles/themes';
+nb-card-header {
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between;
+}
 
-@include nb-install-component() {
-  nb-card-header {
-    display: flex;
-    align-items: center !important;
-    justify-content: space-between;
-  }
-
-  nb-icon {
-    cursor: pointer;
-  } 
+nb-icon {
+  cursor: pointer;
 }
 
 .echart {

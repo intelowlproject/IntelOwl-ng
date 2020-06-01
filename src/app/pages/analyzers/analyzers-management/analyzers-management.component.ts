@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
 
-
 @Component({
-  selector: 'ngx-analyzers-management',
   template: `
     <h5>One API to rule them all. Here's a list of integrated services.</h5>
     <nb-card>
-      <nb-route-tabset [activeLinkOptions]="{exact: false}" [fullWidth]="true" [tabs]="tabs">
+      <nb-route-tabset
+        fullWidth
+        [activeLinkOptions]="{ exact: false }"
+        [tabs]="tabs"
+      >
       </nb-route-tabset>
     </nb-card>
   `,
 })
 export class AnalyzersManagementComponent {
-
   tabs = [
     {
       title: 'Table',
@@ -29,5 +30,4 @@ export class AnalyzersManagementComponent {
   ];
 
   constructor() {}
-
 }

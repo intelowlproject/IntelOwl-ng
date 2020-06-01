@@ -1,28 +1,35 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'echarts-tree',
+  selector: 'ngx-echarts-tree',
   template: `
-    <div echarts *ngIf="treeInputData!==undefined" [options]="options" class="echart" style="height: 700px;">
-    </div>
+    <div
+      echarts
+      [options]="options"
+      class="echart"
+      style="height: 700px;"
+    ></div>
   `,
 })
 export class EchartsTreeComponent implements OnInit, OnDestroy {
-  options = null;
+  private themeSubscription: Subscription;
+  @Input() private treeInputData: any;
+  public options: any;
 
-  themeSubscription: any;
-
-  @Input() treeInputData: any;
-
-  constructor(private theme: NbThemeService) { }
+  constructor(private theme: NbThemeService) {}
 
   ngOnInit(): void {
-    if (this.treeInputData === null || this.treeInputData === undefined) {
+    if (
+      this.treeInputData === null ||
+      this.treeInputData === undefined ||
+      this.options
+    ) {
       return;
     }
-    this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
-      const colors = config.variables;
+    this.themeSubscription = this.theme.getJsTheme().subscribe((config) => {
+      const colors = config.variables.echarts;
 
       this.options = {
         tooltip: {
@@ -47,21 +54,21 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
             animationDurationUpdate: 750,
 
             lineStyle: {
-              color: colors.successLight,
+              color: colors['tooltipBackgroundColor'],
               curveness: 0.5,
               width: 0.4,
             },
             itemStyle: {
-              color: '#000',
-              borderColor: '#fff',
+              color: colors['bg'],
+              borderColor: colors['tooltipBackgroundColor'],
             },
             label: {
               normal: {
                 position: 'top',
                 verticalAlign: 'top',
                 align: 'center',
-                color: '#fff',
-                lineHeight: 15,
+                color: colors['textColor'],
+                lineHeight: -20,
                 fontSize: 16,
               },
             },
@@ -71,7 +78,8 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
                   position: 'right',
                   verticalAlign: 'medium',
                   align: 'left',
-                  color: colors.infoLight,
+                  color: colors['textColor'],
+                  lineHeight: 1,
                   fontSize: 11,
                 },
               },
@@ -85,5 +93,4 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.themeSubscription && this.themeSubscription.unsubscribe();
   }
-
 }

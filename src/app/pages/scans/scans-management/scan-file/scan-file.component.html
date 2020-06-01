@@ -1,38 +1,62 @@
 <div ngForm="fileScanForm" #fileScanForm="ngForm">
-    <intelowl-base-scan [scanForm]="fileScanForm" [formData]="formData">
-  
-        <label for="file" class="label form-control-label">Select File</label>
-        <input nbInput fullWidth
-          (change)="handleFileInput($event.target.files)"
-          required="true" type="file">
+  <intelowl-base-scan [scanForm]="fileScanForm" [formData]="formData">
+    <label for="file" class="label form-control-label">Select File</label>
+    <input
+      nbInput
+      fullWidth
+      (change)="handleFileInput($event.target.files)"
+      required="true"
+      type="file"
+    />
 
-      <div class="form-group row col-12 p-0">
-        <div class="col-md-6">
-          <label for="file_name" class="label form-control-label">File Name</label>
-          <input nbInput fullWidth disabled
-            [(ngModel)]="formData.file_name"
-            name="file_name"
-            required="true" type="text">
-        </div>
-        <div class="col-md-6">
-          <label for="file_mimetype" class="label form-control-label">File Mimetype</label>
-          <input nbInput fullWidth disabled
-            [(ngModel)]="formData.file_mimetype"
-            name="file_mimetype" 
-            required="true" type="text">
-        </div>
+    <div class="form-group row col-12 p-0">
+      <div class="col-md-6">
+        <label for="file_name" class="label form-control-label"
+          >File Name</label
+        >
+        <input
+          nbInput
+          fullWidth
+          disabled
+          [(ngModel)]="formData.file_name"
+          name="file_name"
+          required="true"
+          type="text"
+        />
       </div>
+      <div class="col-md-6">
+        <label for="file_mimetype" class="label form-control-label"
+          >File Mimetype</label
+        >
+        <input
+          nbInput
+          fullWidth
+          disabled
+          [(ngModel)]="formData.file_mimetype"
+          name="file_mimetype"
+          required="true"
+          type="text"
+        />
+      </div>
+    </div>
 
-      <!-- Analyzers select field -->
-      <div class="form-group">
-        <label class="label form-control-label">Select Analyzers</label>
-        <nb-select [(selected)]="formData.analyzers_requested"
-          name="analyzers" placeholder="Analyzers To Request"
-          fullWidth multiple>
-          <nb-option *ngFor="let analyzer of analyzersService?.fileAnalyzers$ | async" [value]="analyzer?.name">{{ analyzer?.name }}</nb-option>
-        </nb-select>
-      </div>
-      <!-- /Analyzers select field -->
-      
-    </intelowl-base-scan>
+    <!-- Analyzers select field -->
+    <div class="form-group">
+      <label class="label form-control-label">Select Analyzers</label>
+      <nb-select
+        [(selected)]="formData.analyzers_requested"
+        name="analyzers"
+        placeholder="Analyzers To Request"
+        fullWidth
+        multiple
+      >
+        <nb-option
+          *ngFor="let analyzer of analyzersService?.fileAnalyzers$ | async"
+          [value]="analyzer?.name"
+          >{{ analyzer?.name }}</nb-option
+        >
+      </nb-select>
+    </div>
+    <!-- /Analyzers select field -->
+  </intelowl-base-scan>
 </div>

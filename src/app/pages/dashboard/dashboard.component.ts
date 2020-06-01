@@ -1,19 +1,21 @@
 import { Component, OnDestroy } from '@angular/core';
-import { JobStatusIconRenderComponent, ViewResultButtonComponent, TagsRenderComponent } from '../../@theme/components/smart-table/smart-table';
+import {
+  JobStatusIconRenderComponent,
+  ViewResultButtonComponent,
+  TagsRenderComponent,
+} from '../../@theme/components/smart-table/smart-table';
 import { LocalDataSource } from 'ng2-smart-table';
 import { JobService } from '../../@core/services/job.service';
 import { Job } from '../../@core/models/models';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnDestroy {
-
   private sub: Subscription;
-  jobs: Job[];
+  private jobs: Job[];
   filterEl: string = null;
   filterField: string = null;
 
@@ -25,7 +27,6 @@ export class DashboardComponent implements OnDestroy {
 
   // ng2-smart-table settings
   settings = {
-    // hideSubHeader: true,
     actions: {
       add: false,
       edit: false,
@@ -50,7 +51,7 @@ export class DashboardComponent implements OnDestroy {
       },
       observable_name: {
         title: 'Name',
-        valuePrepareFunction: (c, r) => (r.observable_name || r.file_name),
+        valuePrepareFunction: (c, r) => r.observable_name || r.file_name,
       },
       tags: {
         title: 'Tags',
@@ -63,7 +64,8 @@ export class DashboardComponent implements OnDestroy {
         title: 'Type',
         width: '20%',
         filter: false,
-        valuePrepareFunction: (c, r) => (r.observable_classification || r.file_mimetype),
+        valuePrepareFunction: (c, r) =>
+          r.observable_classification || r.file_mimetype,
       },
       analyzers_requested: {
         title: 'Analyzers Called',
@@ -98,57 +100,68 @@ export class DashboardComponent implements OnDestroy {
   constructor(private readonly jobService: JobService) {
     this.jobs = this.jobService.jobs;
     this.sub = this.jobService.jobs$.subscribe(
-      res => {
+      (res) => {
         this.jobs = res;
         this.initData();
       },
-      err => console.error(err),
+      (err) => console.error(err)
     );
     this.initData();
   }
 
-  private initData(): void {
+  private async initData(): Promise<void> {
     if (this.jobs) {
       this.source.load(this.jobs);
-      this.pieChartData['status'] = this.constructPieData(this.jobs, 'status');
-      this.pieChartData['type'] = this.constructPieData(this.jobs, 'type');
-      this.pieChartData['observable_classification'] = this.constructPieData(this.jobs, 'observable_classification');
-      this.pieChartData['file_mimetype'] = this.constructPieData(this.jobs, 'file_mimetype');
+      this.pieChartData['status'] = await this.constructPieData(
+        this.jobs,
+        'status'
+      );
+      this.pieChartData['type'] = await this.constructPieData(
+        this.jobs,
+        'type'
+      );
+      this.pieChartData[
+        'observable_classification'
+      ] = await this.constructPieData(this.jobs, 'observable_classification');
+      this.pieChartData['file_mimetype'] = await this.constructPieData(
+        this.jobs,
+        'file_mimetype'
+      );
     }
   }
 
+  private async constructPieData(
+    jobs: Job[],
+    field: string
+  ): Promise<Array<{ name: string; value: number }>> {
+    const fieldValuesMap: Map<string, number> = new Map();
 
-  constructPieData(jobs: Job[], field: string) {
-    const mymap: Map<string, number> = new Map();
-
-    jobs.forEach(job => {
-
+    jobs.forEach((job) => {
       let keys: string[] = [];
 
-      if (job[field] instanceof Object && job[field].length > 0) {
+      if (job[field] === null || job[field] === '') {
+        return; // jump to next iteration
+      } else if (job[field] instanceof Object && job[field].length > 0) {
         keys = job[field];
-      } else if (job[field] === null || job[field] === '') {
-        return;
       } else {
         keys.push(job[field]);
       }
 
-      keys.forEach(k => {
-        if (mymap.get(k) === undefined) {
-          mymap.set(k, 0);
+      keys.forEach((k) => {
+        if (fieldValuesMap.get(k) === undefined) {
+          fieldValuesMap.set(k, 0);
         }
-        mymap.set(k, mymap.get(k) + 1);
+        fieldValuesMap.set(k, fieldValuesMap.get(k) + 1);
       });
-
     });
 
-    const newData: any = [];
+    const pieData: Array<{ name: string; value: number }> = [];
 
-    mymap.forEach((v, k) => {
-      newData.push({ name: k, value: v });
+    fieldValuesMap.forEach((v, k) => {
+      pieData.push({ name: k, value: v });
     });
 
-    return newData;
+    return pieData;
   }
 
   filterJobsByField(el: any, field: string): void {
@@ -165,9 +178,6 @@ export class DashboardComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
+    this.sub && this.sub.unsubscribe();
   }
-
 }

@@ -1,9 +1,10 @@
 <div ngForm="observableScanForm" #observableScanForm="ngForm">
   <intelowl-base-scan [scanForm]="observableScanForm" [formData]="formData">
-
-    <nb-radio-group [(ngModel)]="formData.observable_classification" 
+    <nb-radio-group
+      [(ngModel)]="formData.observable_classification"
       class="d-flex justify-content-start"
-      name="classifier">
+      name="classifier"
+    >
       <nb-radio value="ip">IP</nb-radio>
       <nb-radio value="url">URL</nb-radio>
       <nb-radio value="domain">Domain</nb-radio>
@@ -11,37 +12,57 @@
     </nb-radio-group>
 
     <div class="form-group">
-
-      <label class="label form-control-label">Enter {{ formData.observable_classification | ngxCapitalize }} To
-        Scan</label>
-        <!-- Should use switch case maybe? -->
-      <input nbInput fullWidth [(ngModel)]="formData.observable_name" #value=ngModel 
-         minlength="4" name="value" placeholder="127.0.0.1"
-         required="true" type="text">
-      <div *ngIf="value.invalid && (value.dirty || value.touched)" class="alert alert-danger mt-3">
+      <label class="label form-control-label"
+        >Enter {{ formData.observable_classification | ngxCapitalize }} To
+        Scan</label
+      >
+      <!-- Should use switch case maybe? -->
+      <input
+        nbInput
+        fullWidth
+        [(ngModel)]="formData.observable_name"
+        #value="ngModel"
+        minlength="4"
+        name="value"
+        placeholder="127.0.0.1"
+        required="true"
+        type="text"
+      />
+      <div
+        *ngIf="value.invalid && (value.dirty || value.touched)"
+        class="alert alert-danger mt-3"
+      >
         <div *ngIf="value.errors.required">
           {{ formData.observable_classification }} is required.
         </div>
         <div *ngIf="value.errors.minlength">
-          {{ formData.observable_classification }} must be at least 4 characters long.
+          {{ formData.observable_classification }} must be at least 4 characters
+          long.
         </div>
       </div>
-
     </div>
 
     <!-- Analyzers select field -->
     <div class="form-group">
       <label class="label form-control-label">Select Analyzers</label>
-      <nb-select *ngIf="obsAnalyzers" fullWidth multiple
+      <nb-select
+        *ngIf="obsAnalyzers"
+        fullWidth
+        multiple
         [(selected)]="formData.analyzers_requested"
-        name="analyzers" placeholder="Analyzers To Request">
-        <nb-option *ngFor="let analyzer of obsAnalyzers[formData.observable_classification]" 
-                  [value]="analyzer?.name">
-        {{ analyzer?.name }}
+        name="analyzers"
+        placeholder="Analyzers To Request"
+      >
+        <nb-option
+          *ngFor="
+            let analyzer of obsAnalyzers[formData.observable_classification]
+          "
+          [value]="analyzer?.name"
+        >
+          {{ analyzer?.name }}
         </nb-option>
       </nb-select>
     </div>
     <!-- /Analyzers select field -->
-
   </intelowl-base-scan>
 </div>
