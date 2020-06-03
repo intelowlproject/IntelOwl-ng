@@ -1,13 +1,22 @@
 <nb-card>
-  <nb-route-tabset [activeLinkOptions]="{exact: false}" [fullWidth]="true" [tabs]="tabs">
+  <nb-route-tabset
+    [activeLinkOptions]="{ exact: false }"
+    [fullWidth]="true"
+    [tabs]="tabs"
+  >
   </nb-route-tabset>
 </nb-card>
 
 <div>
   <h6>Recent Scans</h6>
   <div class="d-flex flex-wrap">
-    <button nbButton class="m-2 p-2" *ngFor="let scan of scanService?.recentScans$ | async" [status]="scan?.status"
-      [routerLink]="[ '/pages/scan/result/', scan.jobId ]">
+    <button
+      nbButton
+      class="m-2 p-2"
+      *ngFor="let scan of scanService?.recentScans$ | async"
+      [status]="scan?.status"
+      [routerLink]="['/pages/scan/result/', scan.jobId]"
+    >
       Job #{{ scan?.jobId }}
     </button>
   </div>

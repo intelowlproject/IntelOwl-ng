@@ -1,12 +1,20 @@
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import {
+  ModuleWithProviders,
+  NgModule,
+  Optional,
+  SkipSelf,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NbAuthModule, NbPasswordAuthStrategy, NbAuthSimpleToken } from '@nebular/auth';
+import {
+  NbAuthModule,
+  NbPasswordAuthStrategy,
+  NbAuthSimpleToken,
+} from '@nebular/auth';
 import { of as observableOf } from 'rxjs';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { environment } from '../../environments/environment';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
-
 
 export class NbSimpleRoleProvider extends NbRoleProvider {
   getRole() {
@@ -15,14 +23,12 @@ export class NbSimpleRoleProvider extends NbRoleProvider {
   }
 }
 
-
 export const NB_CORE_PROVIDERS = [
   ...NbAuthModule.forRoot({
-
     strategies: [
       NbPasswordAuthStrategy.setup({
         name: 'email',
-        baseEndpoint:  environment.api,
+        baseEndpoint: environment.api,
         login: {
           endpoint: 'auth/login',
           method: 'post',
@@ -39,7 +45,6 @@ export const NB_CORE_PROVIDERS = [
     ],
 
     forms: {},
-
   }).providers,
   NbSecurityModule.forRoot({
     accessControl: {
@@ -56,17 +61,14 @@ export const NB_CORE_PROVIDERS = [
   }).providers,
 
   {
-    provide: NbRoleProvider, useClass: NbSimpleRoleProvider,
+    provide: NbRoleProvider,
+    useClass: NbSimpleRoleProvider,
   },
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    NbAuthModule,
-  ],
+  imports: [CommonModule],
+  exports: [NbAuthModule],
   declarations: [],
 })
 export class CoreModule {
@@ -77,9 +79,7 @@ export class CoreModule {
   static forRoot(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
-      providers: [
-        ...NB_CORE_PROVIDERS,
-      ],
+      providers: [...NB_CORE_PROVIDERS],
     };
   }
 }

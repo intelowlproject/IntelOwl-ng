@@ -1,4 +1,4 @@
-@import '../../@theme/styles/themes';
+@import "../../@theme/styles/themes";
 
 @include nb-install-component() {
   ngx-echarts-pie {
@@ -22,7 +22,6 @@
   nb-alert span {
     margin: 0 3px;
   }
-
 }
 
 .cursor-pointer {

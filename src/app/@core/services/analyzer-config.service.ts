@@ -9,24 +9,27 @@ import { IObservableAnalyzers } from '../models/models';
   providedIn: 'root',
 })
 export class AnalyzerConfigService extends HttpService<any> {
-
   public rawAnalyzerConfig: any;
-  private _observableAnalyzers$:
-    ReplaySubject<IObservableAnalyzers> = new ReplaySubject<IObservableAnalyzers>() as ReplaySubject<IObservableAnalyzers>;
+  private _observableAnalyzers$: ReplaySubject<
+    IObservableAnalyzers
+  > = new ReplaySubject<IObservableAnalyzers>() as ReplaySubject<
+    IObservableAnalyzers
+  >;
 
-  private _fileAnalyzers$:
-    ReplaySubject<any> = new ReplaySubject<any>() as ReplaySubject<any>;
+  private _fileAnalyzers$: ReplaySubject<any> = new ReplaySubject<
+    any
+  >() as ReplaySubject<any>;
 
   constructor(
     private _httpClient: HttpClient,
-    public indexDB: IndexedDbService,
+    public indexDB: IndexedDbService
   ) {
     super(
       _httpClient,
       {
         path: '/',
       },
-      indexDB,
+      indexDB
     );
     this.init().then();
   }
@@ -58,7 +61,12 @@ export class AnalyzerConfigService extends HttpService<any> {
 
   private async parse(analyzerConfig: any): Promise<any[]> {
     const fileAnalyzersArr = [] as any[];
-    const obsAnalyzers: IObservableAnalyzers = { ip: [], hash: [], domain: [], url: [] } as IObservableAnalyzers;
+    const obsAnalyzers: IObservableAnalyzers = {
+      ip: [],
+      hash: [],
+      domain: [],
+      url: [],
+    } as IObservableAnalyzers;
 
     Object.entries(analyzerConfig).forEach(([name, obj]) => {
       obj['name'] = name;
@@ -84,5 +92,4 @@ export class AnalyzerConfigService extends HttpService<any> {
     });
     return [fileAnalyzersArr, obsAnalyzers];
   }
-
 }

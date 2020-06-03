@@ -11,6 +11,8 @@ import {
   NbIconModule,
   NbSelectModule,
   NbLayoutModule,
+  NbTooltipModule,
+  NbCardModule,
 } from '@nebular/theme';
 
 import { HeaderComponent } from './components/header/header.component';
@@ -45,6 +47,7 @@ const NB_MODULES = [
   NbIconModule,
   NbSecurityModule,
   NbSelectModule,
+  NbTooltipModule,
 ];
 
 const COMPONENTS = [
@@ -63,11 +66,14 @@ const PIPES = [
   NumberWithCommasPipe,
 ];
 
-const ANGULAR_MODULES = [FormsModule];
+// modules that will be reused across all child modules.
+const MODULES_TO_EXPORT = [CommonModule, NbIconModule, NbCardModule];
+
+const ANGULAR_MODULES = [CommonModule, FormsModule];
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES, ...ANGULAR_MODULES],
-  exports: [CommonModule, ...PIPES, ...COMPONENTS],
+  imports: [...ANGULAR_MODULES, ...NB_MODULES],
+  exports: [...PIPES, ...COMPONENTS, ...MODULES_TO_EXPORT],
   declarations: [...COMPONENTS, ...PIPES],
 })
 export class ThemeModule {
@@ -79,7 +85,7 @@ export class ThemeModule {
           {
             name: 'dark',
           },
-          [DEFAULT_THEME, DARK_THEME],
+          [DEFAULT_THEME, DARK_THEME]
         ).providers,
       ],
     };

@@ -10,30 +10,33 @@ import { Subject } from 'rxjs/internal/Subject';
   providedIn: 'root',
 })
 export class TagService extends HttpService<any> {
-
+  private _tags$: Subject<Tag[]> = new Subject() as Subject<Tag[]>;
   public tags: Tag[];
-  public tags$: Subject<Tag[]> = new Subject() as Subject<Tag[]>;
 
   constructor(
     private toastr: ToastService,
-    private httpClient: HttpClient,
-    protected indexDB: IndexedDbService,
+    private _httpClient: HttpClient,
+    protected indexDB: IndexedDbService
   ) {
     super(
-      httpClient,
+      _httpClient,
       {
         path: '',
       },
-      indexDB,
+      indexDB
     );
     this.init().then();
+  }
+
+  get tags$() {
+    return this._tags$.asObservable();
   }
 
   private async init() {
     try {
       const result: Tag[] = await this.query({}, 'tags');
       this.tags = result;
-      this.tags$.next(result);
+      this._tags$.next(result);
     } catch (e) {
       console.error(e);
       if (e.status >= 500) {
@@ -43,9 +46,9 @@ export class TagService extends HttpService<any> {
   }
 
   private async offlineInit() {
-    this.indexDB.getAllInstances('tags').then(res => {
+    this.indexDB.getAllInstances('tags').then((res) => {
       this.tags = res;
-      this.tags$.next(res);
+      this._tags$.next(res);
     });
   }
 
@@ -55,7 +58,7 @@ export class TagService extends HttpService<any> {
       this.toastr.showToast('Updated tag', `TAG #${obj.id}`, 'success');
       return obj;
     } catch (e) {
-      this.toastr.showToast('Couldn\'t update tag', `TAG #${tag.id}`, 'error');
+      this.toastr.showToast("Couldn't update tag", `TAG #${tag.id}`, 'error');
     }
   }
 
@@ -65,8 +68,11 @@ export class TagService extends HttpService<any> {
       this.toastr.showToast('Created tag', `TAG #${obj.id}`, 'success');
       return obj;
     } catch (e) {
-      this.toastr.showToast('Couldn\'t create tag', `TAG: ${tag.label}`, 'error');
+      this.toastr.showToast(
+        "Couldn't create tag",
+        `TAG: ${tag.label}`,
+        'error'
+      );
     }
   }
-
 }

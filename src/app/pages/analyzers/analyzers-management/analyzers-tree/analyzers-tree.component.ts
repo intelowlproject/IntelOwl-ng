@@ -1,32 +1,41 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { zip, Subscription } from 'rxjs';
 import { IObservableAnalyzers } from '../../../../@core/models/models';
 import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
 
 @Component({
-  selector: 'ngx-analyzers-tree',
   template: `
-    <echarts-tree [treeInputData]="treeData"></echarts-tree>
+    <ngx-echarts-tree
+      *ngIf="treeData"
+      [treeInputData]="treeData"
+    ></ngx-echarts-tree>
   `,
 })
 export class AnalyzersTreeComponent implements OnInit, OnDestroy {
-
   // Dendogram Data
   public treeData: any;
-  private sub1: Subscription;
-  private sub2: Subscription;
+  private sub: Subscription;
   private fileAnalyzersArr: any[];
   private obsAnalyzers: IObservableAnalyzers;
 
-  constructor(private analyzerService: AnalyzerConfigService) {}
+  constructor(private readonly analyzerService: AnalyzerConfigService) {}
 
   ngOnInit(): void {
-    this.sub1 = this.analyzerService.fileAnalyzers$.subscribe((arr: any[]) => this.fileAnalyzersArr = arr);
-    this.sub2 = this.analyzerService.observableAnalyzers$.subscribe((obj: IObservableAnalyzers) => this.obsAnalyzers = obj);
-    this.initTreeData();
+    // rxjs/zip -> After all observables emit, emit values as an array
+    this.sub = zip(
+      this.analyzerService.fileAnalyzers$,
+      this.analyzerService.observableAnalyzers$
+    ).subscribe(
+      ([fa, oa]) => {
+        this.fileAnalyzersArr = fa;
+        this.obsAnalyzers = oa;
+        this.initTreeData();
+      },
+      (err) => console.error(err)
+    );
   }
 
-  initTreeData() {
+  private async initTreeData(): Promise<void> {
     this.treeData = {
       name: 'IntelOwl',
       children: [
@@ -35,25 +44,25 @@ export class AnalyzersTreeComponent implements OnInit, OnDestroy {
           children: [
             {
               name: 'IP',
-              children: this.obsAnalyzers['ip'].map(o => {
+              children: this.obsAnalyzers['ip'].map((o) => {
                 return { name: o.name };
               }),
             },
             {
               name: 'URL',
-              children: this.obsAnalyzers['url'].map(o => {
+              children: this.obsAnalyzers['url'].map((o) => {
                 return { name: o.name };
               }),
             },
             {
               name: 'Domain',
-              children: this.obsAnalyzers['domain'].map(o => {
+              children: this.obsAnalyzers['domain'].map((o) => {
                 return { name: o.name };
               }),
             },
             {
               name: 'Hash',
-              children: this.obsAnalyzers['hash'].map(o => {
+              children: this.obsAnalyzers['hash'].map((o) => {
                 return { name: o.name };
               }),
             },
@@ -61,7 +70,7 @@ export class AnalyzersTreeComponent implements OnInit, OnDestroy {
         },
         {
           name: 'File Analyzers',
-          children: this.fileAnalyzersArr.map(o => {
+          children: this.fileAnalyzersArr.map((o) => {
             return { name: o.name };
           }),
         },
@@ -70,8 +79,6 @@ export class AnalyzersTreeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub1 && this.sub1.unsubscribe();
-    this.sub2 && this.sub2.unsubscribe();
+    this.sub && this.sub.unsubscribe();
   }
-
 }

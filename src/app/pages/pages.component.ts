@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NbMenuItem } from '@nebular/theme';
 
-
 @Component({
   selector: 'ngx-pages',
   styleUrls: ['pages.component.scss'],
@@ -13,7 +12,6 @@ import { NbMenuItem } from '@nebular/theme';
   `,
 })
 export class PagesComponent {
-
   constructor() {}
 
   menu: NbMenuItem[] = [

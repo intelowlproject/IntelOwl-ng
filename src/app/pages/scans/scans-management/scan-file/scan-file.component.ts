@@ -3,13 +3,12 @@ import { FileForm } from '../../../../@core/models/models';
 import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
 
 @Component({
-  selector: 'intelowl-scan-file',
   templateUrl: './scan-file.component.html',
 })
 export class ScanFileComponent {
   formData: FileForm;
 
-  constructor(public analyzersService: AnalyzerConfigService) {
+  constructor(public readonly analyzersService: AnalyzerConfigService) {
     this.formData = {
       is_sample: true,
       file: null,
@@ -29,5 +28,4 @@ export class ScanFileComponent {
     this.formData.file_name = files.item(0).name;
     this.formData.file_mimetype = files.item(0).type;
   }
-
 }

@@ -5,27 +5,29 @@ import { HttpService } from './http.service';
 import { IndexedDbService } from './indexdb.service';
 import { Job } from '../models/models';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class JobService extends HttpService<any> {
-
-  jobs$: Subject<any> = new Subject() as Subject<any>;
-  jobs: Job[];
+  private _jobs$: Subject<Job[]> = new Subject() as Subject<Job[]>;
+  public jobs: Job[];
 
   constructor(
-    private httpClient: HttpClient,
-    protected indexDB: IndexedDbService,
+    private _httpClient: HttpClient,
+    protected indexDB: IndexedDbService
   ) {
     super(
-      httpClient,
+      _httpClient,
       {
         path: '',
       },
-      indexDB,
+      indexDB
     );
     this.init().then();
+  }
+
+  get jobs$() {
+    return this._jobs$.asObservable();
   }
 
   async getJob(id: number): Promise<Job> {
@@ -33,10 +35,10 @@ export class JobService extends HttpService<any> {
     return await this.get(id, {}, 'jobs');
   }
 
-  async init() {
+  private async init() {
     try {
       const result: Job[] = await this.query({}, 'jobs');
-      result.map( (job) => {
+      result.map((job) => {
         if (job.observable_name) {
           job['type'] = 'observable';
         } else {
@@ -44,7 +46,7 @@ export class JobService extends HttpService<any> {
         }
       });
       this.jobs = result;
-      this.jobs$.next(result);
+      this._jobs$.next(result);
     } catch (e) {
       console.error(e);
       if (e.status >= 500) {
@@ -54,10 +56,9 @@ export class JobService extends HttpService<any> {
   }
 
   private async offlineInit() {
-    this.indexDB.getAllInstances('jobs').then(res => {
+    this.indexDB.getAllInstances('jobs').then((res) => {
       this.jobs = res;
-      this.jobs$.next(res);
+      this._jobs$.next(res);
     });
   }
-
 }

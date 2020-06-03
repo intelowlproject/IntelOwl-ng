@@ -4,11 +4,9 @@ import { NgForm } from '@angular/forms';
 import { Md5 } from 'ts-md5';
 
 @Component({
-  selector: 'scans-management',
   templateUrl: './scans-management.component.html',
 })
 export class ScansManagementComponent {
-
   tabs = [
     {
       title: 'Observable Scan',
@@ -23,10 +21,8 @@ export class ScansManagementComponent {
       responsive: true,
     },
   ];
-  constructor(public scanService: ScanService) {}
-
+  constructor(public readonly scanService: ScanService) {}
 }
-
 
 @Component({
   selector: 'intelowl-base-scan',
@@ -34,14 +30,14 @@ export class ScansManagementComponent {
   styles: [
     `
       .json-background {
-      background-color: #14192f !important;
-      box-shadow: inherit;
-      color: #ecedef !important;
-    }`,
+        background-color: #14192f !important;
+        box-shadow: inherit;
+        color: #ecedef !important;
+      }
+    `,
   ],
 })
 export class BaseScanFormComponent {
-
   @Input() scanForm: NgForm;
   @Input() formData: any;
   forceNewScanBool: boolean;
@@ -51,16 +47,16 @@ export class BaseScanFormComponent {
 
   isError816() {
     return (
-      (this.formData.analyzers_requested.length ? 1 : 0)
-      ^
+      (this.formData.analyzers_requested.length ? 1 : 0) ^
       (this.formData.run_all_available_analyzers ? 1 : 0)
     );
   }
 
   isFormValid() {
     return (
-      (this.scanForm.form.status === 'VALID' || this.scanForm.form.status === 'DISABLED')
-      && this.isError816()
+      (this.scanForm.form.status === 'VALID' ||
+        this.scanForm.form.status === 'DISABLED') &&
+      this.isError816()
     );
   }
 
@@ -71,12 +67,19 @@ export class BaseScanFormComponent {
         this.formData.md5 = Md5.hashAsciiStr(event.target.result.toString());
       };
       fr.readAsBinaryString(this.formData.file);
-      fr.onloadend = () => this.scanService.requestScan(this.formData, 'file', this.forceNewScanBool);
+      fr.onloadend = () =>
+        this.scanService.requestScan(
+          this.formData,
+          'file',
+          this.forceNewScanBool
+        );
     } else {
       this.formData.md5 = Md5.hashStr(this.formData.observable_name);
-      this.scanService.requestScan(this.formData, 'observable', this.forceNewScanBool);
+      this.scanService.requestScan(
+        this.formData,
+        'observable',
+        this.forceNewScanBool
+      );
     }
   }
-
 }
-

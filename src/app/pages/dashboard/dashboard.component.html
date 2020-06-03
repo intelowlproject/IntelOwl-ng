@@ -1,41 +1,49 @@
 <div>
-
-  <h5>Intel Owl: Analyze files, domains, IPs in multiple ways from a single API at scale.</h5>
+  <h5>
+    Intel Owl: Analyze files, domains, IPs in multiple ways from a single API at
+    scale.
+  </h5>
 
   <div class="row align-items-start">
-
     <!-- Chart 1 -->
 
     <div class="col-sm-3">
-      <ngx-echarts-pie (onPieSelect)="filterJobsByField($event, 'status')" 
+      <ngx-echarts-pie
+        (onPieSelect)="filterJobsByField($event, 'status')"
         [pieChartName]="'Jobs by Status'"
-        [pieChartData]="pieChartData['status']"></ngx-echarts-pie>
+        [pieChartData]="pieChartData['status']"
+      ></ngx-echarts-pie>
     </div>
 
     <!-- Chart 2 -->
 
     <div class="col-sm-3">
-      <ngx-echarts-pie (onPieSelect)="filterJobsByField($event, 'type')"
-          [pieChartName]="'Jobs by Classification'" 
-          [pieChartData]="pieChartData['type']"></ngx-echarts-pie>
+      <ngx-echarts-pie
+        (onPieSelect)="filterJobsByField($event, 'type')"
+        [pieChartName]="'Jobs by Classification'"
+        [pieChartData]="pieChartData['type']"
+      ></ngx-echarts-pie>
     </div>
 
     <!-- Chart 3 -->
 
     <div class="col-sm-3">
-      <ngx-echarts-pie (onPieSelect)="filterJobsByField($event, 'observable_classification')"
-      [pieChartName]="'Jobs by Observable type'"
-      [pieChartData]="pieChartData['observable_classification']"></ngx-echarts-pie>
+      <ngx-echarts-pie
+        (onPieSelect)="filterJobsByField($event, 'observable_classification')"
+        [pieChartName]="'Jobs by Observable type'"
+        [pieChartData]="pieChartData['observable_classification']"
+      ></ngx-echarts-pie>
     </div>
 
     <!-- Chart 4-->
 
     <div class="col-sm-3">
-      <ngx-echarts-pie  (onPieSelect)="filterJobsByField($event, 'file_mimetype')"
-      [pieChartName]="'Jobs by File mimetype'"
-      [pieChartData]="pieChartData['file_mimetype']"></ngx-echarts-pie>
+      <ngx-echarts-pie
+        (onPieSelect)="filterJobsByField($event, 'file_mimetype')"
+        [pieChartName]="'Jobs by File mimetype'"
+        [pieChartData]="pieChartData['file_mimetype']"
+      ></ngx-echarts-pie>
     </div>
-
   </div>
 
   <nb-alert class="mr-3" status="info">
@@ -51,13 +59,19 @@
   <!-- Table -->
 
   <div class="row">
-
     <div class="col-sm-12">
       <nb-card fullWidth>
         <nb-card-header>
           <span>Jobs</span>
-          <span *ngIf="filterEl!==null" ><strong>{{ filterField }}: {{ filterEl }}</strong></span>
-          <nb-icon class="cursor-pointer" nbTooltip="Load all" (click)="refresh()" icon="sync-outline"></nb-icon>
+          <span *ngIf="filterEl !== null"
+            ><strong>{{ filterField }}: {{ filterEl }}</strong></span
+          >
+          <nb-icon
+            class="cursor-pointer"
+            nbTooltip="Reset Filters"
+            (click)="refresh()"
+            icon="sync-outline"
+          ></nb-icon>
         </nb-card-header>
         <nb-card-body>
           <ng2-smart-table [settings]="settings" [source]="source">
@@ -65,8 +79,5 @@
         </nb-card-body>
       </nb-card>
     </div>
-
   </div>
-
-
 </div>

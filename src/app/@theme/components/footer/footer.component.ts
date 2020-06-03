@@ -6,11 +6,12 @@ import { Component } from '@angular/core';
   template: `
     <span class="created-by">
       <b>
-        <a target="_blank" href="https://github.com/orgs/intelowlproject">IntelOwl</a>
+        <a target="_blank" href="https://github.com/orgs/intelowlproject"
+          >IntelOwl</a
+        >
       </b>
-       Project Organization.
+      Project Organization.
     </span>
   `,
 })
-export class FooterComponent {
-}
+export class FooterComponent {}

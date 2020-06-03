@@ -8,7 +8,6 @@ import { ScansModule } from './scans/scans.module';
 import { NbMenuModule } from '@nebular/theme';
 import { AnalyzersModule } from './analyzers/analyzers.module';
 
-
 @NgModule({
   imports: [
     NbMenuModule,
@@ -18,8 +17,6 @@ import { AnalyzersModule } from './analyzers/analyzers.module';
     AnalyzersModule,
     ScansModule,
   ],
-  declarations: [
-    PagesComponent,
-  ],
+  declarations: [PagesComponent],
 })
 export class PagesModule {}

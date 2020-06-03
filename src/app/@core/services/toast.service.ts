@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {NbToastrService} from '@nebular/theme';
+import { Injectable } from '@angular/core';
+import { NbToastrService } from '@nebular/theme';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +11,7 @@ export class ToastService {
     preventDuplicates: false,
   };
 
-  constructor(private toastrService: NbToastrService) {
-  }
+  constructor(private toastrService: NbToastrService) {}
 
   public showToast(message: string, title: string, status: string) {
     if (status === 'error') {
@@ -24,13 +23,17 @@ export class ToastService {
     } else {
       this.toastrService.primary(message, title, this.config);
     }
-
   }
 
-  public infiniteNotification(title: string, message: string, iconName: string) {
-    this.toastrService.show(
-      message,
-      title,
-      {duration: 0, icon: iconName, iconPack: 'eva'});
+  public infiniteNotification(
+    title: string,
+    message: string,
+    iconName: string
+  ) {
+    this.toastrService.show(message, title, {
+      duration: 0,
+      icon: iconName,
+      iconPack: 'eva',
+    });
   }
 }

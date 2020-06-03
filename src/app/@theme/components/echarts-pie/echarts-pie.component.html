@@ -1,11 +1,20 @@
 <nb-card>
-    <nb-card-header>
-      {{ pieChartName }} 
-      <nb-icon nbTooltip="save as PNG" (click)="downloadPieChart()"
-        icon="download-outline">
-      </nb-icon>
-    </nb-card-header>
-    <nb-card-body>
-      <div (chartMouseDown)="onChartMouseDown($event)" echarts *ngIf="pieChartData!==undefined" [options]="options" class="echart"></div>
-    </nb-card-body>
+  <nb-card-header>
+    {{ pieChartName }}
+    <nb-icon
+      nbTooltip="save as PNG"
+      (click)="downloadPieChart()"
+      icon="download-outline"
+    >
+    </nb-icon>
+  </nb-card-header>
+  <nb-card-body>
+    <div
+      (chartMouseDown)="onChartMouseDown($event)"
+      echarts
+      *ngIf="pieChartData !== undefined"
+      [options]="options"
+      class="echart"
+    ></div>
+  </nb-card-body>
 </nb-card>

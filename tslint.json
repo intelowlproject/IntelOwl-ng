@@ -6,7 +6,12 @@
 		"trailing-comma": [
 			true,
 			{
-				"multiline": "always",
+				"multiline":{
+					"objects": "always",
+					"arrays": "always",
+					"functions": "never",
+					"typeLiterals": "ignore"
+				},
 				"singleline": "never"
 			}
 		],
@@ -70,7 +75,8 @@
 		"prefer-const": true,
 		"quotemark": [
 			true,
-			"single"
+			"single",
+			"avoid-escape"
 		],
 		"radix": true,
 		"semicolon": [
@@ -91,7 +97,6 @@
 				"variable-declaration": "nospace"
 			}
 		],
-		"typeof-compare": true,
 		"unified-signatures": true,
 		"variable-name": false,
 		"whitespace": [
@@ -128,7 +133,6 @@
 		"use-lifecycle-interface": true,
 		"use-pipe-transform-interface": true,
 		"component-class-suffix": true,
-		"directive-class-suffix": true,
-		"no-unused-variable": true
+		"directive-class-suffix": true
 	}
 }

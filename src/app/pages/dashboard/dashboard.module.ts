@@ -1,40 +1,47 @@
 import { NgModule } from '@angular/core';
 import {
-  NbCardModule,
   NbButtonModule,
-  NbIconModule,
   NbTooltipModule,
-  NbBadgeModule,
   NbAlertModule,
+  NbListModule,
+  NbTabsetModule,
 } from '@nebular/theme';
 import { ThemeModule } from '../../@theme/theme.module';
-import { DashboardComponent } from './dashboard.component';
-import { NgxEchartsModule } from 'ngx-echarts';
 import { EchartsPieComponent } from '../../@theme/components/echarts-pie/echarts-pie.component';
-import { Ng2SmartTableModule } from 'ng2-smart-table';
-import { ViewResultButtonComponent, TagsRenderComponent } from '../../@theme/components/smart-table/smart-table';
+import {
+  ViewResultButtonComponent,
+  JobStatusIconRenderComponent,
+  TagsRenderComponent,
+} from '../../@theme/components/smart-table/smart-table';
 import { JobService } from '../../@core/services/job.service';
+import { JobResultComponent } from './job-result/job-result.component';
+import { DashboardComponent } from './dashboard.component';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+
+import * as echarts from 'echarts';
 
 @NgModule({
   imports: [
     ThemeModule,
-    NbCardModule,
     NbButtonModule,
-    NbIconModule,
+    NbListModule,
+    NbTabsetModule,
     NbTooltipModule,
-    NbBadgeModule,
     NbAlertModule,
     Ng2SmartTableModule,
-    NgxEchartsModule,
+    NgxEchartsModule.forRoot({ echarts }),
+    NgxJsonViewerModule,
   ],
   declarations: [
     DashboardComponent,
+    JobResultComponent,
     ViewResultButtonComponent,
+    JobStatusIconRenderComponent,
     TagsRenderComponent,
     EchartsPieComponent,
   ],
-  providers: [
-    JobService,
-  ],
+  providers: [JobService],
 })
-export class DashboardModule { }
+export class DashboardModule {}
