@@ -32,19 +32,44 @@ also lets you specify tags to group different analysis' together.
 
 ## Installation
 
-##### Dependencies
+This application requires Intel Owl running on `http://localhost:80`. If you wish to change this URL, you can do so by changing
+the `api` parameter in [environment.ts](src/environments/environment.ts) for development server 
+and in [environment.prod.ts](src/environments/environment.prod.ts) for production
+build.
 
-- [node.js](https://github.com/nodejs/node):
-`v12.17.0` (Latest LTS) 
-- [yarn](https://github.com/yarnpkg/yarn): `v1.22.4`
-- [Angular CLI](https://github.com/angular/angular-cli): `v9.1.7`
-
-##### Clone the repo
+#### Clone this repository
 
 ```bash 
 $ git clone https://github.com/intelowlproject/intelowl-ng
 $ cd intelowl-ng/
 ``` 
+
+### Docker
+
+> Set the `ANGULAR_PORT` environment variable to the port where you wish to serve the application. Default is `4200`. (recommended)
+>
+> To change this run, `export ANGULAR_PORT=9000` before the following commands.
+
+- Pull and run the official IntelOwl-ng's Docker image from [Dockerhub](https://hub.docker.com/r/intelowlproject/intelowl-ng),
+
+```bash
+intelowl-ng$ docker-compose up -d
+```
+
+- To build the application's docker image locally,
+
+```bash
+intelowl-ng$ docker-compose -f docker-compose-for-tests.yml up --build -d
+```
+
+### Build locally
+
+##### Dependencies
+
+- [node.js](https://github.com/nodejs/node):
+`v12.18.0` (Latest LTS)
+- [yarn](https://github.com/yarnpkg/yarn): `v1.22.4`
+- [Angular CLI](https://github.com/angular/angular-cli): `v9.1.7`
 
 ##### Install packages
 
@@ -52,23 +77,19 @@ Install the packages described in the `package.json` and
 verify that it works: 
 
 ```bash
-$ yarn install
+intelowl-ng$ yarn install
 ``` 
+ 
+or,
 
-> It's recommended to use yarn instead of npm because the project uses [`husky`](https://github.com/typicode/husky) for git hooks 
-> and for some reason unknown to us, we couldn't get husky to work with npm.
+```bash
+intelowl-ng$ npm install
+``` 
 
 ##### Development server
 
 Run `ng serve` or `yarn start` for a dev server. Navigate to `http://localhost:4200/`. The app will
 automatically reload if you change any of the source files. Shut it down manually with <mark>Ctrl-C</mark>.
-
-This application requires Intel Owl running on `http://localhost:80`. If you wish to change this URL, you can do so by changing
-the `api` parameter in [environment.ts](src/environments/environment.ts) for development server 
-and in [environment.prod.ts](src/environments/environment.prod.ts) for production
-build.
-
-> Note: Dockerfile coming soon!
 
 ## Developing
 
@@ -95,6 +116,9 @@ src/                         project source code
 |- polyfills.ts              polyfills needed by Angular
 +- test.ts                   unit tests entry point
 README.md                    project docs and coding guides
+Dockerfile                   multi-staged Dockerfile
+docker-compose-for-tests.yml builds locally and runs the app
+docker-compose.yml           pulls official image from dockerhub and runs the app
 ```
 
 ##### Libraries
@@ -115,7 +139,7 @@ You can also use `ng generate directive/pipe/service/class/module`.
 ##### Build
 
 Run `ng build` or `yarn build` to build the project. The build artifacts will be
-stored in the `dist/` directory. Use the `-prod` flag for a production build.
+stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
 ##### Further help
 
