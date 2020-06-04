@@ -29,6 +29,7 @@
   <nb-actions size="small" *ngIf="userService.user$ | async as user">
     <nb-action *nbIsGranted="['view', 'user']" class="user-action">
       <nb-user
+        class="cursor-pointer"
         [name]="user?.username"
         [nbContextMenu]="userMenu"
         [onlyPicture]="userPictureOnly"

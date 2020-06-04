@@ -8,13 +8,12 @@ nb-icon {
 }
 
 nb-icon:hover {
-  filter: brightness(1.5);
+  color: #222;
 }
 
 #tags-container {
   display: flex;
   flex-direction: column !important;
-  margin: 5px;
 }
 
 .tag {

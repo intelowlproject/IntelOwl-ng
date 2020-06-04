@@ -9,6 +9,19 @@
     }
   }
 
+  nb-card {
+    border: 0 solid transparent;
+    box-shadow: nb-theme(card-box-shadow);
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
   .text-json {
     font-size: smaller;
     color: nb-theme(text-basic-color);
