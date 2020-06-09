@@ -40,12 +40,13 @@ export class ScansManagementComponent {
 export class BaseScanFormComponent {
   @Input() scanForm: NgForm;
   @Input() formData: any;
-  forceNewScanBool: boolean;
-  formDebugBool: boolean;
+  showSpinnerBool: boolean = false;
+  forceNewScanBool: boolean = false;
+  formDebugBool: boolean = false;
 
   constructor(private scanService: ScanService) {}
 
-  isError816() {
+  isNotError816() {
     return (
       (this.formData.analyzers_requested.length ? 1 : 0) ^
       (this.formData.run_all_available_analyzers ? 1 : 0)
@@ -56,11 +57,13 @@ export class BaseScanFormComponent {
     return (
       (this.scanForm.form.status === 'VALID' ||
         this.scanForm.form.status === 'DISABLED') &&
-      this.isError816()
+      this.isNotError816()
     );
   }
 
-  onScanSubmit() {
+  async onScanSubmit() {
+    // spinner on
+    this.showSpinnerBool = true;
     if (this.formData.is_sample) {
       const fr = new FileReader();
       fr.onload = (event) => {
@@ -81,5 +84,7 @@ export class BaseScanFormComponent {
         this.forceNewScanBool
       );
     }
+    // spinner off
+    setTimeout(() => (this.showSpinnerBool = false), 1000);
   }
 }

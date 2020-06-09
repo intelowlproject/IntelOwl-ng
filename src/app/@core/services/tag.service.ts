@@ -55,24 +55,32 @@ export class TagService extends HttpService<any> {
   async updateTag(tag: Tag): Promise<Tag> {
     try {
       const obj: Tag = await this.update(tag.id, tag, {}, 'tags');
-      this.toastr.showToast('Updated tag', `TAG #${obj.id}`, 'success');
+      this.toastr.showToast('Updated tag', `Tag #${obj.id}`, 'success');
       return obj;
     } catch (e) {
-      this.toastr.showToast("Couldn't update tag", `TAG #${tag.id}`, 'error');
+      const err = Object.values(e.error);
+      this.toastr.showToast(
+        `Error: ${err}`,
+        `Failed to update tag #${tag.id}`,
+        'error'
+      );
+      return Promise.reject();
     }
   }
 
   async createTag(tag: Tag): Promise<Tag> {
     try {
       const obj: Tag = await this.create(tag, {}, 'tags');
-      this.toastr.showToast('Created tag', `TAG #${obj.id}`, 'success');
+      this.toastr.showToast('Created tag', `Tag #${obj.id}`, 'success');
       return obj;
     } catch (e) {
+      const err = Object.values(e.error);
       this.toastr.showToast(
-        "Couldn't create tag",
-        `TAG: ${tag.label}`,
+        `Error: ${err}`,
+        `Failed to create tag #${tag.label}`,
         'error'
       );
+      return Promise.reject();
     }
   }
 }

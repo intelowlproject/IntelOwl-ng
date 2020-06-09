@@ -26,6 +26,7 @@ import { UserService } from './@core/services/user.service';
 import { DexieService } from './@core/services/dexie.service';
 import { IndexedDbService } from './@core/services/indexdb.service';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,10 +49,11 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
     UserService,
     DexieService,
     IndexedDbService,
+    CookieService,
     { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
     {
       provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER,
-      useValue: function () {
+      useValue: () => {
         return false;
       },
     },

@@ -1,7 +1,8 @@
 <nb-card>
-  <nb-card-header>
+  <nb-card-header class="d-flex align-items-center justify-content-between">
     {{ pieChartName }}
     <nb-icon
+      class="cursor-pointer"
       nbTooltip="save as PNG"
       (click)="downloadPieChart()"
       icon="download-outline"
@@ -14,7 +15,7 @@
       echarts
       *ngIf="pieChartData !== undefined"
       [options]="options"
-      class="echart"
+      style="min-height: 275px;"
     ></div>
   </nb-card-body>
 </nb-card>

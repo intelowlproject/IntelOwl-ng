@@ -82,13 +82,6 @@
                 jobTableData?.analyzers_requested | json
               }}</pre>
             </nb-list-item>
-            <!-- Executed Analyzer -->
-            <nb-list-item>
-              Executed Analyzers
-              <pre class="text-json">{{
-                jobTableData?.analyzers_to_execute | json
-              }}</pre>
-            </nb-list-item>
             <!-- Received Request Time -->
             <nb-list-item>
               Received Request Time
@@ -106,6 +99,11 @@
                 >{{ jobTableData?.job_process_time | timing }} minutes</strong
               >
             </nb-list-item>
+            <!-- Errors -->
+            <nb-list-item>
+              Errors
+              <pre class="text-json">{{ jobTableData?.errors | json }}</pre>
+            </nb-list-item>
           </nb-list>
         </nb-card-body>
       </nb-card>
@@ -116,7 +114,7 @@
       <nb-card>
         <nb-card-body>
           <ng2-smart-table
-            (rowSelect)="onRowSelect($event)"
+            (userRowSelect)="onRowSelect($event)"
             [settings]="settings"
             [source]="tableDataSource"
           >
@@ -128,7 +126,7 @@
 
   <!-- Selected Row's Result/Error -->
 
-  <nb-card fullWidth>
+  <nb-card id="selected-row-report" fullWidth>
     <nb-card-header>
       Selected: <strong>{{ selectedRowName }}</strong>
     </nb-card-header>

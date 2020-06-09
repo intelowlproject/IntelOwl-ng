@@ -12,7 +12,7 @@ export class IndexedDbService {
   }
 
   async getRecentScans() {
-    return await this.dexieService.table('recent_scans').reverse().toArray();
+    return await this.dexieService.table('recent_scans').toArray();
   }
 
   async addToRecentScans(obj) {

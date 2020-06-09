@@ -23,7 +23,7 @@ export class JobService extends HttpService<any> {
       },
       indexDB
     );
-    this.init().then();
+    this.initOrRefresh().then();
   }
 
   get jobs$() {
@@ -35,14 +35,14 @@ export class JobService extends HttpService<any> {
     return await this.get(id, {}, 'jobs');
   }
 
-  private async init() {
+  async initOrRefresh() {
     try {
       const result: Job[] = await this.query({}, 'jobs');
       result.map((job) => {
-        if (job.observable_name) {
-          job['type'] = 'observable';
-        } else {
+        if (job.is_sample) {
           job['type'] = 'file';
+        } else {
+          job['type'] = 'observable';
         }
       });
       this.jobs = result;

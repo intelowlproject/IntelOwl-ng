@@ -22,7 +22,7 @@
               <!-- /Form specific fields -->
 
               <div
-                *ngIf="!isError816()"
+                *ngIf="!isNotError816()"
                 class="alert alert-danger mt-3 flex-wrap"
               >
                 either you specify a list of requested analyzers or the
@@ -81,6 +81,8 @@
           status="primary"
           class="col-md-3"
           type="submit"
+          [nbSpinner]="showSpinnerBool"
+          nbSpinnerStatus="primary"
           (click)="onScanSubmit()"
           [disabled]="!isFormValid()"
         >

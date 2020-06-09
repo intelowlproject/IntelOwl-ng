@@ -4,35 +4,30 @@
       <nb-icon icon="menu-2-outline"></nb-icon>
     </a>
     <a (click)="navigateHome()" class="logo" href="#">
-      <img
-        *ngIf="currentTheme === 'dark'"
-        src="../../../../assets/intel_owl.png"
-      />
-      <img
-        *ngIf="currentTheme != 'dark'"
-        src="../../../../assets/intel_owl-black.png"
-      />
+      <img *ngIf="isDarkTheme" src="../../../../assets/intel_owl.png" />
+      <img *ngIf="!isDarkTheme" src="../../../../assets/intel_owl-black.png" />
     </a>
   </div>
-  <nb-select
-    [(selected)]="currentTheme"
-    (selectedChange)="changeTheme($event)"
-    status="primary"
-  >
-    <nb-option *ngFor="let theme of themes" [value]="theme.value">
-      {{ theme.name }}</nb-option
-    >
-  </nb-select>
 </div>
 
 <div class="header-container">
   <nb-actions size="small" *ngIf="userService.user$ | async as user">
+    <!-- Theme Switcher -->
+    <nb-action class="d-flex align-items-center">
+      <nb-icon icon="sun-outline" size="tiny"></nb-icon>
+      <nb-toggle
+        class="mx-2"
+        (checkedChange)="changeTheme($event)"
+        [(checked)]="isDarkTheme"
+      ></nb-toggle>
+      <nb-icon icon="moon-outline" size="tiny"></nb-icon>
+    </nb-action>
     <nb-action *nbIsGranted="['view', 'user']" class="user-action">
       <nb-user
         class="cursor-pointer"
         [name]="user?.username"
         [nbContextMenu]="userMenu"
-        [onlyPicture]="userPictureOnly"
+        [onlyPicture]="false"
         nbContextMenuTag="user"
       >
       </nb-user>

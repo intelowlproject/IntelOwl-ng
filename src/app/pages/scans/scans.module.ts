@@ -10,6 +10,7 @@ import {
   NbRadioModule,
   NbToggleModule,
   NbPopoverModule,
+  NbSpinnerModule,
 } from '@nebular/theme';
 import {
   ScansManagementComponent,
@@ -41,6 +42,7 @@ import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagge
     NbButtonModule,
     NbRouteTabsetModule,
     NbPopoverModule,
+    NbSpinnerModule,
   ],
   providers: [ScanService],
 })
