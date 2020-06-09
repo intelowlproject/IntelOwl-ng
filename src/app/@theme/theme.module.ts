@@ -9,10 +9,10 @@ import {
   NbThemeModule,
   NbSpinnerModule,
   NbIconModule,
-  NbSelectModule,
   NbLayoutModule,
   NbTooltipModule,
   NbCardModule,
+  NbToggleModule,
 } from '@nebular/theme';
 
 import { HeaderComponent } from './components/header/header.component';
@@ -46,8 +46,8 @@ const NB_MODULES = [
   NbSpinnerModule,
   NbIconModule,
   NbSecurityModule,
-  NbSelectModule,
   NbTooltipModule,
+  NbToggleModule,
 ];
 
 const COMPONENTS = [

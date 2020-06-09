@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   NbMenuItem,
   NbMenuService,
@@ -11,8 +6,7 @@ import {
   NbThemeService,
 } from '@nebular/theme';
 import { UserService } from '../../../@core/services/user.service';
-import { filter, map, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-header',
@@ -20,21 +14,12 @@ import { Subject } from 'rxjs';
   templateUrl: './header.component.html',
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  private destroy$: Subject<void> = new Subject<void>();
-  userPictureOnly: boolean = false;
-  userMenu: NbMenuItem[] = [{ title: 'Profile' }, { title: 'Log out' }];
-  currentTheme = 'dark';
-  themes = [
-    {
-      value: 'default',
-      name: 'Light',
-    },
-    {
-      value: 'dark',
-      name: 'Dark',
-    },
+export class HeaderComponent implements OnInit {
+  userMenu: NbMenuItem[] = [
+    { title: 'Django Admin Interface' },
+    { title: 'Log out' },
   ];
+  isDarkTheme: boolean = true;
 
   constructor(
     private sidebarService: NbSidebarService,
@@ -52,7 +37,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       )
       .subscribe(async (item) => {
         switch (item.title) {
-          case 'Profile': {
+          case 'Django Admin Interface': {
+            document.location.assign('/admin');
             break;
           }
           case 'Log out': {
@@ -64,17 +50,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
           }
         }
       });
-
-    this.themeService
-      .onThemeChange()
-      .pipe(
-        map(({ name }) => name),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((themeName) => (this.currentTheme = themeName));
   }
 
-  changeTheme(themeName: string) {
+  changeTheme(toggleFlag: boolean): void {
+    let themeName: string;
+    toggleFlag ? (themeName = 'dark') : (themeName = 'default');
     this.themeService.changeTheme(themeName);
   }
 
@@ -86,10 +66,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome(): boolean {
     this.nbMenuService.navigateHome();
     return false;
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
