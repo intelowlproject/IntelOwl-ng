@@ -4,6 +4,7 @@ import { NbAuthService } from '@nebular/auth';
 import { Subject } from 'rxjs';
 import { HttpService } from './http.service';
 import { IndexedDbService } from './indexdb.service';
+import { CookieService } from 'ngx-cookie-service';
 import { User } from '../models/models';
 
 @Injectable({
@@ -15,7 +16,8 @@ export class UserService extends HttpService<any> {
   constructor(
     private _httpClient: HttpClient,
     private nbAuth: NbAuthService,
-    public indexDB: IndexedDbService
+    public indexDB: IndexedDbService,
+    private cookieService: CookieService
   ) {
     super(
       _httpClient,
@@ -69,11 +71,14 @@ export class UserService extends HttpService<any> {
   logOut() {
     this.nbAuth.logout('email').subscribe(
       () => {
+        this.cookieService.deleteAll();
         localStorage.removeItem('auth_app_token');
         this.indexDB.getTableInstance('user').clear();
         location.reload();
       },
       () => {
+        this.cookieService.deleteAll();
+        document.cookie = null;
         localStorage.removeItem('auth_app_token');
         this.indexDB.getTableInstance('user').clear();
         location.reload();

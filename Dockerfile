@@ -5,7 +5,6 @@ COPY . ./
 RUN yarn install
 RUN yarn build:prod
 
-# Stage 2: copy only dist/ and serve it via nginx
-FROM nginx:1.18.0-alpine
-COPY angular-nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build-artifacts /usr/src/app/dist /usr/share/nginx/html
+# Stage 2: copy only dist/ to the scratch base image
+FROM scratch
+COPY --from=build-artifacts /usr/src/app/dist /usr/src/app/dist
