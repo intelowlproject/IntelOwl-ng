@@ -12,9 +12,9 @@ import { NbPopoverDirective } from '@nebular/theme';
 })
 export class NgxTaggerComponent implements OnInit, OnDestroy {
   @ViewChild(NbPopoverDirective) popover: NbPopoverDirective;
-  @Output() tagWasClicked: EventEmitter<any> = new EventEmitter<any>();
+  @Output() private tagWasClicked: EventEmitter<any> = new EventEmitter<any>();
 
-  sub: Subscription;
+  private sub: Subscription;
   tags: Tag[];
   selectedTags: Set<Tag> = new Set();
   mutableTag: Tag = {
@@ -32,20 +32,20 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
 
   // Popover
 
-  open() {
+  open(): void {
     this.popover.show();
   }
 
-  close() {
+  close(): void {
     const tagstoOutput: number[] = new Array();
     this.selectedTags.forEach((tag) => tagstoOutput.push(tag.id));
     this.tagWasClicked.emit(tagstoOutput);
     this.popover.hide();
   }
 
-  // Tag CRUD on client
+  // Tag selection
 
-  onTagClick(event: Tag) {
+  onTagClick(event: Tag): void {
     if (this.selectedTags.has(event)) {
       this.selectedTags.delete(event);
     } else {
@@ -53,32 +53,37 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
     }
   }
 
-  editTag(event: Tag) {
+  // Tag update/create on client side
+
+  editTag(event: Tag): void {
     this.mutableTag = event;
     this.editMode = true;
   }
 
-  newTag() {
+  newTag(): void {
     this.mutableTag = {
       label: 'label',
       color: '#ffffff',
-    };
+    } as Tag;
     this.editMode = true;
   }
 
   // Tag update/create on server
 
-  async updateTag() {
+  async updateTag(): Promise<void> {
     if (this.mutableTag.id) {
-      await this.tagService.updateTag(this.mutableTag);
+      this.tagService
+        .updateTag(this.mutableTag)
+        .then((obj: Tag) => (this.mutableTag = obj));
     } else {
-      const obj: Tag = await this.tagService.createTag(this.mutableTag);
-      this.tags.unshift(obj);
+      this.tagService
+        .createTag(this.mutableTag)
+        .then((obj: Tag) => this.tags.unshift(obj));
     }
     this.editMode = false;
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.sub && this.sub.unsubscribe();
   }
 }

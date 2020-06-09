@@ -6,6 +6,7 @@ import { ObservableForm, FileForm, IRecentScan } from '../models/models';
 import { ToastService } from './toast.service';
 import { ReplaySubject } from 'rxjs';
 import { scan } from 'rxjs/operators';
+import { JobService } from './job.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,8 @@ export class ScanService extends HttpService<any> {
   constructor(
     private toastr: ToastService,
     private _httpClient: HttpClient,
-    protected indexDB: IndexedDbService
+    protected indexDB: IndexedDbService,
+    private jobService: JobService
   ) {
     super(
       _httpClient,
@@ -158,11 +160,15 @@ export class ScanService extends HttpService<any> {
   }
 
   private onSuccess(res) {
+    // refresh the job list
+    setTimeout(() => this.jobService.initOrRefresh(), 0);
+    // show success toast
     this.toastr.showToast(
       `Job ID: ${res.job_id}`,
       'Analysis running!',
       'success'
     );
+    // add to recent scans
     this._recentScans$.next({
       jobId: res.job_id,
       status: 'success',

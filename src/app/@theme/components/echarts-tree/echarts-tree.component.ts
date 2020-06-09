@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  Input,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { Subscription } from 'rxjs';
 
@@ -18,7 +12,6 @@ import { Subscription } from 'rxjs';
       style="height: 700px;"
     ></div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EchartsTreeComponent implements OnInit, OnDestroy {
   private themeSubscription: Subscription;
@@ -66,7 +59,7 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
               width: 0.4,
             },
             itemStyle: {
-              color: colors['bg'],
+              color: '#111',
               borderColor: colors['tooltipBackgroundColor'],
             },
             label: {

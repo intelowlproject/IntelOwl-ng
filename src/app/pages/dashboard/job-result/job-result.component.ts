@@ -26,8 +26,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
       delete: false,
     },
     pager: {
-      display: false,
-      perPage: 10,
+      display: true,
+      perPage: 7,
     },
     columns: {
       name: {
@@ -84,25 +84,30 @@ export class JobResultComponent implements OnInit, OnDestroy {
       this.selectedRowData = res.analysis_reports[0];
       // manipulating date time to show as locale string
       const date1 = new Date(res.received_request_time);
-      const date2 = new Date(res.finished_analysis_time);
       res.received_request_time = date1.toLocaleString();
-      res.finished_analysis_time = date2.toLocaleString();
+      if (res.status !== 'running') {
+        const date2 = new Date(res.finished_analysis_time);
+        res.finished_analysis_time = date2.toLocaleString();
+        // calculate job process time
+        res.job_process_time = Math.abs(
+          date2.getUTCSeconds() - date1.getUTCSeconds()
+        );
+      }
       // finally assign it to our class' member variable
       this.jobTableData = res;
-      // calculate job process time
-      this.jobTableData['job_process_time'] = Math.abs(
-        date2.getUTCSeconds() - date1.getUTCSeconds()
-      );
     });
   }
 
   // event emitted when user clicks on a row in table
-  onRowSelect(event): void {
+  onRowSelect(event) {
     this.selectedRowName = event.data.name;
     // if `report` exists shows report, otherwise the `errors`
     this.selectedRowData = Object.entries(event.data.report).length
       ? event.data.report
       : event.data.errors;
+    document
+      .getElementById('selected-row-report')
+      .scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // super-hacky way used in template to render the JSON report recursively

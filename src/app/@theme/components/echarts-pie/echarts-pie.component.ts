@@ -14,7 +14,6 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'ngx-echarts-pie',
   templateUrl: './echarts-pie.component.html',
-  styleUrls: ['./echarts-pie.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EchartsPieComponent implements OnChanges, OnDestroy {
@@ -69,8 +68,8 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
           {
             name: this.pieChartName,
             type: 'pie',
-            radius: '50%',
-            height: 300,
+            radius: '35%',
+            height: 375,
             center: ['50%', '50%'],
             data: this.pieChartData,
             itemStyle: {

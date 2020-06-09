@@ -2,6 +2,7 @@
   <intelowl-base-scan [scanForm]="observableScanForm" [formData]="formData">
     <nb-radio-group
       [(ngModel)]="formData.observable_classification"
+      (ngModelChange)="onObsClassificationChange()"
       class="d-flex justify-content-start"
       name="classifier"
     >
@@ -16,7 +17,6 @@
         >Enter {{ formData.observable_classification | ngxCapitalize }} To
         Scan</label
       >
-      <!-- Should use switch case maybe? -->
       <input
         nbInput
         fullWidth
@@ -24,7 +24,8 @@
         #value="ngModel"
         minlength="4"
         name="value"
-        placeholder="127.0.0.1"
+        [attr.placeholder]="obsPlaceholder"
+        [pattern]="obsPattern"
         required="true"
         type="text"
       />
@@ -32,13 +33,16 @@
         *ngIf="value.invalid && (value.dirty || value.touched)"
         class="alert alert-danger mt-3"
       >
-        <div *ngIf="value.errors.required">
+        <span *ngIf="value.errors.required">
           {{ formData.observable_classification }} is required.
-        </div>
-        <div *ngIf="value.errors.minlength">
+        </span>
+        <span *ngIf="value.errors.minlength">
           {{ formData.observable_classification }} must be at least 4 characters
           long.
-        </div>
+        </span>
+        <span *ngIf="value.errors.pattern">
+          invalid {{ formData.observable_classification }}
+        </span>
       </div>
     </div>
 
