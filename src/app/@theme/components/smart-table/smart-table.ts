@@ -1,4 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
 import { Router } from '@angular/router';
 
@@ -10,18 +16,28 @@ import { Router } from '@angular/router';
       [nbTooltip]="value"
       [icon]="iconName"
       [status]="iconStatus"
-      pack="eva"
     ></nb-icon>
   `,
 })
-export class JobStatusIconRenderComponent implements ViewCell, OnInit {
+export class JobStatusIconRenderComponent
+  implements ViewCell, OnInit, OnChanges {
   iconName: string;
   iconStatus: string;
 
   @Input() value: string;
   @Input() rowData: any;
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.getIconNameStatus();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.value.previousValue !== changes.value.currentValue) {
+      this.getIconNameStatus();
+    }
+  }
+
+  private getIconNameStatus(): void {
     const value = this.value.toString();
     if (
       value === 'true' ||
@@ -46,12 +62,7 @@ export class JobStatusIconRenderComponent implements ViewCell, OnInit {
 // Tick/Cross Render Component
 @Component({
   template: `
-    <nb-icon
-      *ngIf="iconName"
-      [icon]="iconName"
-      [status]="iconStatus"
-      pack="eva"
-    ></nb-icon>
+    <nb-icon *ngIf="iconName" [icon]="iconName" [status]="iconStatus"></nb-icon>
     <span *ngIf="!iconName">{{ value }}</span>
   `,
 })

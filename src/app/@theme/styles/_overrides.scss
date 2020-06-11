@@ -30,4 +30,43 @@
   .cursor-pointer {
     cursor: pointer !important;
   }
+
+  // alerts
+
+  nb-alert {
+    width: fit-content;
+    display: inline-block !important;
+    font-size: smaller;
+    padding: 0.6rem;
+  }
+
+  nb-alert span {
+    margin: 0 3px;
+  }
+
+  // inserting intelowl's logo into the login page.
+
+  nb-auth-block {
+    background: url("/assets/intel_owl-logo.png") no-repeat scroll !important;
+    background-size: 120px !important;
+  }
+
+  // removing back arrow, register & forgot password links from Login Page
+
+  nav.navigation a.back-link[aria-label="Back"] {
+    display: none !important;
+  }
+
+  * a.forgot-password {
+    display: none !important;
+  }
+
+  section.another-action[aria-label="Register"] a.text-link {
+    display: none !important;
+  }
+
+  section.another-action[aria-label="Register"]::after {
+    color: #8f9bb3 !important;
+    content: "Contact the admin for access." !important;
+  }
 }

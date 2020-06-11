@@ -6,6 +6,7 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   OnChanges,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { EChartOption } from 'echarts';
@@ -24,7 +25,10 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
   @Input() pieChartName: any;
   @Output() onPieSelect: EventEmitter<any> = new EventEmitter();
 
-  constructor(private theme: NbThemeService) {}
+  constructor(
+    private readonly theme: NbThemeService,
+    private readonly cdRef: ChangeDetectorRef
+  ) {}
 
   downloadPieChart(): void {
     alert('Right click on the chart -> "Save image as"');
@@ -39,6 +43,7 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
       return;
     }
     this.themeSubscription = this.theme.getJsTheme().subscribe((config) => {
+      this.cdRef.markForCheck(); // so theme gets updated
       const colors = config.variables;
       const echarts: any = config.variables.echarts;
 

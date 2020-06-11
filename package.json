@@ -15,13 +15,12 @@
     "build": "ng build",
     "build:prod": "ng build --prod",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "ng lint intelowl-ng",
     "lint:fix": "ng lint intelowl-ng --fix",
     "e2e": "ng e2e",
     "prettier:write": "prettier --write .",
     "prettier:check": "prettier --check .",
-    "pretty-quick": "pretty-quick --staged",
-    "postinstall": "ngcc"
+    "pretty-quick": "pretty-quick --staged"
   },
   "prettier": {
     "singleQuote": true,
@@ -69,7 +68,6 @@
     "node-sass": "^4.14.1",
     "normalize.css": "6.0.0",
     "pace-js": "1.0.2",
-    "roboto-fontface": "0.10.0",
     "rxjs": "6.5.5",
     "ts-md5": "^1.2.7",
     "tslib": "^1.10.0",

@@ -1,7 +1,8 @@
 // @nebular theming framework
 @import "~@nebular/theme/styles/theming";
 // @nebular out of the box themes
-@import "~@nebular/theme/styles/themes";
+@import "~@nebular/theme/styles/themes/dark";
+@import "~@nebular/theme/styles/themes/default";
 
 $nb-themes: nb-register-theme(
   (

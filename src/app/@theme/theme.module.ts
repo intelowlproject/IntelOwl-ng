@@ -18,13 +18,7 @@ import {
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 
-import {
-  CapitalizePipe,
-  PluralPipe,
-  RoundPipe,
-  TimingPipe,
-  NumberWithCommasPipe,
-} from './pipes';
+import { CapitalizePipe, TimingPipe, NumberWithCommasPipe } from './pipes';
 import {
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
@@ -58,13 +52,7 @@ const COMPONENTS = [
   TwoColumnsLayoutComponent,
 ];
 
-const PIPES = [
-  CapitalizePipe,
-  PluralPipe,
-  RoundPipe,
-  TimingPipe,
-  NumberWithCommasPipe,
-];
+const PIPES = [CapitalizePipe, TimingPipe, NumberWithCommasPipe];
 
 // modules that will be reused across all child modules.
 const MODULES_TO_EXPORT = [CommonModule, NbIconModule, NbCardModule];
