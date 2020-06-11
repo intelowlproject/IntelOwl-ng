@@ -74,7 +74,7 @@ export class DashboardComponent implements OnDestroy {
         valuePrepareFunction: (c, r) => {
           const n1 = r.analyzers_to_execute.length;
           const n2 = r.analyzers_requested.length;
-          return `${n1}/${n2}`;
+          return n2 ? `${n1}/${n2}` : 'all';
         },
       },
       process_time: {
@@ -175,6 +175,7 @@ export class DashboardComponent implements OnDestroy {
     this.filterEl = null;
     this.jobs = this.jobService.jobs;
     this.source.load(this.jobs);
+    this.source.reset();
   }
 
   ngOnDestroy(): void {

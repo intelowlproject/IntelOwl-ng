@@ -29,6 +29,9 @@ export const NB_CORE_PROVIDERS = [
       NbPasswordAuthStrategy.setup({
         name: 'email',
         baseEndpoint: environment.api,
+        requestPass: false,
+        resetPass: false,
+        register: false,
         login: {
           endpoint: 'auth/login',
           method: 'post',
@@ -43,8 +46,12 @@ export const NB_CORE_PROVIDERS = [
         },
       }),
     ],
-
-    forms: {},
+    forms: {
+      login: {
+        redirectDelay: 0,
+        rememberMe: false,
+      },
+    },
   }).providers,
   NbSecurityModule.forRoot({
     accessControl: {

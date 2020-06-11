@@ -16,7 +16,6 @@ export interface ObservableForm extends IntelOwlScanForm {
 
 export interface FileForm extends IntelOwlScanForm {
   file?: File;
-  file_mimetype?: string;
   file_name?: string;
 }
 

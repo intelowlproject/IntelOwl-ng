@@ -69,6 +69,9 @@ export class ScanService extends HttpService<any> {
       md5: data.md5,
       analyzers_needed: data.analyzers_requested,
     };
+    if (data.run_all_available_analyzers) {
+      query['run_all_available_analyzers'] = 'True';
+    }
     if (data.running_only) {
       query['running_only'] = 'True';
     }
@@ -130,7 +133,6 @@ export class ScanService extends HttpService<any> {
       is_sample: 'True',
       md5: data.md5,
       file_name: data.file_name,
-      file_mimetype: data.file_mimetype,
       analyzers_requested: data.analyzers_requested,
       run_all_available_analyzers: data.run_all_available_analyzers
         ? 'True'
@@ -160,7 +162,7 @@ export class ScanService extends HttpService<any> {
   }
 
   private onSuccess(res) {
-    // refresh the job list
+    // refresh the job list asynchronously
     setTimeout(() => this.jobService.initOrRefresh(), 0);
     // show success toast
     this.toastr.showToast(
@@ -182,7 +184,7 @@ export class ScanService extends HttpService<any> {
   private onError(e) {
     console.error(e);
     this.toastr.showToast(
-      `backend returned: ${e['error']['error']}, (${e['status']}: ${e['statusText']})`,
+      `backend returned: ${e['error']['error']} (${e['status']}: ${e['statusText']})`,
       'Scan Request Failed!',
       'error'
     );

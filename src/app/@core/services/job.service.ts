@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { HttpService } from './http.service';
 import { IndexedDbService } from './indexdb.service';
 import { Job } from '../models/models';
@@ -11,6 +11,9 @@ import { Job } from '../models/models';
 export class JobService extends HttpService<any> {
   private _jobs$: Subject<Job[]> = new Subject() as Subject<Job[]>;
   public jobs: Job[];
+  private _jobResult$: BehaviorSubject<Job> = new BehaviorSubject(
+    null
+  ) as BehaviorSubject<Job>;
 
   constructor(
     private _httpClient: HttpClient,
@@ -30,9 +33,14 @@ export class JobService extends HttpService<any> {
     return this._jobs$.asObservable();
   }
 
-  async getJob(id: number): Promise<Job> {
-    // return await this.indexDB.getOne('jobs', id);
-    return await this.get(id, {}, 'jobs');
+  get jobResult$() {
+    return this._jobResult$.asObservable();
+  }
+
+  async pollForJob(id: number): Promise<void> {
+    console.info(`Polling job result for id: ${id}.`);
+    const res: Job = await this.get(id, {}, 'jobs');
+    this._jobResult$.next(res);
   }
 
   async initOrRefresh() {

@@ -60,16 +60,8 @@
             </nb-list-item>
             <!-- Observable or File ? -->
             <nb-list-item *ngIf="!jobTableData['is_sample']">
-              Observable
-              <strong>{{ jobTableData?.observable_name }}</strong>
-            </nb-list-item>
-            <nb-list-item *ngIf="!jobTableData['is_sample']">
               Classification
               <strong>{{ jobTableData?.observable_classification }}</strong>
-            </nb-list-item>
-            <nb-list-item *ngIf="jobTableData['is_sample']">
-              File Name
-              <strong>{{ jobTableData?.file_name }}</strong>
             </nb-list-item>
             <nb-list-item *ngIf="jobTableData['is_sample']">
               File Mimetype
@@ -111,6 +103,13 @@
 
     <!-- Job Analysis Result Table -->
     <div class="col-md-7">
+      <nb-alert *ngIf="jobTableData?.status === 'running'" status="info">
+        <span><nb-icon icon="info-outline"></nb-icon></span>
+        <span
+          >This analysis is still running. The result is synced with the server
+          every 5 seconds.</span
+        >
+      </nb-alert>
       <nb-card>
         <nb-card-body>
           <ng2-smart-table
