@@ -4,9 +4,12 @@ import {
   OnInit,
   OnChanges,
   SimpleChanges,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
 import { Router } from '@angular/router';
+import { Tag } from 'src/app/@core/models/models';
 
 // Job Status Icon Renderer
 @Component({
@@ -118,17 +121,19 @@ export class ViewResultButtonComponent implements ViewCell {
   selector: 'intelowl-job-tags',
   template: `
     <strong
-      style="color: white; background-color: {{ tag.color }};"
-      class="p-1 mx-1 badge"
+      style="color: white; background-color: {{ tag?.color }};"
+      class="p-1 mx-1 badge cursor-pointer"
+      (click)="onTagClick.emit(tag)"
       *ngFor="let tag of value"
     >
-      {{ tag.label }}
+      {{ tag?.label }}
     </strong>
   `,
 })
 export class TagsRenderComponent implements ViewCell {
   @Input() value: any; // this will be an array of tag objects
-  @Input() rowData: any;
+  @Input() rowData: any = null;
+  @Output() onTagClick: EventEmitter<Tag> = new EventEmitter();
 }
 
 // JSON Object Renderer

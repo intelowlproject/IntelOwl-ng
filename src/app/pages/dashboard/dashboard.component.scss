@@ -12,3 +12,21 @@ nb-card-header {
 .cursor-pointer {
   cursor: pointer;
 }
+
+#sync-btn {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.rotate {
+  animation: rotate 1s ease-in-out 0s;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

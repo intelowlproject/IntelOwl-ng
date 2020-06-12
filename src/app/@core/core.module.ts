@@ -10,18 +10,9 @@ import {
   NbPasswordAuthStrategy,
   NbAuthSimpleToken,
 } from '@nebular/auth';
-import { of as observableOf } from 'rxjs';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { environment } from '../../environments/environment';
-import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
-
-export class NbSimpleRoleProvider extends NbRoleProvider {
-  getRole() {
-    // here you could provide any role based on any auth flow
-    return observableOf('user');
-  }
-}
 
 export const NB_CORE_PROVIDERS = [
   ...NbAuthModule.forRoot({
@@ -29,6 +20,7 @@ export const NB_CORE_PROVIDERS = [
       NbPasswordAuthStrategy.setup({
         name: 'email',
         baseEndpoint: environment.api,
+        refreshToken: false,
         requestPass: false,
         resetPass: false,
         register: false,
@@ -53,24 +45,6 @@ export const NB_CORE_PROVIDERS = [
       },
     },
   }).providers,
-  NbSecurityModule.forRoot({
-    accessControl: {
-      guest: {
-        view: '*',
-      },
-      user: {
-        parent: 'guest',
-        create: '*',
-        edit: '*',
-        remove: '*',
-      },
-    },
-  }).providers,
-
-  {
-    provide: NbRoleProvider,
-    useClass: NbSimpleRoleProvider,
-  },
 ];
 
 @NgModule({

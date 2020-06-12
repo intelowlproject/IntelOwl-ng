@@ -20,7 +20,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   private pollInterval: any;
 
   // ng2-smart-table settings
-  public settings = {
+  public tableSettings = {
     attr: {
       class: 'cursor-pointer',
     },
@@ -83,28 +83,42 @@ export class JobResultComponent implements OnInit, OnDestroy {
     // subscribe to jobResult
     this.jobService.pollForJob(this.jobId).then(() => {
       this.sub2 = this.jobService.jobResult$.subscribe((res: Job) =>
-        this.initData(res)
+        this.updateJobData(res)
       );
-      // set the first row as the default selected row
-      this.selectedRowData = this.jobTableData.analysis_reports[0];
-      this.selectedRowName = this.jobTableData.analysis_reports[0].name;
+      // only called once
+      this.initData();
     });
-    // poll for changes to job result, this will be cancelled asap if Job.status!=running
+    // poll for changes to job result, this is cancelled asap if Job.status!=running
     this.pollInterval = setInterval(
       () => this.jobService.pollForJob(this.jobId),
       5000
     );
   }
 
-  private initData(res: Job) {
+  private initData(): void {
+    // in case `run_all_available_analyzers` was true,..
+    // ...then `Job.analyzers_requested is []`..
+    // ...so we show `all available analyzers` so user does not gets confused.
+    this.jobTableData.analyzers_requested = this.jobTableData
+      .analyzers_requested.length
+      ? this.jobTableData.analyzers_requested
+      : 'all available analyzers';
+    // set the first row as the default selected row
+    this.selectedRowData = this.jobTableData.analysis_reports[0];
+    this.selectedRowName = this.jobTableData.analysis_reports[0].name;
+    this.jobTableData.received_request_time = new Date(
+      this.jobTableData.received_request_time
+    ).toLocaleString();
+  }
+
+  private async updateJobData(res: Job): Promise<void> {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
-    const date1 = new Date(res.received_request_time);
-    res.received_request_time = date1.toLocaleString();
     if (res.status !== 'running') {
       // stop polling
       clearInterval(this.pollInterval);
       // converting date time to locale string
+      const date1 = new Date(res.received_request_time);
       const date2 = new Date(res.finished_analysis_time);
       res.finished_analysis_time = date2.toLocaleString();
       // calculate job process time
@@ -114,6 +128,16 @@ export class JobResultComponent implements OnInit, OnDestroy {
     }
     // finally assign it to our class' member variable
     this.jobTableData = res;
+  }
+
+  async getJobSample(): Promise<void> {
+    const url: string = await this.jobService.downloadJobSample(this.jobId);
+    window.open(url);
+  }
+
+  async getJobRawJson(): Promise<void> {
+    const url: string = await this.jobService.downloadJobRawJson(this.jobId);
+    window.open(url);
   }
 
   // event emitted when user clicks on a row in table

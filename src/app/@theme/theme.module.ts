@@ -28,7 +28,6 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { DARK_THEME } from './styles/theme.dark';
 
 import { FormsModule } from '@angular/forms';
-import { NbSecurityModule } from '@nebular/security';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -39,7 +38,6 @@ const NB_MODULES = [
   NbContextMenuModule,
   NbSpinnerModule,
   NbIconModule,
-  NbSecurityModule,
   NbTooltipModule,
   NbToggleModule,
 ];

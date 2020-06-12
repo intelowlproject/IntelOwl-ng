@@ -13,6 +13,8 @@ export class AuthGuard implements CanActivate {
     return this.authService.isAuthenticated().pipe(
       tap((authenticated) => {
         if (!authenticated) {
+          // remove token if exists and redirect user to login page
+          localStorage.removeItem('auth_app_token');
           this.router.navigate(['auth/login']);
         }
       })

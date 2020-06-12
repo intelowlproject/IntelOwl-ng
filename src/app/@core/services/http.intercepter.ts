@@ -26,12 +26,11 @@ export class Interceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     // do not intercept request whose urls are filtered by the injected filter
     if (!this.filter(req)) {
-      return this.authService.isAuthenticatedOrRefresh().pipe(
+      return this.authService.isAuthenticated().pipe(
         switchMap((authenticated) => {
           if (authenticated) {
             return this.authService.getToken().pipe(
               switchMap((token: NbAuthSimpleToken) => {
-                // const JWT = `${JSON.parse(token.getValue())[0]}`;
                 req = req.clone({
                   setHeaders: {
                     Authorization: `Token ${token.getValue()}`,

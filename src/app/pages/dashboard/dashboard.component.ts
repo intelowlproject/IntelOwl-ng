@@ -6,18 +6,21 @@ import {
 } from '../../@theme/components/smart-table/smart-table';
 import { LocalDataSource } from 'ng2-smart-table';
 import { JobService } from '../../@core/services/job.service';
-import { Job } from '../../@core/models/models';
+import { Job, Tag } from '../../@core/models/models';
 import { Subscription } from 'rxjs';
+import { ToastService } from 'src/app/@core/services/toast.service';
 
 @Component({
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnDestroy {
-  private sub: Subscription;
+  private jobSub: Subscription;
+  private tagSub: Subscription;
   private jobs: Job[];
   filterEl: string = null;
   filterField: string = null;
+  iconRotateBool: boolean = false;
 
   // Pie Chart Data
   pieChartData: any = {};
@@ -59,6 +62,8 @@ export class DashboardComponent implements OnDestroy {
         filter: false,
         sort: false,
         renderComponent: TagsRenderComponent,
+        onComponentInitFunction: (instance: any) =>
+          this.filterJobsByTag(instance),
       },
       observable_classification: {
         title: 'Type',
@@ -97,19 +102,23 @@ export class DashboardComponent implements OnDestroy {
     },
   };
 
-  constructor(private readonly jobService: JobService) {
-    this.jobs = this.jobService.jobs;
-    this.sub = this.jobService.jobs$.subscribe(
-      (res) => {
-        this.jobs = res;
-        this.initData();
-      },
-      (err) => console.error(err)
+  constructor(
+    private readonly jobService: JobService,
+    private readonly toastr: ToastService
+  ) {
+    this.jobSub = this.jobService.jobs$.subscribe(
+      async (res: Job[]) => this.initData(res),
+      async (err: any) =>
+        this.toastr.showToast(
+          err.message,
+          'Failed to fetch Data. Are you online ?',
+          'error'
+        )
     );
-    this.initData();
   }
 
-  private async initData(): Promise<void> {
+  private async initData(res: Job[]): Promise<void> {
+    this.jobs = res;
     if (this.jobs) {
       this.source.load(this.jobs);
       this.pieChartData['status'] = await this.constructPieData(
@@ -171,14 +180,43 @@ export class DashboardComponent implements OnDestroy {
     this.source.load(filteredJobs);
   }
 
-  refresh(): void {
+  private filterJobsByTag(tagComponentInst: any) {
+    this.tagSub = tagComponentInst.onTagClick.subscribe((t: Tag) => {
+      const filteredJobs = this.jobs.filter((job) =>
+        job.tags.some((o) => o.label === t.label)
+      );
+      this.filterField = 'Tag';
+      this.filterEl = t.label;
+      this.source.load(filteredJobs);
+    });
+  }
+
+  async debouncedSync() {
+    // this function is debounced by 2 seconds
+    this.iconRotateBool = false;
+    // reset filters
+    this.filterField = null;
     this.filterEl = null;
-    this.jobs = this.jobService.jobs;
+    this.jobService.initOrRefresh().then(
+      () =>
+        this.toastr.showToast(
+          'Dashboard is updated with latest data',
+          'Sync successful!',
+          'success'
+        ),
+      (err) => this.toastr.showToast(err.message, 'Sync failed!', 'error')
+    );
+  }
+
+  resetFilters(): void {
+    this.filterField = null;
+    this.filterEl = null;
     this.source.load(this.jobs);
     this.source.reset();
   }
 
   ngOnDestroy(): void {
-    this.sub && this.sub.unsubscribe();
+    this.jobSub && this.jobSub.unsubscribe();
+    this.tagSub && this.tagSub.unsubscribe();
   }
 }

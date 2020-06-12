@@ -79,6 +79,7 @@ export abstract class HttpService<T> {
     return <IOption>{
       responseType: responseType ? responseType : 'json',
       params: query,
+      withCredentials: false,
     };
   }
 

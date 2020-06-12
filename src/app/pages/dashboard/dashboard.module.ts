@@ -19,6 +19,7 @@ import { DashboardComponent } from './dashboard.component';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { DebounceClickDirective } from 'src/app/@theme/directives/app-debounce-click.directive';
 
 import * as echarts from 'echarts';
 
@@ -41,6 +42,7 @@ import * as echarts from 'echarts';
     JobStatusIconRenderComponent,
     TagsRenderComponent,
     EchartsPieComponent,
+    DebounceClickDirective,
   ],
   providers: [JobService],
 })
