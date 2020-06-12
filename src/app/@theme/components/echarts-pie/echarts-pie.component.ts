@@ -35,11 +35,7 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(): void {
-    if (
-      this.pieChartData === null ||
-      this.pieChartData === undefined ||
-      this.options
-    ) {
+    if (this.pieChartData === null || this.pieChartData === undefined) {
       return;
     }
     this.themeSubscription = this.theme.getJsTheme().subscribe((config) => {

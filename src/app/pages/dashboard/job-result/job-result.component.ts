@@ -20,7 +20,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   private pollInterval: any;
 
   // ng2-smart-table settings
-  public settings = {
+  public tableSettings = {
     attr: {
       class: 'cursor-pointer',
     },
@@ -89,16 +89,28 @@ export class JobResultComponent implements OnInit, OnDestroy {
       this.selectedRowData = this.jobTableData.analysis_reports[0];
       this.selectedRowName = this.jobTableData.analysis_reports[0].name;
     });
-    // poll for changes to job result, this will be cancelled asap if Job.status!=running
+    // poll for changes to job result, this is cancelled asap if Job.status!=running
     this.pollInterval = setInterval(
       () => this.jobService.pollForJob(this.jobId),
       5000
     );
   }
 
-  private initData(res: Job) {
+  private async initData(res: Job): Promise<void> {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
+    const modifiedRes = this.modifyDataForView(res);
+    // finally assign it to our class' member variable
+    this.jobTableData = modifiedRes;
+  }
+
+  private modifyDataForView(res: Job): Job {
+    // in case `run_all_available_analyzers` was true,..
+    // ...then `Job.analyzers_requested is []`..
+    // ...so we show `all available analyzers` so user does not gets confused.
+    res.analyzers_requested = res.analyzers_requested.length
+      ? res.analyzers_requested
+      : 'all available analyzers';
     const date1 = new Date(res.received_request_time);
     res.received_request_time = date1.toLocaleString();
     if (res.status !== 'running') {
@@ -112,8 +124,17 @@ export class JobResultComponent implements OnInit, OnDestroy {
         date2.getUTCSeconds() - date1.getUTCSeconds()
       );
     }
-    // finally assign it to our class' member variable
-    this.jobTableData = res;
+    return res;
+  }
+
+  async getJobSample(): Promise<void> {
+    const url: string = await this.jobService.downloadJobSample(this.jobId);
+    window.open(url);
+  }
+
+  async getJobRawJson(): Promise<void> {
+    const url: string = await this.jobService.downloadJobRawJson(this.jobId);
+    window.open(url);
   }
 
   // event emitted when user clicks on a row in table

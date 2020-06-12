@@ -49,6 +49,9 @@ export class AnalyzersTableComponent implements OnInit {
           },
         },
       },
+      description: {
+        title: 'Description',
+      },
       supports: {
         title: 'Supports',
         type: 'custom',

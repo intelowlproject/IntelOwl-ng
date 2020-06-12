@@ -44,7 +44,7 @@ export interface Job {
   file_name?: string;
   file_mimetype?: string;
   status: string;
-  analyzers_requested: string[];
+  analyzers_requested: string[] | string;
   analyzers_to_execute: string[];
   analysis_reports?: any;
   received_request_time: string | Date;

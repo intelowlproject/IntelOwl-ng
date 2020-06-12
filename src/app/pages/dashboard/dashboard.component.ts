@@ -8,6 +8,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { JobService } from '../../@core/services/job.service';
 import { Job } from '../../@core/models/models';
 import { Subscription } from 'rxjs';
+import { ToastService } from 'src/app/@core/services/toast.service';
 
 @Component({
   templateUrl: './dashboard.component.html',
@@ -18,6 +19,7 @@ export class DashboardComponent implements OnDestroy {
   private jobs: Job[];
   filterEl: string = null;
   filterField: string = null;
+  iconRotateBool: boolean = false;
 
   // Pie Chart Data
   pieChartData: any = {};
@@ -97,19 +99,23 @@ export class DashboardComponent implements OnDestroy {
     },
   };
 
-  constructor(private readonly jobService: JobService) {
-    this.jobs = this.jobService.jobs;
+  constructor(
+    private readonly jobService: JobService,
+    private readonly toastr: ToastService
+  ) {
     this.sub = this.jobService.jobs$.subscribe(
-      (res) => {
-        this.jobs = res;
-        this.initData();
-      },
-      (err) => console.error(err)
+      async (res: Job[]) => this.initData(res),
+      async (err: any) =>
+        this.toastr.showToast(
+          err.message,
+          'Failed to fetch Data. Are you online ?',
+          'error'
+        )
     );
-    this.initData();
   }
 
-  private async initData(): Promise<void> {
+  private async initData(res: Job[]): Promise<void> {
+    this.jobs = res;
     if (this.jobs) {
       this.source.load(this.jobs);
       this.pieChartData['status'] = await this.constructPieData(
@@ -171,9 +177,23 @@ export class DashboardComponent implements OnDestroy {
     this.source.load(filteredJobs);
   }
 
-  refresh(): void {
+  async debouncedSync() {
+    // this function is debounced by 2 seconds
+    this.iconRotateBool = false;
+    this.jobService.initOrRefresh().then(
+      () =>
+        this.toastr.showToast(
+          'Dashboard is updated with latest data',
+          'Sync successful!',
+          'success'
+        ),
+      (err) => this.toastr.showToast(err.message, 'Sync failed!', 'error')
+    );
+  }
+
+  resetFilters(): void {
+    this.filterField = null;
     this.filterEl = null;
-    this.jobs = this.jobService.jobs;
     this.source.load(this.jobs);
     this.source.reset();
   }

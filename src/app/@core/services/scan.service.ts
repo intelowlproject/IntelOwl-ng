@@ -5,7 +5,7 @@ import { HttpService } from './http.service';
 import { ObservableForm, FileForm, IRecentScan } from '../models/models';
 import { ToastService } from './toast.service';
 import { ReplaySubject } from 'rxjs';
-import { scan } from 'rxjs/operators';
+import { scan as rxScan } from 'rxjs/operators';
 import { JobService } from './job.service';
 
 @Injectable({
@@ -33,7 +33,7 @@ export class ScanService extends HttpService<any> {
   get recentScans$() {
     return this._recentScans$
       .asObservable()
-      .pipe(scan((acc, curr) => [curr, ...acc], []));
+      .pipe(rxScan((acc, curr) => [curr, ...acc], []));
   }
 
   private async init() {
