@@ -8,20 +8,11 @@ import { CommonModule } from '@angular/common';
 import {
   NbAuthModule,
   NbPasswordAuthStrategy,
-  NbAuthSimpleToken,
+  NbAuthOAuth2JWTToken,
 } from '@nebular/auth';
-import { of as observableOf } from 'rxjs';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { environment } from '../../environments/environment';
-import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
-
-export class NbSimpleRoleProvider extends NbRoleProvider {
-  getRole() {
-    // here you could provide any role based on any auth flow
-    return observableOf('user');
-  }
-}
 
 export const NB_CORE_PROVIDERS = [
   ...NbAuthModule.forRoot({
@@ -32,12 +23,16 @@ export const NB_CORE_PROVIDERS = [
         requestPass: false,
         resetPass: false,
         register: false,
+        refreshToken: {
+          endpoint: 'auth/refresh-token',
+          method: 'post',
+        },
         login: {
           endpoint: 'auth/login',
           method: 'post',
         },
         token: {
-          class: NbAuthSimpleToken,
+          class: NbAuthOAuth2JWTToken,
           key: 'token',
         },
         logout: {
@@ -53,24 +48,6 @@ export const NB_CORE_PROVIDERS = [
       },
     },
   }).providers,
-  NbSecurityModule.forRoot({
-    accessControl: {
-      guest: {
-        view: '*',
-      },
-      user: {
-        parent: 'guest',
-        create: '*',
-        edit: '*',
-        remove: '*',
-      },
-    },
-  }).providers,
-
-  {
-    provide: NbRoleProvider,
-    useClass: NbSimpleRoleProvider,
-  },
 ];
 
 @NgModule({

@@ -13,6 +13,7 @@ export class AuthGuard implements CanActivate {
     return this.authService.isAuthenticated().pipe(
       tap((authenticated) => {
         if (!authenticated) {
+          localStorage.removeItem('auth_app_token');
           this.router.navigate(['auth/login']);
         }
       })

@@ -36,6 +36,7 @@ export interface IOption {
       };
   reportProgress?: boolean;
   responseType: 'json';
+  credentials?: 'omit' | 'same-origin' | 'include';
   withCredentials?: boolean;
 }
 
@@ -133,7 +134,8 @@ export abstract class HttpService<T> {
     return new Promise((resolve, reject) =>
       request.subscribe(
         (res) => {
-          this.indexDB.addOrReplaceBulk(url, res).then();
+          // the below line is commented because we are not making use of IndexedDB for all data atm.
+          // this.indexDB.addOrReplaceBulk(url, res).then();
           return resolve(res);
         },
         (err) => {

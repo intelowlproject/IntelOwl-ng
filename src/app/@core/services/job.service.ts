@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Observable } from 'rxjs';
 import { HttpService } from './http.service';
 import { IndexedDbService } from './indexdb.service';
 import { Job } from '../models/models';
@@ -30,11 +30,11 @@ export class JobService extends HttpService<any> {
     this.initOrRefresh().then();
   }
 
-  get jobs$() {
+  get jobs$(): Observable<Job[]> {
     return this._jobs$.asObservable();
   }
 
-  get jobResult$() {
+  get jobResult$(): Observable<Job> {
     return this._jobResult$.asObservable();
   }
 

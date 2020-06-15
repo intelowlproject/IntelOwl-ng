@@ -19,9 +19,9 @@ export interface FileForm extends IntelOwlScanForm {
   file_name?: string;
 }
 
-export interface User {
+export interface IUser {
   id: number | string;
-  email: string;
+  email?: string;
   username: string;
   token?: string;
 }

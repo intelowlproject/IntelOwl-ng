@@ -1,23 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { NbAuthService } from '@nebular/auth';
-import { Subject } from 'rxjs';
+import { NbAuthService, NbAuthOAuth2JWTToken } from '@nebular/auth';
+import { Subject, Subscription } from 'rxjs';
 import { HttpService } from './http.service';
 import { IndexedDbService } from './indexdb.service';
-import { CookieService } from 'ngx-cookie-service';
-import { User } from '../models/models';
+import { IUser } from '../models/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService extends HttpService<any> {
-  user$: Subject<any> = new Subject() as Subject<any>;
+  private sub: Subscription;
+  user$: Subject<IUser> = new Subject() as Subject<IUser>;
 
   constructor(
     private _httpClient: HttpClient,
     private nbAuth: NbAuthService,
-    public indexDB: IndexedDbService,
-    private cookieService: CookieService
+    public indexDB: IndexedDbService
   ) {
     super(
       _httpClient,
@@ -27,30 +26,30 @@ export class UserService extends HttpService<any> {
       indexDB
     );
 
-    this.nbAuth.onTokenChange().subscribe((res) => {
-      if (res.getValue()) {
-        this.init().then();
+    this.nbAuth.onTokenChange().subscribe((token: NbAuthOAuth2JWTToken) => {
+      if (token.isValid()) {
+        const tokenPayload = token.getAccessTokenPayload();
+        const user: IUser = {
+          id: tokenPayload.user_id,
+          username: tokenPayload.username,
+        };
+        this.init(user).then();
+      } else {
+        this.logOut();
       }
     });
   }
 
-  async getUserInfo(): Promise<User> {
-    return this.query({}, 'auth/user');
-  }
-
-  async init() {
+  private async init(user: IUser) {
     try {
-      const user = await this.getUserInfo();
       this.indexDB
         .getTableInstance('user')
         .clear()
-        .then(() => {
-          this.indexDB.addOrReplaceOne('user', user);
-        });
+        .then(() => this.indexDB.addOrReplaceOne('user', user));
       this.user$.next(user);
     } catch (e) {
       console.error(e);
-      if (localStorage.getItem('auth_app_token') && e.status >= 500) {
+      if (localStorage.getItem('auth_app_token') && e.status > 500) {
         this.offlineInit();
       } else {
         this.logOut();
@@ -58,7 +57,7 @@ export class UserService extends HttpService<any> {
     }
   }
 
-  offlineInit() {
+  private offlineInit() {
     this.indexDB
       .getTableInstance('user')
       .limit(1)
@@ -71,15 +70,10 @@ export class UserService extends HttpService<any> {
   logOut() {
     this.nbAuth.logout('email').subscribe(
       () => {
-        this.cookieService.deleteAll();
-        localStorage.removeItem('auth_app_token');
         this.indexDB.getTableInstance('user').clear();
         location.reload();
       },
       () => {
-        this.cookieService.deleteAll();
-        document.cookie = null;
-        localStorage.removeItem('auth_app_token');
         this.indexDB.getTableInstance('user').clear();
         location.reload();
       }

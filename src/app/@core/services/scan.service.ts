@@ -4,15 +4,17 @@ import { IndexedDbService } from './indexdb.service';
 import { HttpService } from './http.service';
 import { ObservableForm, FileForm, IRecentScan } from '../models/models';
 import { ToastService } from './toast.service';
-import { ReplaySubject } from 'rxjs';
-import { scan as rxScan } from 'rxjs/operators';
+import { ReplaySubject, Observable } from 'rxjs';
+import { scan as rxScan, distinct } from 'rxjs/operators';
 import { JobService } from './job.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ScanService extends HttpService<any> {
-  private _recentScans$: ReplaySubject<any> = new ReplaySubject<any>(10);
+  private _recentScans$: ReplaySubject<IRecentScan> = new ReplaySubject<
+    IRecentScan
+  >(10);
 
   constructor(
     private toastr: ToastService,
@@ -30,15 +32,16 @@ export class ScanService extends HttpService<any> {
     this.init().then();
   }
 
-  get recentScans$() {
-    return this._recentScans$
-      .asObservable()
-      .pipe(rxScan((acc, curr) => [curr, ...acc], []));
+  get recentScans$(): Observable<IRecentScan[]> {
+    return this._recentScans$.asObservable().pipe(
+      distinct((rs: IRecentScan) => rs.jobId),
+      rxScan((acc, curr) => [curr, ...acc], [])
+    );
   }
 
-  private async init() {
-    this.indexDB.getRecentScans().then((arr) => {
-      arr.forEach((o) => this._recentScans$.next(o));
+  private async init(): Promise<void> {
+    this.indexDB.getRecentScans().then((arr: IRecentScan[]) => {
+      arr.forEach((o: IRecentScan) => this._recentScans$.next(o));
     });
   }
 
