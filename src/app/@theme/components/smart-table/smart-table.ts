@@ -77,14 +77,11 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
   @Input() rowData: any;
 
   ngOnInit() {
-    if (this.value === 'N/A') {
-      return;
-    }
     const value = this.value.toString();
-    if (value === 'true') {
+    if (value && value === 'true') {
       this.iconName = 'checkmark-circle-2-outline';
       this.iconStatus = 'success';
-    } else if (value === 'false') {
+    } else {
       this.iconName = 'close-circle-outline';
       this.iconStatus = 'danger';
     }

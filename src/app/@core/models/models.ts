@@ -67,3 +67,18 @@ export interface IObservableAnalyzers {
   domain: any[];
   url: any[];
 }
+
+export interface IRawAnalyzerConfig {
+  name?: string;
+  type: string;
+  python_module: string;
+  // one of supported_filetypes or observable_supported
+  supported_filetypes?: string[];
+  observable_supported?: string[];
+  external_service?: boolean;
+  requires_configuration?: boolean;
+  leaks_info?: boolean;
+  disabled?: boolean;
+  run_hash?: boolean;
+  additional_config_params?: any;
+}

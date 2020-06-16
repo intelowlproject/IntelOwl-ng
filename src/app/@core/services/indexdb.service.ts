@@ -3,7 +3,7 @@ import { DexieService } from './dexie.service';
 
 @Injectable()
 export class IndexedDbService {
-  tables: string[] = ['user', 'recent_scans'];
+  tables: string[] = ['recent_scans'];
 
   constructor(private dexieService: DexieService) {}
 
