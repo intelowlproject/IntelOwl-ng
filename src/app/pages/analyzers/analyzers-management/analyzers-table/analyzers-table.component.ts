@@ -53,13 +53,58 @@ export class AnalyzersTableComponent implements OnInit {
         title: 'Description',
       },
       supports: {
-        title: 'Supports',
+        title: 'Supported types',
         type: 'custom',
         width: '10%',
         renderComponent: JSONRenderComponent,
       },
+      external_service: {
+        title: 'External Service',
+        type: 'custom',
+        width: '3%',
+        filter: {
+          type: 'list',
+          config: {
+            list: [
+              { value: true, title: 'Yes' },
+              { value: false, title: 'No' },
+            ],
+          },
+        },
+        renderComponent: TickCrossRenderComponent,
+      },
+      leaks_info: {
+        title: 'Leaks Info',
+        type: 'custom',
+        width: '3%',
+        filter: {
+          type: 'list',
+          config: {
+            list: [
+              { value: true, title: 'Yes' },
+              { value: false, title: 'No' },
+            ],
+          },
+        },
+        renderComponent: TickCrossRenderComponent,
+      },
+      requires_configuration: {
+        title: 'Requires Configuration',
+        type: 'custom',
+        width: '3%',
+        filter: {
+          type: 'list',
+          config: {
+            list: [
+              { value: true, title: 'Yes' },
+              { value: false, title: 'No' },
+            ],
+          },
+        },
+        renderComponent: TickCrossRenderComponent,
+      },
       additional_config_params: {
-        title: 'Config Params',
+        title: 'Additional config',
         type: 'custom',
         filterFunction: (cell?: any, search?: string): boolean => {
           let ans: boolean = false;
@@ -76,36 +121,6 @@ export class AnalyzersTableComponent implements OnInit {
         },
         renderComponent: JSONRenderComponent,
       },
-      external_service: {
-        title: 'External Service',
-        type: 'custom',
-        width: '3%',
-        filter: {
-          type: 'list',
-          config: {
-            list: [
-              { value: true, title: 'Yes' },
-              { value: 'N/A', title: 'No' },
-            ],
-          },
-        },
-        renderComponent: TickCrossRenderComponent,
-      },
-      leaks_info: {
-        title: 'Leaks Info',
-        type: 'custom',
-        width: '3%',
-        filter: {
-          type: 'list',
-          config: {
-            list: [
-              { value: true, title: 'Yes' },
-              { value: 'N/A', title: 'No' },
-            ],
-          },
-        },
-        renderComponent: TickCrossRenderComponent,
-      },
     },
   };
 
@@ -115,26 +130,12 @@ export class AnalyzersTableComponent implements OnInit {
     setTimeout(() => this.init(), 500);
   }
 
-  private async init(): Promise<void> {
+  private init(): void {
     if (this.analyzerService.rawAnalyzerConfig) {
-      const data = Object.entries(this.analyzerService.rawAnalyzerConfig).map(
-        ([k, v]) => {
-          v['name'] = k;
-          if (v.hasOwnProperty('observable_supported')) {
-            v['supports'] = v['observable_supported'];
-          } else {
-            v['supports'] = v['supported_filetypes'];
-          }
-          if (!v.hasOwnProperty('external_service')) {
-            v['external_service'] = 'N/A';
-          }
-          if (!v.hasOwnProperty('leaks_info')) {
-            v['leaks_info'] = 'N/A';
-          }
-          return v;
-        }
-      );
+      const data: any[] = this.analyzerService.constructTableData();
       this.tableSource.load(data);
+      // default alphabetically sort.
+      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
     }
   }
 }
