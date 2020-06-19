@@ -69,7 +69,7 @@ export class ThemeModule {
       providers: [
         ...NbThemeModule.forRoot(
           {
-            name: 'dark',
+            name: HeaderComponent.getThemeName(),
           },
           [DEFAULT_THEME, DARK_THEME]
         ).providers,
