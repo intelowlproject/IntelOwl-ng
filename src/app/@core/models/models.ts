@@ -23,7 +23,11 @@ export interface IUser {
   id: number | string;
   email?: string;
   username: string;
-  token?: string;
+}
+
+export interface IToken {
+  access: string;
+  refresh: string;
 }
 
 export interface Tag {

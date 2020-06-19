@@ -218,6 +218,13 @@
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-9.1.11.tgz#b6d28af55fe5631bbc46f306a0e7866253d4f3b1"
   integrity sha512-D6CCDeSK/F6dWSB/a1g/zB072xG5LadLSV8afQ57oX1KHePx21LcoRG4tUtFMMHh/jZXRc9pMQIR1/9FrrXF3Q==
 
+"@auth0/angular-jwt@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@auth0/angular-jwt/-/angular-jwt-4.2.0.tgz#60f74552fbdd9404aeb55e41fa4d3d514f8465d6"
+  integrity sha512-kxHMztP0scAaKSfWRQ4y3ba5ggcGh2YVapC1UnimyE1I1Vs68gdSlV00bnpAK4aCaNut9IqtdGurgbljHt24Lw==
+  dependencies:
+    url "^0.11.0"
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.1", "@babel/code-frame@^7.8.3":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.1.tgz#d5481c5095daa1c57e16e54c6f9198443afb49ff"
@@ -1015,11 +1022,6 @@
     loader-utils "^1.4.0"
     merge-source-map "^1.1.0"
     schema-utils "^2.6.4"
-
-"@nebular/auth@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@nebular/auth/-/auth-5.1.0.tgz#8d58c306f331657c7ca203372b603c003c6edf1f"
-  integrity sha512-ePPyCUfTmb9JJ847F344AHtC+xOp7TFvWXr8XrfeiMuX6sSN3xZZjd7GPijZwCrzTeHIyG1S0ZfFGvqsGrBtsw==
 
 "@nebular/eva-icons@5.1.0":
   version "5.1.0"
@@ -5980,11 +5982,6 @@ ng2-smart-table@^1.6.0:
   integrity sha512-ejAIcVgEznsMD79xg+HfCha804KyGEiX9KH5BnmVzQZFzpC782I5W2wn4zackp4Gi9km1H6pKf3+MXLCF8IRXQ==
   dependencies:
     lodash "^4.17.10"
-
-ngx-cookie-service@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/ngx-cookie-service/-/ngx-cookie-service-3.0.4.tgz#603600bf575322aa0bd3f83cab42494e9aebb00a"
-  integrity sha512-g4KHpCWL2EtKatWqn8lz/DdyMQO8sDS7BNwCSvxF1ETTW5DPJnbdEwCjSdm84MmfqBh6JdgvoQd//rOxH5EbgQ==
 
 ngx-dexie@^1.1.0:
   version "1.1.0"
