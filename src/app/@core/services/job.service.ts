@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject, Observable } from 'rxjs';
 import { HttpService } from './http.service';
-import { IndexedDbService } from './indexdb.service';
 import { Job } from '../models/models';
 
 @Injectable({
@@ -16,17 +15,8 @@ export class JobService extends HttpService<any> {
     null
   ) as BehaviorSubject<Job>;
 
-  constructor(
-    private _httpClient: HttpClient,
-    protected indexDB: IndexedDbService
-  ) {
-    super(
-      _httpClient,
-      {
-        path: '',
-      },
-      indexDB
-    );
+  constructor(private _httpClient: HttpClient) {
+    super(_httpClient);
     this.initOrRefresh().then();
   }
 
@@ -90,9 +80,14 @@ export class JobService extends HttpService<any> {
     }
   }
 
+  /* deprecated atm
+   * See Issue: https://github.com/intelowlproject/IntelOwl-ng/issues/16
+   */
+  /*
   private async offlineInit() {
     this.indexDB.getAllInstances('jobs').then((res) => {
       this._jobs$.next(res);
     });
   }
+  */
 }

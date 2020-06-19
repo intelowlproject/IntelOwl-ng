@@ -19,16 +19,10 @@ export class ScanService extends HttpService<any> {
   constructor(
     private toastr: ToastService,
     private _httpClient: HttpClient,
-    protected indexDB: IndexedDbService,
+    private indexedDB: IndexedDbService,
     private jobService: JobService
   ) {
-    super(
-      _httpClient,
-      {
-        path: '',
-      },
-      indexDB
-    );
+    super(_httpClient);
     this.init().then();
   }
 
@@ -40,7 +34,7 @@ export class ScanService extends HttpService<any> {
   }
 
   private async init(): Promise<void> {
-    this.indexDB.getRecentScans().then((arr: IRecentScan[]) => {
+    this.indexedDB.getRecentScans().then((arr: IRecentScan[]) => {
       arr.forEach((o: IRecentScan) => this._recentScans$.next(o));
     });
   }
@@ -88,7 +82,7 @@ export class ScanService extends HttpService<any> {
         jobId: jobId,
         status: 'primary',
       } as IRecentScan);
-      this.indexDB.addToRecentScans({
+      this.indexedDB.addToRecentScans({
         jobId: jobId,
         status: 'primary',
       } as IRecentScan);
@@ -178,7 +172,7 @@ export class ScanService extends HttpService<any> {
       jobId: res.job_id,
       status: 'success',
     } as IRecentScan);
-    this.indexDB.addToRecentScans({
+    this.indexedDB.addToRecentScans({
       jobId: res.job_id,
       status: 'success',
     } as IRecentScan);

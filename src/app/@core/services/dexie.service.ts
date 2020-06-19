@@ -5,7 +5,6 @@ export class DexieService extends Dexie {
     super('IntelOwlAppDatabase');
 
     this.version(1).stores({
-      user: '++id,username',
       recent_scans: '++jobId,status',
       /*
       tags: '++label,color',

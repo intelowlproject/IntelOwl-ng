@@ -50,7 +50,9 @@ export class AnalyzersTableComponent implements OnInit {
         },
       },
       description: {
+        type: 'html',
         title: 'Description',
+        valuePrepareFunction: (c, r) => `<small>${c}</small>`,
       },
       supports: {
         title: 'Supported types',
@@ -91,7 +93,7 @@ export class AnalyzersTableComponent implements OnInit {
       requires_configuration: {
         title: 'Requires Configuration',
         type: 'custom',
-        width: '3%',
+        width: '5%',
         filter: {
           type: 'list',
           config: {

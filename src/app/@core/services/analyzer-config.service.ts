@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
 import { ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { IndexedDbService } from './indexdb.service';
 import { IObservableAnalyzers, IRawAnalyzerConfig } from '../models/models';
 
 @Injectable({
@@ -20,17 +19,8 @@ export class AnalyzerConfigService extends HttpService<any> {
     any
   >() as ReplaySubject<any>;
 
-  constructor(
-    private _httpClient: HttpClient,
-    public indexDB: IndexedDbService
-  ) {
-    super(
-      _httpClient,
-      {
-        path: '/',
-      },
-      indexDB
-    );
+  constructor(private _httpClient: HttpClient) {
+    super(_httpClient);
     this.init().then();
   }
 
@@ -104,6 +94,9 @@ export class AnalyzerConfigService extends HttpService<any> {
       // for requires_configuration too ?
       if (!obj.hasOwnProperty('external_service')) {
         obj['external_service'] = false;
+      }
+      if (!obj.hasOwnProperty('requires_configuration')) {
+        obj['requires_configuration'] = false;
       }
       if (!obj.hasOwnProperty('leaks_info')) {
         obj['leaks_info'] = false;
