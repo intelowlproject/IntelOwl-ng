@@ -31,7 +31,7 @@ export class LoginComponent {
       icon: 'message-circle-outline',
     },
     {
-      url: 'https://twitter.com/matte_lodi',
+      url: 'https://twitter.com/intel_owl',
       target: '_blank',
       icon: 'twitter',
     },
