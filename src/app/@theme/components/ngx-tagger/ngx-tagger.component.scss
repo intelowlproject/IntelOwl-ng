@@ -11,25 +11,10 @@ nb-icon:hover {
   color: #222;
 }
 
-#tags-container {
-  display: flex;
-  flex-direction: column !important;
-}
-
 .tag {
   display: flex;
   align-items: center;
   flex-direction: row !important;
-}
-
-.tag-display {
-  flex-wrap: wrap;
-}
-
-.tag-selector {
-  justify-content: space-between;
-  margin: 5px 0;
-  cursor: pointer;
 }
 
 span.tag-label {
@@ -42,16 +27,31 @@ span.tag-label {
   padding: 5px;
 }
 
-.tag-display span.tag-label {
-  margin: 0 3px;
+#tag-display-container {
+  flex-wrap: wrap;
+
+  span.tag-label {
+    margin: 0 3px;
+  }
 }
 
-.tag-selector span.tag-label {
-  min-width: 175px;
-  min-height: 20px;
-  margin-right: 3px;
-}
+#tags-container {
+  display: flex;
+  flex-direction: column !important;
 
-.tag-selector span.tag-label:hover {
-  filter: brightness(1.5);
+  .tag-selector {
+    justify-content: space-between;
+    margin: 5px 0;
+    cursor: pointer;
+
+    span.tag-label {
+      min-width: 175px;
+      min-height: 20px;
+      margin-right: 3px;
+    }
+
+    span.tag-label:hover {
+      filter: brightness(1.4);
+    }
+  }
 }

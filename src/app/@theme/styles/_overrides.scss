@@ -30,4 +30,21 @@
   .cursor-pointer {
     cursor: pointer !important;
   }
+
+  // alerts
+
+  .caption {
+    margin-top: 0.5rem;
+  }
+
+  nb-alert {
+    width: fit-content;
+    display: inline-block !important;
+    font-size: smaller;
+    padding: 0.6rem;
+  }
+
+  nb-alert span {
+    margin: 0 3px;
+  }
 }

@@ -18,13 +18,7 @@ import {
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 
-import {
-  CapitalizePipe,
-  PluralPipe,
-  RoundPipe,
-  TimingPipe,
-  NumberWithCommasPipe,
-} from './pipes';
+import { CapitalizePipe, TimingPipe, NumberWithCommasPipe } from './pipes';
 import {
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
@@ -34,7 +28,6 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { DARK_THEME } from './styles/theme.dark';
 
 import { FormsModule } from '@angular/forms';
-import { NbSecurityModule } from '@nebular/security';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -45,7 +38,6 @@ const NB_MODULES = [
   NbContextMenuModule,
   NbSpinnerModule,
   NbIconModule,
-  NbSecurityModule,
   NbTooltipModule,
   NbToggleModule,
 ];
@@ -58,13 +50,7 @@ const COMPONENTS = [
   TwoColumnsLayoutComponent,
 ];
 
-const PIPES = [
-  CapitalizePipe,
-  PluralPipe,
-  RoundPipe,
-  TimingPipe,
-  NumberWithCommasPipe,
-];
+const PIPES = [CapitalizePipe, TimingPipe, NumberWithCommasPipe];
 
 // modules that will be reused across all child modules.
 const MODULES_TO_EXPORT = [CommonModule, NbIconModule, NbCardModule];
@@ -83,7 +69,7 @@ export class ThemeModule {
       providers: [
         ...NbThemeModule.forRoot(
           {
-            name: 'dark',
+            name: HeaderComponent.getThemeName(),
           },
           [DEFAULT_THEME, DARK_THEME]
         ).providers,

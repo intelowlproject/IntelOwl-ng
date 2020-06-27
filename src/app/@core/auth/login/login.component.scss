@@ -1,0 +1,80 @@
+nb-card {
+  margin: auto;
+  height: calc(100vh - 2 * 2.5rem);
+}
+
+nb-card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+nb-card-body {
+  margin: auto;
+  width: 40%;
+  height: 50%;
+}
+
+nb-alert {
+  width: 100% !important;
+}
+
+::ng-deep {
+  /*
+  .forgot-password {
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+  }
+  */
+
+  .title {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+
+  .sub-title {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .form-control-group {
+    margin-bottom: 2rem;
+  }
+
+  .form-control-group.accept-group {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem 0;
+  }
+
+  .links {
+    text-align: center;
+
+    .socials a {
+      margin: 0 1rem;
+      text-decoration: none;
+      vertical-align: middle;
+
+      &.with-icon {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  .another-action {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  nb-alert {
+    .alert-title,
+    .alert-message {
+      margin: 0 0 0.5rem;
+    }
+    .alert-message-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
