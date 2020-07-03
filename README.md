@@ -1,5 +1,6 @@
 # IntelOwl-ng
 
+[![Travis build status](https://api.travis-ci.com/intelowlproject/IntelOwl-ng.svg?branch=master&status=passed)](https://travis-ci.com/github/intelowlproject/IntelOwl-ng/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/intelowlproject/IntelOwl-ng.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/intelowlproject/IntelOwl-ng/context:javascript)
 [![CodeFactor](https://www.codefactor.io/repository/github/intelowlproject/intelowl-ng/badge)](https://www.codefactor.io/repository/github/intelowlproject/intelowl-ng)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)

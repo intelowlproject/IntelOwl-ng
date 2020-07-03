@@ -54,7 +54,6 @@
     "@nebular/eva-icons": "5.1.0",
     "@nebular/theme": "5.1.0",
     "bootstrap": "4.5.0",
-    "classlist.js": "1.1.20150312",
     "core-js": "^3.6.3",
     "dexie": "^2.0.4",
     "echarts": "^4.8.0",
