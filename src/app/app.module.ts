@@ -1,3 +1,8 @@
+/**
+ * @license
+ * Copyright Akveo. All Rights Reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ */
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -6,15 +11,22 @@ import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { NbMenuModule, NbSidebarModule, NbToastrModule } from '@nebular/theme';
+import {
+  NbDialogModule,
+  NbMenuModule,
+  NbSidebarModule,
+  NbToastrModule,
+} from '@nebular/theme';
 
-import { JWTInterceptor } from './@core/services/http.intercepter';
+import { Interceptor } from './@core/services/http.intercepter';
+import { NB_AUTH_TOKEN_INTERCEPTOR_FILTER } from '@nebular/auth';
 import { APP_BASE_HREF } from '@angular/common';
 import { AuthGuard } from './@core/services/auth-gaurd.service';
+import { UserService } from './@core/services/user.service';
 import { DexieService } from './@core/services/dexie.service';
 import { IndexedDbService } from './@core/services/indexdb.service';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
-import { ToastService } from './@core/services/toast.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +38,7 @@ import { ToastService } from './@core/services/toast.service';
     NbEvaIconsModule,
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
+    NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
@@ -33,10 +46,17 @@ import { ToastService } from './@core/services/toast.service';
   bootstrap: [AppComponent],
   providers: [
     AuthGuard,
-    ToastService,
+    UserService,
     DexieService,
     IndexedDbService,
-    { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
+    CookieService,
+    { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
+    {
+      provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER,
+      useValue: () => {
+        return false;
+      },
+    },
     { provide: APP_BASE_HREF, useValue: '/' },
   ],
 })

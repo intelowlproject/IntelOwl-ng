@@ -4,22 +4,14 @@
       <nb-icon icon="menu-2-outline"></nb-icon>
     </a>
     <a (click)="navigateHome()" class="logo" href="#">
-      <img
-        *ngIf="isDarkTheme"
-        src="../../../../assets/intel_owl.png"
-        alt="Intel Owl logo"
-      />
-      <img
-        *ngIf="!isDarkTheme"
-        src="../../../../assets/intel_owl-black.png"
-        alt="Intel Owl logo"
-      />
+      <img *ngIf="isDarkTheme" src="../../../../assets/intel_owl.png" />
+      <img *ngIf="!isDarkTheme" src="../../../../assets/intel_owl-black.png" />
     </a>
   </div>
 </div>
 
 <div class="header-container">
-  <nb-actions size="small">
+  <nb-actions size="small" *ngIf="userService.user$ | async as user">
     <!-- Theme Switcher -->
     <nb-action class="d-flex align-items-center">
       <nb-icon icon="sun-outline" size="tiny"></nb-icon>
@@ -30,12 +22,12 @@
       ></nb-toggle>
       <nb-icon icon="moon-outline" size="tiny"></nb-icon>
     </nb-action>
-    <!-- User actions -->
-    <nb-action class="user-action" *ngIf="userService.user$ | async as user">
+    <nb-action *nbIsGranted="['view', 'user']" class="user-action">
       <nb-user
         class="cursor-pointer"
         [name]="user?.username"
         [nbContextMenu]="userMenu"
+        [onlyPicture]="false"
         nbContextMenuTag="user"
       >
       </nb-user>

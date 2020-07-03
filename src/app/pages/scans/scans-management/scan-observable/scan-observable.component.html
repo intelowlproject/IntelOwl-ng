@@ -29,18 +29,21 @@
         required="true"
         type="text"
       />
-      <ng-container *ngIf="value.invalid && (value.dirty || value.touched)">
-        <p class="caption status-danger" *ngIf="value.errors.required">
+      <div
+        *ngIf="value.invalid && (value.dirty || value.touched)"
+        class="alert alert-danger mt-3"
+      >
+        <span *ngIf="value.errors.required">
           {{ formData.observable_classification }} is required.
-        </p>
-        <p class="caption status-danger" *ngIf="value.errors.minlength">
+        </span>
+        <span *ngIf="value.errors.minlength">
           {{ formData.observable_classification }} must be at least 4 characters
           long.
-        </p>
-        <p class="caption status-danger" *ngIf="value.errors.pattern">
-          Invalid {{ formData.observable_classification }}
-        </p>
-      </ng-container>
+        </span>
+        <span *ngIf="value.errors.pattern">
+          invalid {{ formData.observable_classification }}
+        </span>
+      </div>
     </div>
 
     <!-- Analyzers select field -->

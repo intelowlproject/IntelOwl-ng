@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  Input,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { Subscription } from 'rxjs';
 
@@ -19,17 +12,13 @@ import { Subscription } from 'rxjs';
       style="height: 700px;"
     ></div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EchartsTreeComponent implements OnInit, OnDestroy {
   private themeSubscription: Subscription;
   @Input() private treeInputData: any;
   public options: any;
 
-  constructor(
-    private readonly theme: NbThemeService,
-    private readonly cdRef: ChangeDetectorRef
-  ) {}
+  constructor(private theme: NbThemeService) {}
 
   ngOnInit(): void {
     if (
@@ -40,7 +29,6 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
       return;
     }
     this.themeSubscription = this.theme.getJsTheme().subscribe((config) => {
-      this.cdRef.markForCheck(); // so theme gets updated
       const colors = config.variables.echarts;
 
       this.options = {

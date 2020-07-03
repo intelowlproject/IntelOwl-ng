@@ -4,38 +4,41 @@ import { IndexedDbService } from './indexdb.service';
 import { HttpService } from './http.service';
 import { ObservableForm, FileForm, IRecentScan } from '../models/models';
 import { ToastService } from './toast.service';
-import { ReplaySubject, Observable } from 'rxjs';
-import { scan as rxScan, distinct } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { scan } from 'rxjs/operators';
 import { JobService } from './job.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ScanService extends HttpService<any> {
-  private _recentScans$: ReplaySubject<IRecentScan> = new ReplaySubject<
-    IRecentScan
-  >(10);
+  private _recentScans$: ReplaySubject<any> = new ReplaySubject<any>(10);
 
   constructor(
     private toastr: ToastService,
     private _httpClient: HttpClient,
-    private indexedDB: IndexedDbService,
+    protected indexDB: IndexedDbService,
     private jobService: JobService
   ) {
-    super(_httpClient);
+    super(
+      _httpClient,
+      {
+        path: '',
+      },
+      indexDB
+    );
     this.init().then();
   }
 
-  get recentScans$(): Observable<IRecentScan[]> {
-    return this._recentScans$.asObservable().pipe(
-      distinct((rs: IRecentScan) => rs.jobId),
-      rxScan((acc, curr) => [curr, ...acc], [])
-    );
+  get recentScans$() {
+    return this._recentScans$
+      .asObservable()
+      .pipe(scan((acc, curr) => [curr, ...acc], []));
   }
 
-  private async init(): Promise<void> {
-    this.indexedDB.getRecentScans().then((arr: IRecentScan[]) => {
-      arr.forEach((o: IRecentScan) => this._recentScans$.next(o));
+  private async init() {
+    this.indexDB.getRecentScans().then((arr) => {
+      arr.forEach((o) => this._recentScans$.next(o));
     });
   }
 
@@ -66,9 +69,6 @@ export class ScanService extends HttpService<any> {
       md5: data.md5,
       analyzers_needed: data.analyzers_requested,
     };
-    if (data.run_all_available_analyzers) {
-      query['run_all_available_analyzers'] = 'True';
-    }
     if (data.running_only) {
       query['running_only'] = 'True';
     }
@@ -82,7 +82,7 @@ export class ScanService extends HttpService<any> {
         jobId: jobId,
         status: 'primary',
       } as IRecentScan);
-      this.indexedDB.addToRecentScans({
+      this.indexDB.addToRecentScans({
         jobId: jobId,
         status: 'primary',
       } as IRecentScan);
@@ -130,6 +130,7 @@ export class ScanService extends HttpService<any> {
       is_sample: 'True',
       md5: data.md5,
       file_name: data.file_name,
+      file_mimetype: data.file_mimetype,
       analyzers_requested: data.analyzers_requested,
       run_all_available_analyzers: data.run_all_available_analyzers
         ? 'True'
@@ -158,8 +159,8 @@ export class ScanService extends HttpService<any> {
     }
   }
 
-  private onSuccess(res): void {
-    // refresh the job list asynchronously
+  private onSuccess(res) {
+    // refresh the job list
     setTimeout(() => this.jobService.initOrRefresh(), 0);
     // show success toast
     this.toastr.showToast(
@@ -172,16 +173,16 @@ export class ScanService extends HttpService<any> {
       jobId: res.job_id,
       status: 'success',
     } as IRecentScan);
-    this.indexedDB.addToRecentScans({
+    this.indexDB.addToRecentScans({
       jobId: res.job_id,
       status: 'success',
     } as IRecentScan);
   }
 
-  private onError(e): void {
+  private onError(e) {
     console.error(e);
     this.toastr.showToast(
-      `backend returned: ${e['error']['error']} (${e['status']}: ${e['statusText']})`,
+      `backend returned: ${e['error']['error']}, (${e['status']}: ${e['statusText']})`,
       'Scan Request Failed!',
       'error'
     );

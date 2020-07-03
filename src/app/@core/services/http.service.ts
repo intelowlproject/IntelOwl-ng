@@ -7,8 +7,16 @@ import {
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { IndexedDbService } from './indexdb.service';
 
 export type IRestTransform = (response: HttpResponse<any>) => any;
+
+export interface IRestConfig {
+  baseHeaders?: HttpHeaders;
+  dynamicHeaders?: () => HttpHeaders;
+  baseUrl?: string;
+  path?: string;
+}
 
 export interface IRestQuery {
   [key: string]: any;
@@ -34,10 +42,27 @@ export interface IOption {
 export abstract class HttpService<T> {
   protected transform: IRestTransform;
   protected http: HttpClient;
+  protected indexDB: IndexedDbService;
+  private readonly _path: string;
   private readonly _base: string = environment.api;
+  private _baseHeaders: HttpHeaders;
+  private _dynamicHeaders: () => HttpHeaders;
 
-  protected constructor(http: HttpClient) {
+  protected constructor(
+    http: HttpClient,
+    config: IRestConfig,
+    indexDB: IndexedDbService
+  ) {
     this.http = http;
+    this._base = config.baseUrl || this._base;
+    this._path = config.path.replace(/^\//, '');
+    this._baseHeaders = config.baseHeaders
+      ? config.baseHeaders
+      : new HttpHeaders();
+    this._dynamicHeaders = config.dynamicHeaders
+      ? config.dynamicHeaders
+      : () => new HttpHeaders();
+    this.indexDB = indexDB;
   }
 
   protected static buildRequestOptions(
@@ -54,7 +79,6 @@ export abstract class HttpService<T> {
     return <IOption>{
       responseType: responseType ? responseType : 'json',
       params: query,
-      withCredentials: false,
     };
   }
 
@@ -109,6 +133,7 @@ export abstract class HttpService<T> {
     return new Promise((resolve, reject) =>
       request.subscribe(
         (res) => {
+          this.indexDB.addOrReplaceBulk(url, res).then();
           return resolve(res);
         },
         (err) => {
@@ -149,6 +174,7 @@ export abstract class HttpService<T> {
     return new Promise((resolve, reject) =>
       request.subscribe(
         (res) => {
+          this.indexDB.addOrReplaceOne(url, res).then();
           return resolve(res);
         },
         (err) => {
@@ -244,7 +270,7 @@ export abstract class HttpService<T> {
   }
 
   protected buildUrl(id?: string | number, newUrl?: string): string {
-    let url: string = newUrl ? newUrl : '/';
+    let url: string = newUrl ? newUrl : this._path;
     if (id) {
       url += `/${id}`;
     }

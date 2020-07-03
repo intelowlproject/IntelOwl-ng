@@ -16,18 +16,15 @@ export interface ObservableForm extends IntelOwlScanForm {
 
 export interface FileForm extends IntelOwlScanForm {
   file?: File;
+  file_mimetype?: string;
   file_name?: string;
 }
 
-export interface IUser {
+export interface User {
   id: number | string;
-  email?: string;
+  email: string;
   username: string;
-}
-
-export interface IToken {
-  access: string;
-  refresh: string;
+  token?: string;
 }
 
 export interface Tag {
@@ -48,7 +45,7 @@ export interface Job {
   file_name?: string;
   file_mimetype?: string;
   status: string;
-  analyzers_requested: string[] | string;
+  analyzers_requested: string[];
   analyzers_to_execute: string[];
   analysis_reports?: any;
   received_request_time: string | Date;
@@ -70,19 +67,4 @@ export interface IObservableAnalyzers {
   hash: any[];
   domain: any[];
   url: any[];
-}
-
-export interface IRawAnalyzerConfig {
-  name?: string;
-  type: string;
-  python_module: string;
-  // one of supported_filetypes or observable_supported
-  supported_filetypes?: string[];
-  observable_supported?: string[];
-  external_service?: boolean;
-  requires_configuration?: boolean;
-  leaks_info?: boolean;
-  disabled?: boolean;
-  run_hash?: boolean;
-  additional_config_params?: any;
 }

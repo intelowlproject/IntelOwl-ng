@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { IndexedDbService } from './indexdb.service';
 import { HttpService } from './http.service';
 import { Tag } from '../models/models';
 import { ToastService } from './toast.service';
@@ -12,8 +13,18 @@ export class TagService extends HttpService<any> {
   private _tags$: Subject<Tag[]> = new Subject() as Subject<Tag[]>;
   public tags: Tag[];
 
-  constructor(private toastr: ToastService, private _httpClient: HttpClient) {
-    super(_httpClient);
+  constructor(
+    private toastr: ToastService,
+    private _httpClient: HttpClient,
+    protected indexDB: IndexedDbService
+  ) {
+    super(
+      _httpClient,
+      {
+        path: '',
+      },
+      indexDB
+    );
     this.init().then();
   }
 
@@ -34,14 +45,12 @@ export class TagService extends HttpService<any> {
     }
   }
 
-  /* depecrated atm
   private async offlineInit() {
     this.indexDB.getAllInstances('tags').then((res) => {
       this.tags = res;
       this._tags$.next(res);
     });
   }
-  */
 
   async updateTag(tag: Tag): Promise<Tag> {
     try {
