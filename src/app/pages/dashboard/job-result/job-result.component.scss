@@ -1,10 +1,13 @@
 nb-list-item {
-  display: flex;
   padding: 0.5rem;
-  align-items: center !important;
-  align-content: center !important;
-  justify-content: space-between;
   margin: 0 !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between;
+}
+
+.nested-collapsible-row {
+  width: 95%;
 }
 
 #result-json-viewer {

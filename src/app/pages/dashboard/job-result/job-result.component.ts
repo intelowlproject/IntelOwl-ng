@@ -69,6 +69,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   // row whose report/error is currently being shown
   public selectedRowName: string;
   public selectedRowData: any;
+  public selectedResultExpandAllBool: boolean = false;
 
   constructor(
     private readonly activateRoute: ActivatedRoute,
@@ -82,7 +83,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // subscribe to jobResult
     this.jobService.pollForJob(this.jobId).then(() => {
-      this.sub2 = this.jobService.jobResult$.subscribe((res: Job) =>
+      this.sub2 = this.jobService.jobResult$.subscribe(async (res: Job) =>
         this.updateJobData(res)
       );
       // only called once
@@ -104,11 +105,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
       ? this.jobTableData.analyzers_requested
       : 'all available analyzers';
     // set the first row as the default selected row
-    this.selectedRowData = this.jobTableData.analysis_reports[0];
+    this.selectedRowData = this.jobTableData.analysis_reports[0].report;
     this.selectedRowName = this.jobTableData.analysis_reports[0].name;
-    this.jobTableData.received_request_time = new Date(
-      this.jobTableData.received_request_time
-    ).toLocaleString();
   }
 
   private async updateJobData(res: Job): Promise<void> {
@@ -120,6 +118,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
       // converting date time to locale string
       const date1 = new Date(res.received_request_time);
       const date2 = new Date(res.finished_analysis_time);
+      res.received_request_time = date1.toLocaleString();
       res.finished_analysis_time = date2.toLocaleString();
       // calculate job process time
       res.job_process_time = Math.abs(
@@ -141,7 +140,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   // event emitted when user clicks on a row in table
-  onRowSelect(event) {
+  async onRowSelect(event): Promise<void> {
     this.selectedRowName = event.data.name;
     // if `report` exists shows report, otherwise the `errors`
     this.selectedRowData = Object.entries(event.data.report).length
@@ -150,24 +149,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
     document
       .getElementById('selected-row-report')
       .scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // super-hacky way used in template to render the JSON report recursively
-  getObjectType(val): string {
-    if (typeof val === 'object') {
-      if (Array.isArray(val)) {
-        if (val.length <= 1 && typeof val[0] === 'object') {
-          return 'object_array';
-        } else {
-          return 'string';
-        }
-      } else if (val === null) {
-        return 'string';
-      } else {
-        return 'object';
-      }
-    }
-    return 'string';
   }
 
   ngOnDestroy(): void {

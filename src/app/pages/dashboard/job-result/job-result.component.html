@@ -150,66 +150,39 @@
   <!-- Selected Row's Result/Error -->
 
   <nb-card id="selected-row-report" fullWidth>
-    <nb-card-header>
-      Selected: <strong>{{ selectedRowName }}</strong>
+    <nb-card-header class="d-flex justify-content-between">
+      <span
+        >Selected: <strong>{{ selectedRowName }}</strong></span
+      >
+      <button
+        nbButton
+        status="primary"
+        size="tiny"
+        shape="round"
+        (click)="selectedResultExpandAllBool = !selectedResultExpandAllBool"
+      >
+        expand/collapse all rows
+      </button>
     </nb-card-header>
     <nb-card-body>
       <nb-tabset>
-        <!-- Carded List view -->
-        <nb-tab tabIcon="list-outline">
-          <ng-template
-            *ngTemplateOutlet="
-              cardedResultListRef;
-              context: { object: selectedRowData, card_size: 'large' }
-            "
-          >
-          </ng-template>
-        </nb-tab>
         <nb-tab tabIcon="code-outline">
-          <!-- JSON view -->
+          <!-- JSON/code view -->
           <div id="result-json-viewer">
-            <ngx-json-viewer [json]="selectedRowData"></ngx-json-viewer>
+            <ngx-json-viewer
+              [json]="selectedRowData"
+              [expanded]="selectedResultExpandAllBool"
+            ></ngx-json-viewer>
           </div>
+        </nb-tab>
+        <!-- Accordion/Carded List view -->
+        <nb-tab tabIcon="list-outline">
+          <intelowl-job-result-viewer
+            [data]="selectedRowData"
+            [expanded]="selectedResultExpandAllBool"
+          ></intelowl-job-result-viewer>
         </nb-tab>
       </nb-tabset>
     </nb-card-body>
   </nb-card>
-
-  <!-- Here be dragons. DO NOT TOUCH. -->
-  <!-- Template used to recurse over job's JSON report for carded list view -->
-
-  <ng-template #cardedResultListRef let-obj="object" let-size="card_size">
-    <nb-card [size]="size">
-      <nb-card-body>
-        <nb-list>
-          <nb-list-item *ngFor="let item of obj | keyvalue">
-            <strong style="font-size: smaller;">{{ item?.key }}</strong>
-            <span [ngSwitch]="getObjectType(item?.value)">
-              <span class="text-json" *ngSwitchCase="'string'">{{
-                item?.value | json
-              }}</span>
-              <span *ngSwitchCase="'object'">
-                <ng-template
-                  *ngTemplateOutlet="
-                    cardedResultListRef;
-                    context: { object: item?.value, card_size: 'tiny' }
-                  "
-                >
-                </ng-template>
-              </span>
-              <span *ngSwitchCase="'object_array'">
-                <ng-template
-                  *ngTemplateOutlet="
-                    cardedResultListRef;
-                    context: { object: (item?.value)[0], card_size: 'tiny' }
-                  "
-                >
-                </ng-template>
-              </span>
-            </span>
-          </nb-list-item>
-        </nb-list>
-      </nb-card-body>
-    </nb-card>
-  </ng-template>
 </ng-container>

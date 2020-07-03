@@ -22,6 +22,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { DebounceClickDirective } from 'src/app/@theme/directives/app-debounce-click.directive';
 
 import * as echarts from 'echarts';
+import { JobResultViewerComponent } from './job-result/job-result-viewer/job-result-viewer.component';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import * as echarts from 'echarts';
     TagsRenderComponent,
     EchartsPieComponent,
     DebounceClickDirective,
+    JobResultViewerComponent,
   ],
   providers: [JobService],
 })
