@@ -14,23 +14,17 @@
               {{ jobTableData?.observable_name }}
             </span>
             <span>
-              <!-- Download Sample btn -->
-              <nb-icon
+              <a
                 *ngIf="jobTableData['is_sample']"
-                class="dl-btn"
-                nbTooltip="Download File"
-                icon="download-outline"
-                (click)="getJobSample()"
-              ></nb-icon>
-              <!-- Raw JSON -->
-              <nb-icon
-                class="dl-btn"
-                nbTooltip="View raw JSON"
-                icon="code-outline"
-                (click)="getJobRawJson()"
+                id="dl-file-link"
+                target="_blank"
+                [attr.href]="jobTableData?.file"
               >
-              </nb-icon>
-              <!-- Job Status Icon -->
+                <nb-icon
+                  nbTooltip="Download File"
+                  icon="download-outline"
+                ></nb-icon>
+              </a>
               <intelowl-job-status-icon
                 [value]="jobTableData?.status"
                 rowData=""
@@ -66,8 +60,16 @@
             </nb-list-item>
             <!-- Observable or File ? -->
             <nb-list-item *ngIf="!jobTableData['is_sample']">
+              Observable
+              <strong>{{ jobTableData?.observable_name }}</strong>
+            </nb-list-item>
+            <nb-list-item *ngIf="!jobTableData['is_sample']">
               Classification
               <strong>{{ jobTableData?.observable_classification }}</strong>
+            </nb-list-item>
+            <nb-list-item *ngIf="jobTableData['is_sample']">
+              File Name
+              <strong>{{ jobTableData?.file_name }}</strong>
             </nb-list-item>
             <nb-list-item *ngIf="jobTableData['is_sample']">
               File Mimetype
@@ -97,16 +99,6 @@
                 >{{ jobTableData?.job_process_time | timing }} minutes</strong
               >
             </nb-list-item>
-            <!-- Force Privacy -->
-            <nb-list-item>
-              Force Privacy
-              <strong>{{ jobTableData?.force_privacy }}</strong>
-            </nb-list-item>
-            <!-- Disable External Analyzers -->
-            <nb-list-item>
-              Disable External Analyzers
-              <strong>{{ jobTableData?.disable_external_analyzers }}</strong>
-            </nb-list-item>
             <!-- Errors -->
             <nb-list-item>
               Errors
@@ -119,26 +111,11 @@
 
     <!-- Job Analysis Result Table -->
     <div class="col-md-7">
-      <nb-alert *ngIf="jobTableData?.status === 'running'" status="info">
-        <span><nb-icon icon="info-outline"></nb-icon></span>
-        <span
-          >This analysis is still running. The result is synced with the server
-          every 5 seconds.</span
-        >
-      </nb-alert>
       <nb-card>
-        <nb-card-header class="d-flex justify-content-between">
-          <span>Analysis Reports</span>
-          <span
-            >completed: {{ tableDataSource.count() }}/{{
-              jobTableData?.analyzers_to_execute.length
-            }}</span
-          >
-        </nb-card-header>
         <nb-card-body>
           <ng2-smart-table
             (userRowSelect)="onRowSelect($event)"
-            [settings]="tableSettings"
+            [settings]="settings"
             [source]="tableDataSource"
           >
           </ng2-smart-table>

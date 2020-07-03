@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { NbToastrService } from '@nebular/theme';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ToastService {
   private config = {
     destroyByClick: true,

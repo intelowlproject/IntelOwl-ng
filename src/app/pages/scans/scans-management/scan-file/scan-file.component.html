@@ -1,20 +1,16 @@
 <div ngForm="fileScanForm" #fileScanForm="ngForm">
   <intelowl-base-scan [scanForm]="fileScanForm" [formData]="formData">
-    <div class="form-group row d-flex align-items-center p-0">
-      <div class="col-md-6">
-        <!-- File Input field -->
-        <label for="file" class="label form-control-label">Select File</label>
-        <input
-          nbInput
-          fullWidth
-          (change)="handleFileInput($event.target.files)"
-          required="true"
-          type="file"
-        />
-      </div>
+    <label for="file" class="label form-control-label">Select File</label>
+    <input
+      nbInput
+      fullWidth
+      (change)="handleFileInput($event.target.files)"
+      required="true"
+      type="file"
+    />
 
+    <div class="form-group row col-12 p-0">
       <div class="col-md-6">
-        <!-- File Name field -->
         <label for="file_name" class="label form-control-label"
           >File Name</label
         >
@@ -24,6 +20,20 @@
           disabled
           [(ngModel)]="formData.file_name"
           name="file_name"
+          required="true"
+          type="text"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="file_mimetype" class="label form-control-label"
+          >File Mimetype</label
+        >
+        <input
+          nbInput
+          fullWidth
+          disabled
+          [(ngModel)]="formData.file_mimetype"
+          name="file_mimetype"
           required="true"
           type="text"
         />

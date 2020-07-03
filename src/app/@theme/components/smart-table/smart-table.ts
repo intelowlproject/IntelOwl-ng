@@ -1,15 +1,6 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
 import { Router } from '@angular/router';
-import { Tag } from 'src/app/@core/models/models';
 
 // Job Status Icon Renderer
 @Component({
@@ -19,28 +10,18 @@ import { Tag } from 'src/app/@core/models/models';
       [nbTooltip]="value"
       [icon]="iconName"
       [status]="iconStatus"
+      pack="eva"
     ></nb-icon>
   `,
 })
-export class JobStatusIconRenderComponent
-  implements ViewCell, OnInit, OnChanges {
+export class JobStatusIconRenderComponent implements ViewCell, OnInit {
   iconName: string;
   iconStatus: string;
 
   @Input() value: string;
   @Input() rowData: any;
 
-  ngOnInit(): void {
-    this.getIconNameStatus();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.value.previousValue !== changes.value.currentValue) {
-      this.getIconNameStatus();
-    }
-  }
-
-  private getIconNameStatus(): void {
+  ngOnInit() {
     const value = this.value.toString();
     if (
       value === 'true' ||
@@ -65,7 +46,12 @@ export class JobStatusIconRenderComponent
 // Tick/Cross Render Component
 @Component({
   template: `
-    <nb-icon *ngIf="iconName" [icon]="iconName" [status]="iconStatus"></nb-icon>
+    <nb-icon
+      *ngIf="iconName"
+      [icon]="iconName"
+      [status]="iconStatus"
+      pack="eva"
+    ></nb-icon>
     <span *ngIf="!iconName">{{ value }}</span>
   `,
 })
@@ -77,11 +63,14 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
   @Input() rowData: any;
 
   ngOnInit() {
+    if (this.value === 'N/A') {
+      return;
+    }
     const value = this.value.toString();
-    if (value && value === 'true') {
+    if (value === 'true') {
       this.iconName = 'checkmark-circle-2-outline';
       this.iconStatus = 'success';
-    } else {
+    } else if (value === 'false') {
       this.iconName = 'close-circle-outline';
       this.iconStatus = 'danger';
     }
@@ -118,19 +107,17 @@ export class ViewResultButtonComponent implements ViewCell {
   selector: 'intelowl-job-tags',
   template: `
     <strong
-      style="color: white; background-color: {{ tag?.color }};"
-      class="p-1 mx-1 badge cursor-pointer"
-      (click)="onTagClick.emit(tag)"
+      style="color: white; background-color: {{ tag.color }};"
+      class="p-1 mx-1 badge"
       *ngFor="let tag of value"
     >
-      {{ tag?.label }}
+      {{ tag.label }}
     </strong>
   `,
 })
 export class TagsRenderComponent implements ViewCell {
   @Input() value: any; // this will be an array of tag objects
-  @Input() rowData: any = null;
-  @Output() onTagClick: EventEmitter<Tag> = new EventEmitter();
+  @Input() rowData: any;
 }
 
 // JSON Object Renderer

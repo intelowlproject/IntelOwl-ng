@@ -1,41 +1,88 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
-import { IUser } from '../models/models';
-import { AuthService, JWTToken } from './auth.service';
+import { NbAuthService } from '@nebular/auth';
+import { Subject } from 'rxjs';
+import { HttpService } from './http.service';
+import { IndexedDbService } from './indexdb.service';
+import { CookieService } from 'ngx-cookie-service';
+import { User } from '../models/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
-  private _user$: ReplaySubject<IUser> = new ReplaySubject(1) as ReplaySubject<
-    IUser
-  >;
+export class UserService extends HttpService<any> {
+  user$: Subject<any> = new Subject() as Subject<any>;
 
-  constructor(private readonly authService: AuthService) {
-    this.authService.onTokenChange$.subscribe(async (token: JWTToken) => {
-      if (token) {
-        this.init(token.getPayload());
+  constructor(
+    private _httpClient: HttpClient,
+    private nbAuth: NbAuthService,
+    public indexDB: IndexedDbService,
+    private cookieService: CookieService
+  ) {
+    super(
+      _httpClient,
+      {
+        path: '/',
+      },
+      indexDB
+    );
+
+    this.nbAuth.onTokenChange().subscribe((res) => {
+      if (res.getValue()) {
+        this.init().then();
       }
     });
   }
 
-  get user$(): Observable<IUser> {
-    return this._user$.asObservable();
+  async getUserInfo(): Promise<User> {
+    return this.query({}, 'auth/user');
   }
 
-  private async init(tokenPayload: any) {
+  async init() {
     try {
-      const user: IUser = {
-        id: tokenPayload.user_id,
-        username: tokenPayload.username,
-      } as IUser;
-      this._user$.next(user);
+      const user = await this.getUserInfo();
+      this.indexDB
+        .getTableInstance('user')
+        .clear()
+        .then(() => {
+          this.indexDB.addOrReplaceOne('user', user);
+        });
+      this.user$.next(user);
     } catch (e) {
       console.error(e);
+      if (localStorage.getItem('auth_app_token') && e.status >= 500) {
+        this.offlineInit();
+      } else {
+        this.logOut();
+      }
     }
   }
 
-  async logOut() {
-    await this.authService.logout();
+  offlineInit() {
+    this.indexDB
+      .getTableInstance('user')
+      .limit(1)
+      .first()
+      .then((res) => {
+        this.user$.next(res);
+      });
+  }
+
+  logOut() {
+    this.nbAuth.logout('email').subscribe(
+      () => {
+        this.cookieService.deleteAll();
+        localStorage.removeItem('auth_app_token');
+        this.indexDB.getTableInstance('user').clear();
+        location.reload();
+      },
+      () => {
+        this.cookieService.deleteAll();
+        document.cookie = null;
+        localStorage.removeItem('auth_app_token');
+        this.indexDB.getTableInstance('user').clear();
+        location.reload();
+      }
+    );
   }
 }

@@ -4,6 +4,7 @@ import { EchartsTreeComponent } from '../../@theme/components/echarts-tree/echar
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AnalyzersManagementComponent } from './analyzers-management/analyzers-management.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { AnalyzerConfigService } from '../../@core/services/analyzer-config.service';
 import { AnalyzersRoutingModule } from './analyzers-routing.module';
 import { AnalyzersTableComponent } from './analyzers-management/analyzers-table/analyzers-table.component';
 import { AnalyzersTreeComponent } from './analyzers-management/analyzers-tree/analyzers-tree.component';
@@ -29,5 +30,6 @@ import { ThemeModule } from '../../@theme/theme.module';
     TickCrossRenderComponent,
     JSONRenderComponent,
   ],
+  providers: [AnalyzerConfigService],
 })
 export class AnalyzersModule {}

@@ -28,13 +28,13 @@ Built with [Angular 9](https://github.com/angular/angular) on top of [ngx-admin]
     - “Save as PNG” feature for the graphs. 
 - Job result can be viewed as a nested list or prettified JSON. 
 - [`analyzer_config.json`](https://github.com/intelowlproject/IntelOwl/blob/master/configuration/analyzer_config.json) 
-from IntelOwl in a tabular view which can be filtered, sorted or searched through. Along with this, there's also a dendogram-tree view. 
+from IntelOwl in a tabular view which can be filtered, sorted or searched through. Along with this, there's also a dendogram tree view. 
 - Requesting new analysis/scans with simple-to-use forms. They take care of warnings for you and 
 also lets you specify tags to group different analysis' together.
 
 ## Docker
 
-IntelOwl-ng's Docker image on [Dockerhub](https://hub.docker.com/r/intelowlproject/intelowl_ng) is a data-only image. In other terms, it's a scratch image that contains only the final production build artifacts and cannot be started as a container. This makes the image super light-weight i.e. ~7 mb uncompressed and we can use Docker's multi-stage builds to inject these build artifacts into another base container such as `nginx`. Official [example](https://github.com/intelowlproject/IntelOwl/blob/develop/Dockerfile_nginx) from Intel Owl repository.
+IntelOwl-ng's Docker image on [Dockerhub](https://hub.docker.com/r/intelowlproject/intelowl_ng) is a data-only image. In other terms, it's a scratch image that contains only the final production build artifacts and cannot be started as a container. This makes the image super light-weight i.e. ~10 mb uncompressed and we can use Docker's multi-stage builds to inject these build artifacts into another base container such as `nginx`. Official [example](https://github.com/intelowlproject/IntelOwl/blob/develop/Dockerfile_nginx) from Intel Owl repository.
 
 > You should never need to build/start this docker image yourself, you should always use the docker-compose files from main IntelOwl repository.
 
@@ -57,8 +57,8 @@ $ cd intelowl-ng/
 
 - [node.js](https://github.com/nodejs/node):
 `v12.18.0` (Latest LTS)
-- any one of: [yarn](https://github.com/yarnpkg/yarn): `v1.22.4` or [npm](https://github.com/npm/npm)
-  for package management.
+- [yarn](https://github.com/yarnpkg/yarn): `v1.22.4`
+- [Angular CLI](https://github.com/angular/angular-cli): `v9.1.7`
 
 ##### Install packages
 
@@ -111,7 +111,7 @@ Dockerfile                   multi-staged Dockerfile
 ##### Libraries
 
 - [Angular](https://angular.io)
-- [Nebular](https://akveo.github.io/nebular/5.1.0/) - `v5.1.0`
+- [Nebular](https://akveo.github.io/nebular/4.6.0/)
 - [ngx-admin](https://github.com/akveo/ngx-admin)
 - [RxJS](http://reactivex.io/rxjs)
 - [Eva Icons](https://akveo.github.io/eva-icons/)

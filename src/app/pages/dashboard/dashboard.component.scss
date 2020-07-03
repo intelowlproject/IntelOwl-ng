@@ -9,24 +9,17 @@ nb-card-header {
   justify-content: space-between;
 }
 
+nb-alert {
+  width: fit-content;
+  display: inline-block !important;
+  font-size: smaller;
+  padding: 0.6rem;
+}
+
+nb-alert span {
+  margin: 0 3px;
+}
+
 .cursor-pointer {
   cursor: pointer;
-}
-
-#sync-btn {
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.rotate {
-  animation: rotate 1s ease-in-out 0s;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

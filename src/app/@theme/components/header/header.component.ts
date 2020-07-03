@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   NbMenuItem,
   NbMenuService,
@@ -12,22 +12,21 @@ import { filter, map } from 'rxjs/operators';
   selector: 'ngx-header',
   styleUrls: ['./header.component.scss'],
   templateUrl: './header.component.html',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class HeaderComponent implements OnInit {
   userMenu: NbMenuItem[] = [
     { title: 'Django Admin Interface' },
     { title: 'Log out' },
   ];
-  isDarkTheme: boolean;
+  isDarkTheme: boolean = true;
 
   constructor(
     private sidebarService: NbSidebarService,
     private nbMenuService: NbMenuService,
     public userService: UserService,
     private themeService: NbThemeService
-  ) {
-    this.isDarkTheme = HeaderComponent.getThemeName() === 'dark' ? true : false;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.nbMenuService
@@ -56,7 +55,6 @@ export class HeaderComponent implements OnInit {
   changeTheme(toggleFlag: boolean): void {
     let themeName: string;
     toggleFlag ? (themeName = 'dark') : (themeName = 'default');
-    localStorage.setItem('themeName', themeName);
     this.themeService.changeTheme(themeName);
   }
 
@@ -68,9 +66,5 @@ export class HeaderComponent implements OnInit {
   navigateHome(): boolean {
     this.nbMenuService.navigateHome();
     return false;
-  }
-
-  static getThemeName(): string {
-    return localStorage.getItem('themeName') || 'dark';
   }
 }
