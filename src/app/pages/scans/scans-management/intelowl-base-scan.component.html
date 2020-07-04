@@ -8,6 +8,7 @@
         <nb-toggle
           size="tiny"
           labelPosition="start"
+          nbTooltip="by default an analysis won't be repeated if already available. Enable this flag to force a new evaluation/analysis from scratch"
           [(checked)]="forceNewScanBool"
           >Force New Scan</nb-toggle
         >
@@ -21,13 +22,12 @@
               <ng-content></ng-content>
               <!-- /Form specific fields -->
 
-              <div
-                *ngIf="!isNotError816()"
-                class="alert alert-danger mt-3 flex-wrap"
-              >
-                either you specify a list of requested analyzers or the
-                'run_all_available_analyzers' parameter, not both.
-              </div>
+              <ng-container *ngIf="!isNotError816()">
+                <p class="caption status-danger">
+                  either you specify a list of requested analyzers or the
+                  'run_all_available_analyzers' parameter, not both.
+                </p>
+              </ng-container>
 
               <div class="form-group">
                 <nb-checkbox

@@ -11,6 +11,7 @@ import {
   NbToggleModule,
   NbPopoverModule,
   NbSpinnerModule,
+  NbTooltipModule,
 } from '@nebular/theme';
 import {
   ScansManagementComponent,
@@ -43,6 +44,7 @@ import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagge
     NbRouteTabsetModule,
     NbPopoverModule,
     NbSpinnerModule,
+    NbTooltipModule,
   ],
   providers: [ScanService],
 })

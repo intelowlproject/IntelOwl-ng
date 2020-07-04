@@ -51,9 +51,14 @@
     <span>Click on a pie-chart slice to filter jobs list</span>
   </nb-alert>
 
-  <nb-alert status="info">
+  <nb-alert class="mr-3" status="info">
     <span><nb-icon icon="bulb-outline"></nb-icon></span>
     <span>Click on a pie-chart legend to disable it</span>
+  </nb-alert>
+
+  <nb-alert status="info">
+    <span><nb-icon icon="bulb-outline"></nb-icon></span>
+    <span>Click on a tag in table to only show jobs with that tag</span>
   </nb-alert>
 
   <!-- Table -->
@@ -62,16 +67,27 @@
     <div class="col-sm-12">
       <nb-card fullWidth>
         <nb-card-header>
-          <span>Jobs</span>
+          <span>Jobs - count: {{ source.count() }}</span>
           <span *ngIf="filterEl !== null"
             ><strong>{{ filterField }}: {{ filterEl }}</strong></span
           >
-          <nb-icon
-            class="cursor-pointer"
-            nbTooltip="Reset Filters"
-            (click)="refresh()"
-            icon="sync-outline"
-          ></nb-icon>
+          <span>
+            <nb-icon
+              id="sync-btn"
+              [ngClass]="{ rotate: iconRotateBool }"
+              (click)="iconRotateBool = true"
+              nbTooltip="Sync with server"
+              appDebounceClick
+              (debounceClick)="debouncedSync()"
+              icon="sync-outline"
+            ></nb-icon>
+            <nb-icon
+              class="cursor-pointer"
+              nbTooltip="Reset Filters"
+              (click)="resetFilters()"
+              icon="refresh-outline"
+            ></nb-icon>
+          </span>
         </nb-card-header>
         <nb-card-body>
           <ng2-smart-table [settings]="settings" [source]="source">

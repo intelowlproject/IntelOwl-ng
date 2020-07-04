@@ -1,37 +1,41 @@
-import { Inject, Injectable, Injector } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import {
-  NB_AUTH_TOKEN_INTERCEPTOR_FILTER,
-  NbAuthService,
-  NbAuthSimpleToken,
-} from '@nebular/auth';
 import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { AuthService, JWTToken } from './auth.service';
 
 @Injectable()
-export class Interceptor implements HttpInterceptor {
-  constructor(
-    private injector: Injector,
-    @Inject(NB_AUTH_TOKEN_INTERCEPTOR_FILTER) protected filter
-  ) {}
+export class JWTInterceptor implements HttpInterceptor {
+  constructor(private injector: Injector) {}
+
+  filterReqs(req: HttpRequest<any>) {
+    if (
+      req.url === '/api/auth/refresh-token' ||
+      req.url === '/api/auth/login'
+    ) {
+      return true;
+    } else if (req.url.startsWith('/api/')) {
+      return false;
+    }
+    return true;
+  }
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     // do not intercept request whose urls are filtered by the injected filter
-    if (!this.filter(req)) {
+    if (!this.filterReqs(req)) {
       return this.authService.isAuthenticatedOrRefresh().pipe(
-        switchMap((authenticated) => {
+        switchMap((authenticated: boolean) => {
           if (authenticated) {
-            return this.authService.getToken().pipe(
-              switchMap((token: NbAuthSimpleToken) => {
-                // const JWT = `${JSON.parse(token.getValue())[0]}`;
+            return this.authService.getAccessToken().pipe(
+              switchMap((token: JWTToken) => {
                 req = req.clone({
                   setHeaders: {
                     Authorization: `Token ${token.getValue()}`,
@@ -52,7 +56,7 @@ export class Interceptor implements HttpInterceptor {
     }
   }
 
-  protected get authService(): NbAuthService {
-    return this.injector.get(NbAuthService);
+  protected get authService(): AuthService {
+    return this.injector.get(AuthService);
   }
 }

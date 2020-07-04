@@ -14,17 +14,23 @@
               {{ jobTableData?.observable_name }}
             </span>
             <span>
-              <a
+              <!-- Download Sample btn -->
+              <nb-icon
                 *ngIf="jobTableData['is_sample']"
-                id="dl-file-link"
-                target="_blank"
-                [attr.href]="jobTableData?.file"
+                class="dl-btn"
+                nbTooltip="Download File"
+                icon="download-outline"
+                (click)="getJobSample()"
+              ></nb-icon>
+              <!-- Raw JSON -->
+              <nb-icon
+                class="dl-btn"
+                nbTooltip="View raw JSON"
+                icon="code-outline"
+                (click)="getJobRawJson()"
               >
-                <nb-icon
-                  nbTooltip="Download File"
-                  icon="download-outline"
-                ></nb-icon>
-              </a>
+              </nb-icon>
+              <!-- Job Status Icon -->
               <intelowl-job-status-icon
                 [value]="jobTableData?.status"
                 rowData=""
@@ -60,16 +66,8 @@
             </nb-list-item>
             <!-- Observable or File ? -->
             <nb-list-item *ngIf="!jobTableData['is_sample']">
-              Observable
-              <strong>{{ jobTableData?.observable_name }}</strong>
-            </nb-list-item>
-            <nb-list-item *ngIf="!jobTableData['is_sample']">
               Classification
               <strong>{{ jobTableData?.observable_classification }}</strong>
-            </nb-list-item>
-            <nb-list-item *ngIf="jobTableData['is_sample']">
-              File Name
-              <strong>{{ jobTableData?.file_name }}</strong>
             </nb-list-item>
             <nb-list-item *ngIf="jobTableData['is_sample']">
               File Mimetype
@@ -99,6 +97,16 @@
                 >{{ jobTableData?.job_process_time | timing }} minutes</strong
               >
             </nb-list-item>
+            <!-- Force Privacy -->
+            <nb-list-item>
+              Force Privacy
+              <strong>{{ jobTableData?.force_privacy }}</strong>
+            </nb-list-item>
+            <!-- Disable External Analyzers -->
+            <nb-list-item>
+              Disable External Analyzers
+              <strong>{{ jobTableData?.disable_external_analyzers }}</strong>
+            </nb-list-item>
             <!-- Errors -->
             <nb-list-item>
               Errors
@@ -111,11 +119,26 @@
 
     <!-- Job Analysis Result Table -->
     <div class="col-md-7">
+      <nb-alert *ngIf="jobTableData?.status === 'running'" status="info">
+        <span><nb-icon icon="info-outline"></nb-icon></span>
+        <span
+          >This analysis is still running. The result is synced with the server
+          every 5 seconds.</span
+        >
+      </nb-alert>
       <nb-card>
+        <nb-card-header class="d-flex justify-content-between">
+          <span>Analysis Reports</span>
+          <span
+            >completed: {{ tableDataSource.count() }}/{{
+              jobTableData?.analyzers_to_execute.length
+            }}</span
+          >
+        </nb-card-header>
         <nb-card-body>
           <ng2-smart-table
             (userRowSelect)="onRowSelect($event)"
-            [settings]="settings"
+            [settings]="tableSettings"
             [source]="tableDataSource"
           >
           </ng2-smart-table>
@@ -127,66 +150,39 @@
   <!-- Selected Row's Result/Error -->
 
   <nb-card id="selected-row-report" fullWidth>
-    <nb-card-header>
-      Selected: <strong>{{ selectedRowName }}</strong>
+    <nb-card-header class="d-flex justify-content-between">
+      <span
+        >Selected: <strong>{{ selectedRowName }}</strong></span
+      >
+      <button
+        nbButton
+        status="primary"
+        size="tiny"
+        shape="round"
+        (click)="selectedResultExpandAllBool = !selectedResultExpandAllBool"
+      >
+        expand/collapse all rows
+      </button>
     </nb-card-header>
     <nb-card-body>
       <nb-tabset>
-        <!-- Carded List view -->
-        <nb-tab tabIcon="list-outline">
-          <ng-template
-            *ngTemplateOutlet="
-              cardedResultListRef;
-              context: { object: selectedRowData, card_size: 'large' }
-            "
-          >
-          </ng-template>
-        </nb-tab>
         <nb-tab tabIcon="code-outline">
-          <!-- JSON view -->
+          <!-- JSON/code view -->
           <div id="result-json-viewer">
-            <ngx-json-viewer [json]="selectedRowData"></ngx-json-viewer>
+            <ngx-json-viewer
+              [json]="selectedRowData"
+              [expanded]="selectedResultExpandAllBool"
+            ></ngx-json-viewer>
           </div>
+        </nb-tab>
+        <!-- Accordion/Carded List view -->
+        <nb-tab tabIcon="list-outline">
+          <intelowl-job-result-viewer
+            [data]="selectedRowData"
+            [expanded]="selectedResultExpandAllBool"
+          ></intelowl-job-result-viewer>
         </nb-tab>
       </nb-tabset>
     </nb-card-body>
   </nb-card>
-
-  <!-- Here be dragons. DO NOT TOUCH. -->
-  <!-- Template used to recurse over job's JSON report for carded list view -->
-
-  <ng-template #cardedResultListRef let-obj="object" let-size="card_size">
-    <nb-card [size]="size">
-      <nb-card-body>
-        <nb-list>
-          <nb-list-item *ngFor="let item of obj | keyvalue">
-            <strong style="font-size: smaller;">{{ item?.key }}</strong>
-            <span [ngSwitch]="getObjectType(item?.value)">
-              <span class="text-json" *ngSwitchCase="'string'">{{
-                item?.value | json
-              }}</span>
-              <span *ngSwitchCase="'object'">
-                <ng-template
-                  *ngTemplateOutlet="
-                    cardedResultListRef;
-                    context: { object: item?.value, card_size: 'tiny' }
-                  "
-                >
-                </ng-template>
-              </span>
-              <span *ngSwitchCase="'object_array'">
-                <ng-template
-                  *ngTemplateOutlet="
-                    cardedResultListRef;
-                    context: { object: (item?.value)[0], card_size: 'tiny' }
-                  "
-                >
-                </ng-template>
-              </span>
-            </span>
-          </nb-list-item>
-        </nb-list>
-      </nb-card-body>
-    </nb-card>
-  </ng-template>
 </ng-container>

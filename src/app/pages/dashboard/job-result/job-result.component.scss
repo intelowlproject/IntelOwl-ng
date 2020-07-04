@@ -1,10 +1,13 @@
 nb-list-item {
-  display: flex;
   padding: 0.5rem;
-  align-items: center !important;
-  align-content: center !important;
-  justify-content: space-between;
   margin: 0 !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between;
+}
+
+.nested-collapsible-row {
+  width: 95%;
 }
 
 #result-json-viewer {
@@ -16,9 +19,8 @@ nb-list-item {
   box-shadow: 0 0.5px 2px 0.5px #000;
 }
 
-#dl-file-link {
-  margin-right: 5px;
+.dl-btn {
+  margin-right: 6.5px;
   cursor: pointer;
-  text-decoration: none;
   color: inherit;
 }
