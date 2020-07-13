@@ -5,7 +5,6 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/intelowlproject/intelowl-ng/badge)](https://www.codefactor.io/repository/github/intelowlproject/intelowl-ng)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-
 Official web client for [Intel Owl](https://github.com/intelowlproject/intelowl), a scalable API which gathers
 threat intelligence data about a particular file or observable (ip, domain, url,
 hash) by querying many different analyzers and services that are externally or

@@ -17,6 +17,9 @@
 @import "./layout";
 @import "./overrides";
 
+// JSON editor
+@import "~jsoneditor/dist/jsoneditor.min.css";
+
 // install the framework and custom global styles
 @include nb-install() {
   // framework global styles

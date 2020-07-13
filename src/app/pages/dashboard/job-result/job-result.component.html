@@ -149,40 +149,15 @@
 
   <!-- Selected Row's Result/Error -->
 
-  <nb-card id="selected-row-report" fullWidth>
-    <nb-card-header class="d-flex justify-content-between">
-      <span
-        >Selected: <strong>{{ selectedRowName }}</strong></span
-      >
-      <button
-        nbButton
-        status="primary"
-        size="tiny"
-        shape="round"
-        (click)="selectedResultExpandAllBool = !selectedResultExpandAllBool"
-      >
-        expand/collapse all rows
-      </button>
+  <nb-card size="giant" id="selected-row-report" fullWidth>
+    <nb-card-header>
+      Selected: <strong>{{ selectedRowName }}</strong>
     </nb-card-header>
     <nb-card-body>
-      <nb-tabset>
-        <nb-tab tabIcon="code-outline">
-          <!-- JSON/code view -->
-          <div id="result-json-viewer">
-            <ngx-json-viewer
-              [json]="selectedRowData"
-              [expanded]="selectedResultExpandAllBool"
-            ></ngx-json-viewer>
-          </div>
-        </nb-tab>
-        <!-- Accordion/Carded List view -->
-        <nb-tab tabIcon="list-outline">
-          <intelowl-job-result-viewer
-            [data]="selectedRowData"
-            [expanded]="selectedResultExpandAllBool"
-          ></intelowl-job-result-viewer>
-        </nb-tab>
-      </nb-tabset>
+      <!-- JSON/code view -->
+      <div id="result-json-viewer">
+        <json-editor [options]="editorOptions"></json-editor>
+      </div>
     </nb-card-body>
   </nb-card>
 </ng-container>
