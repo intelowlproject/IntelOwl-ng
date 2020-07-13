@@ -22,6 +22,8 @@ export class ScansManagementComponent {
     },
   ];
   constructor(public readonly scanService: ScanService) {}
+
+  public trackByFn = (index, item) => item.jobId;
 }
 
 @Component({
