@@ -6,21 +6,28 @@ nb-list-item {
   justify-content: space-between;
 }
 
-.nested-collapsible-row {
-  width: 95%;
-}
-
-#result-json-viewer {
-  margin: 0;
-  background-color: #fff !important;
-  padding: 5px;
-  border: 1px solid #000;
-  border-radius: 4px;
-  box-shadow: 0 0.5px 2px 0.5px #000;
-}
-
 .dl-btn {
   margin-right: 6.5px;
   cursor: pointer;
   color: inherit;
+}
+
+// JSON Editor
+
+#result-json-viewer {
+  margin: 0;
+  padding: 0;
+  background-color: #fff !important;
+  box-shadow: 0 0.5px 2px 0.5px #000;
+}
+
+:host ::ng-deep json-editor,
+:host ::ng-deep json-editor .jsoneditor,
+:host ::ng-deep json-editor > div,
+:host ::ng-deep json-editor jsoneditor-outer {
+  height: 600px;
+}
+
+:host ::ng-deep json-editor jsoneditor-text {
+  min-height: 600px;
 }

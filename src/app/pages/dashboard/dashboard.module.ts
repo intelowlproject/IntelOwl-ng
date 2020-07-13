@@ -16,13 +16,12 @@ import {
 import { JobService } from '../../@core/services/job.service';
 import { JobResultComponent } from './job-result/job-result.component';
 import { DashboardComponent } from './dashboard.component';
-import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { DebounceClickDirective } from 'src/app/@theme/directives/app-debounce-click.directive';
+import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 import * as echarts from 'echarts';
-import { JobResultViewerComponent } from './job-result/job-result-viewer/job-result-viewer.component';
 
 @NgModule({
   imports: [
@@ -34,7 +33,7 @@ import { JobResultViewerComponent } from './job-result/job-result-viewer/job-res
     NbAlertModule,
     Ng2SmartTableModule,
     NgxEchartsModule.forRoot({ echarts }),
-    NgxJsonViewerModule,
+    NgJsonEditorModule,
   ],
   declarations: [
     DashboardComponent,
@@ -44,7 +43,6 @@ import { JobResultViewerComponent } from './job-result/job-result-viewer/job-res
     TagsRenderComponent,
     EchartsPieComponent,
     DebounceClickDirective,
-    JobResultViewerComponent,
   ],
   providers: [JobService],
 })

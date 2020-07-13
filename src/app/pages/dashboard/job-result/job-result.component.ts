@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../@core/services/job.service';
 import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -14,7 +15,6 @@ import { Subscription } from 'rxjs';
 export class JobResultComponent implements OnInit, OnDestroy {
   // RxJS subscriptions
   private sub: Subscription;
-  private sub2: Subscription;
 
   // interval var
   private pollInterval: any;
@@ -68,8 +68,11 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   // row whose report/error is currently being shown
   public selectedRowName: string;
-  public selectedRowData: any;
-  public selectedResultExpandAllBool: boolean = false;
+
+  // JSON Editor
+  public editorOptions: JsonEditorOptions;
+  @ViewChild(JsonEditorComponent, { static: false })
+  editor: JsonEditorComponent;
 
   constructor(
     private readonly activateRoute: ActivatedRoute,
@@ -78,25 +81,32 @@ export class JobResultComponent implements OnInit, OnDestroy {
     this.sub = this.activateRoute.params.subscribe(
       (res) => (this.jobId = res.jobId)
     );
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.modes = ['text', 'tree'];
+    this.editorOptions.onEditable = () => false;
   }
 
   ngOnInit(): void {
     // subscribe to jobResult
     this.jobService.pollForJob(this.jobId).then(() => {
-      this.sub2 = this.jobService.jobResult$.subscribe(async (res: Job) =>
-        this.updateJobData(res)
+      this.sub.add(
+        this.jobService.jobResult$.subscribe(
+          async (res: Job) => await this.updateJobData(res)
+        )
       );
       // only called once
       this.initData();
     });
-    // poll for changes to job result, this is cancelled asap if Job.status!=running
-    this.pollInterval = setInterval(
-      () => this.jobService.pollForJob(this.jobId),
-      5000
-    );
   }
 
   private initData(): void {
+    // poll for changes to job result if status=running
+    if (this.jobTableData.status === 'running') {
+      this.pollInterval = setInterval(
+        () => this.jobService.pollForJob(this.jobId),
+        5000
+      );
+    }
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
     // ...so we show `all available analyzers` so user does not gets confused.
@@ -104,14 +114,15 @@ export class JobResultComponent implements OnInit, OnDestroy {
       .analyzers_requested.length
       ? this.jobTableData.analyzers_requested
       : 'all available analyzers';
-    // set the first row as the default selected row
-    this.selectedRowData = this.jobTableData.analysis_reports[0].report;
-    this.selectedRowName = this.jobTableData.analysis_reports[0].name;
+    // just a little helper message for the user
+    this.selectedRowName = "Click on a row in the table to view it's result!";
   }
 
   private async updateJobData(res: Job): Promise<void> {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
+    // not needed anymore
+    res.analysis_reports = null;
     if (res.status !== 'running') {
       // stop polling
       clearInterval(this.pollInterval);
@@ -142,13 +153,15 @@ export class JobResultComponent implements OnInit, OnDestroy {
   // event emitted when user clicks on a row in table
   async onRowSelect(event): Promise<void> {
     this.selectedRowName = event.data.name;
+    this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
     // if `report` exists shows report, otherwise the `errors`
-    this.selectedRowData = Object.entries(event.data.report).length
+    const json = Object.entries(event.data.report).length
       ? event.data.report
       : event.data.errors;
-    document
-      .getElementById('selected-row-report')
-      .scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.editor.update(json);
   }
 
   ngOnDestroy(): void {
@@ -156,6 +169,5 @@ export class JobResultComponent implements OnInit, OnDestroy {
     this.pollInterval && clearInterval(this.pollInterval);
     // unsubscribe to observables to prevent memory leakage
     this.sub && this.sub.unsubscribe();
-    this.sub2 && this.sub2.unsubscribe();
   }
 }
