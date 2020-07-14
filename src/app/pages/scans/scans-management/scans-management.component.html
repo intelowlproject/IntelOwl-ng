@@ -13,7 +13,7 @@
     <button
       nbButton
       class="m-2 p-2"
-      *ngFor="let scan of scanService?.recentScans$ | async"
+      *ngFor="let scan of scanService?.recentScans$ | async; trackBy: trackByFn"
       [status]="scan?.status"
       [routerLink]="['/pages/scan/result/', scan.jobId]"
     >

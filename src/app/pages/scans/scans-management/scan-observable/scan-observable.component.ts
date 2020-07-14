@@ -38,8 +38,6 @@ export class ScanObservableComponent implements OnInit, OnDestroy {
   }
 
   onObsClassificationChange() {
-    delete this.formData.analyzers_requested;
-    this.formData.analyzers_requested = [];
     switch (this.formData.observable_classification) {
       case 'ip':
         this.obsPlaceholder = '8.8.8.8';

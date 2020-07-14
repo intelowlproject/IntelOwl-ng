@@ -1,6 +1,6 @@
 <ng-container>
   <div class="row d-flex justify-content-center p-2">
-    <nb-card>
+    <nb-card style="max-width: 800px;">
       <nb-card-header class="d-flex align-items-center justify-content-between">
         <nb-toggle size="tiny" labelPosition="start" [(checked)]="formDebugBool"
           >Debug Form</nb-toggle
@@ -16,62 +16,60 @@
       </nb-card-header>
       <nb-card-body class="p-4">
         <div class="form form-horizontal">
-          <div class="row">
-            <div class="col-12">
-              <!-- Form specific fields -->
-              <ng-content></ng-content>
-              <!-- /Form specific fields -->
+          <div class="col-12">
+            <!-- Form specific fields -->
+            <ng-content></ng-content>
+            <!-- /Form specific fields -->
 
-              <ng-container *ngIf="!isNotError816()">
-                <p class="caption status-danger">
-                  either you specify a list of requested analyzers or the
-                  'run_all_available_analyzers' parameter, not both.
-                </p>
-              </ng-container>
+            <ng-container *ngIf="!isNotError816()">
+              <p class="caption status-danger">
+                either you specify a list of requested analyzers or the
+                'run_all_available_analyzers' parameter, not both.
+              </p>
+            </ng-container>
 
-              <div class="form-group">
-                <nb-checkbox
-                  class="col-md-6"
-                  [(ngModel)]="formData.force_privacy"
-                  name="force_privacy"
-                  >disable analyzers that could impact privacy
-                </nb-checkbox>
-                <nb-checkbox
-                  class="col-md-6"
-                  [(ngModel)]="formData.disable_external_analyzers"
-                  name="disable_external_analyzers"
-                  >disable analyzers that use external services
-                </nb-checkbox>
-              </div>
-
-              <div class="form-group">
-                <nb-checkbox
-                  class="col-md-6"
-                  [(ngModel)]="formData.running_only"
-                  name="running_only"
-                >
-                  check only running analysis
-                </nb-checkbox>
-                <nb-checkbox
-                  class="col-md-6"
-                  [(ngModel)]="formData.run_all_available_analyzers"
-                  name="run_all_available_analyzers"
-                >
-                  run all available analyzers
-                </nb-checkbox>
-              </div>
-
-              <!-- ngx-tagger/ Tag Selection Popover -->
-              <div class="form-group">
-                <label class="label form-control-label"
-                  >Select Tags To Apply</label
-                >
-                <ngx-tagger
-                  (tagWasClicked)="formData.tags_id = $event"
-                ></ngx-tagger>
-              </div>
-              <!--/ ngx-tagger/ Tag Selection Popover -->
+            <div class="form-group">
+              <nb-checkbox
+                class="col-md-6"
+                [(ngModel)]="formData.force_privacy"
+                name="force_privacy"
+                >disable analyzers that could impact privacy
+              </nb-checkbox>
+              <nb-checkbox
+                class="col-md-6"
+                [(ngModel)]="formData.disable_external_analyzers"
+                name="disable_external_analyzers"
+                >disable analyzers that use external services
+              </nb-checkbox>
             </div>
+
+            <div class="form-group">
+              <nb-checkbox
+                class="col-md-6"
+                [(ngModel)]="formData.running_only"
+                name="running_only"
+              >
+                check only running analysis
+              </nb-checkbox>
+              <nb-checkbox
+                class="col-md-6"
+                [(ngModel)]="formData.run_all_available_analyzers"
+                name="run_all_available_analyzers"
+              >
+                run all available analyzers
+              </nb-checkbox>
+            </div>
+
+            <!-- ngx-tagger/ Tag Selection Popover -->
+            <div class="form-group">
+              <label class="label form-control-label"
+                >Select Tags To Apply</label
+              >
+              <ngx-tagger
+                (tagWasClicked)="formData.tags_id = $event"
+              ></ngx-tagger>
+            </div>
+            <!--/ ngx-tagger/ Tag Selection Popover -->
           </div>
         </div>
       </nb-card-body>
