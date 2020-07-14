@@ -12,6 +12,7 @@ import {
   NbPopoverModule,
   NbSpinnerModule,
   NbTooltipModule,
+  NbDialogModule,
 } from '@nebular/theme';
 import {
   ScansManagementComponent,
@@ -22,6 +23,8 @@ import { ScanObservableComponent } from './scans-management/scan-observable/scan
 import { ScansRoutingModule } from './scans-routing.module';
 import { ScanService } from '../../@core/services/scan.service';
 import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagger.component';
+import { NgJsonEditorModule } from 'ang-jsoneditor';
+import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagge
     ScanFileComponent,
     ScanObservableComponent,
     NgxTaggerComponent,
+    AppJsonEditorComponent,
   ],
   imports: [
     ScansRoutingModule,
@@ -45,6 +49,8 @@ import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagge
     NbPopoverModule,
     NbSpinnerModule,
     NbTooltipModule,
+    NbDialogModule.forChild(),
+    NgJsonEditorModule,
   ],
   providers: [ScanService],
 })

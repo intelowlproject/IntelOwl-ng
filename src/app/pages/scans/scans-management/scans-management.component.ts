@@ -2,6 +2,11 @@ import { Component, Input } from '@angular/core';
 import { ScanService } from '../../../@core/services/scan.service';
 import { NgForm } from '@angular/forms';
 import { Md5 } from 'ts-md5';
+import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
+import { JsonEditorOptions } from 'ang-jsoneditor';
+import { NbDialogService } from '@nebular/theme';
+import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
+import { IRawAnalyzerConfig } from 'src/app/@core/models/models';
 
 @Component({
   templateUrl: './scans-management.component.html',
@@ -44,7 +49,18 @@ export class BaseScanFormComponent {
   forceNewScanBool: boolean = false;
   formDebugBool: boolean = false;
 
-  constructor(private scanService: ScanService) {}
+  // JSON Editor
+  private editorOptions: JsonEditorOptions;
+
+  constructor(
+    private readonly scanService: ScanService,
+    private readonly analyzersService: AnalyzerConfigService,
+    private dialogService: NbDialogService
+  ) {
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.modes = ['code'];
+    this.editorOptions.mode = 'code';
+  }
 
   isNotError816() {
     return (
@@ -59,6 +75,32 @@ export class BaseScanFormComponent {
         this.scanForm.form.status === 'DISABLED') &&
       this.isNotError816()
     );
+  }
+
+  configParams() {
+    const config: any[] = [];
+    this.analyzersService.rawAnalyzerConfig.forEach(
+      (ac: IRawAnalyzerConfig) => {
+        if (
+          this.formData.analyzers_requested.includes(ac.name) &&
+          ac.additional_config_params
+        ) {
+          const obj = {};
+          obj[ac.name] = ac.additional_config_params;
+          config.push(obj);
+        }
+      }
+    );
+    this.dialogService
+      .open(AppJsonEditorComponent, {
+        context: {
+          editorOptions: this.editorOptions,
+          data: config,
+        },
+        hasBackdrop: false,
+        closeOnEsc: false,
+      })
+      .onClose.subscribe((d) => (this.formData.analyzers_config = d));
   }
 
   async onScanSubmit() {
