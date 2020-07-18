@@ -51,8 +51,9 @@ export class JobService extends HttpService<any> {
 
   async pollForJob(id: number): Promise<void> {
     console.info(`Polling for Job with id: ${id}`);
-    const res: Job = await this.get(id, {}, 'jobs');
-    this._jobResult$.next(res);
+    return this.get(id, {}, 'jobs')
+      .then((res: Job) => this._jobResult$.next(res))
+      .catch(() => Promise.reject());
   }
 
   async downloadJobSample(jobId: number): Promise<string> {

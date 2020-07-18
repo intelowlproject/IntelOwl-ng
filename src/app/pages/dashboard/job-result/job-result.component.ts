@@ -13,7 +13,9 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
   styleUrls: ['./job-result.component.scss'],
 })
 export class JobResultComponent implements OnInit, OnDestroy {
-  // RxJS subscriptions
+  //
+  public isError: boolean = false;
+  // RxJS Subscription
   private sub: Subscription;
 
   // interval var
@@ -61,7 +63,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   public tableDataSource: LocalDataSource = new LocalDataSource();
 
   // Job ID whose result is being displayed
-  private jobId: number;
+  public jobId: number;
 
   // Job Data for current jobId
   public jobTableData: Job;
@@ -88,15 +90,18 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // subscribe to jobResult
-    this.jobService.pollForJob(this.jobId).then(() => {
-      this.sub.add(
-        this.jobService.jobResult$.subscribe(
-          async (res: Job) => await this.updateJobData(res)
-        )
-      );
-      // only called once
-      this.initData();
-    });
+    this.jobService
+      .pollForJob(this.jobId)
+      .then(() => {
+        this.sub.add(
+          this.jobService.jobResult$.subscribe(
+            async (res: Job) => await this.updateJobData(res)
+          )
+        );
+        // only called once
+        this.initData();
+      })
+      .catch(() => (this.isError = true));
   }
 
   private initData(): void {
@@ -129,12 +134,10 @@ export class JobResultComponent implements OnInit, OnDestroy {
       // converting date time to locale string
       const date1 = new Date(res.received_request_time);
       const date2 = new Date(res.finished_analysis_time);
-      res.received_request_time = date1.toLocaleString();
-      res.finished_analysis_time = date2.toLocaleString();
+      res.received_request_time = date1.toString();
+      res.finished_analysis_time = date2.toString();
       // calculate job process time
-      res.job_process_time = Math.abs(
-        date2.getUTCSeconds() - date1.getUTCSeconds()
-      );
+      res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
     }
     // finally assign it to our class' member variable
     this.jobTableData = res;
