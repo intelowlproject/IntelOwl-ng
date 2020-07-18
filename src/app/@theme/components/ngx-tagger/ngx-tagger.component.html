@@ -87,21 +87,19 @@
                 minlength="3"
                 name="label"
                 required="true"
-                shape="rectangle"
                 type="text"
               />
 
-              <div
+              <ng-container
                 *ngIf="label.invalid && (label.dirty || label.touched)"
-                class="alert alert-danger mt-3"
               >
-                <div *ngIf="label.errors.required">
+                <p class="caption status-danger" *ngIf="label.errors.required">
                   Label is required.
-                </div>
-                <div *ngIf="label.errors.minlength">
+                </p>
+                <p class="caption status-danger" *ngIf="label.errors.minlength">
                   Label must be at least 3 characters long.
-                </div>
-              </div>
+                </p>
+              </ng-container>
             </div>
 
             <div class="form-group">
@@ -114,7 +112,6 @@
                 [(ngModel)]="mutableTag.color"
                 name="color"
                 required="true"
-                shape="rectangle"
                 type="color"
               />
             </div>
