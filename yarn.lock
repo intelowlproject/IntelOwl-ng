@@ -6027,6 +6027,11 @@ ng2-smart-table@^1.6.0:
   dependencies:
     lodash "^4.17.10"
 
+ngx-animate@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-animate/-/ngx-animate-1.0.1.tgz#bb7275cc9f5d5b02575bc05470772f9022a41172"
+  integrity sha512-usZMhm0sX4Ptm/Ni9YmhlprD+L+zqx7xu0un8AMzxRqS6ZO5/cpd951B9VPcJ+ZmoKCRuNF3SmGLuVkft7OuhQ==
+
 ngx-dexie@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/ngx-dexie/-/ngx-dexie-1.1.0.tgz#20cb20a12ff723cf3033465364f11584b1aec12b"
