@@ -9,12 +9,23 @@ import { JobService } from '../../@core/services/job.service';
 import { Job, Tag } from '../../@core/models/models';
 import { Subscription } from 'rxjs';
 import { ToastService } from 'src/app/@core/services/toast.service';
+import { flash } from 'ngx-animate';
+import { trigger, transition, useAnimation } from '@angular/animations';
 
 @Component({
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  animations: [
+    trigger('dashboardAnimation', [
+      transition('false => true', useAnimation(flash)),
+    ]),
+  ],
 })
 export class DashboardComponent implements OnDestroy {
+  // animations
+  flashAnimBool: boolean = false;
+  private toggleAnimation = () => (this.flashAnimBool = !this.flashAnimBool);
+  // RxJS subscriptions
   private jobSub: Subscription;
   private tagSub: Subscription;
   private jobs: Job[];
@@ -189,6 +200,7 @@ export class DashboardComponent implements OnDestroy {
     // reset filters
     this.filterField = null;
     this.filterEl = null;
+    this.toggleAnimation();
     this.jobService.initOrRefresh().then(
       () =>
         this.toastr.showToast(

@@ -6,14 +6,24 @@ import { Job } from '../../../@core/models/models';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import { trigger, transition, useAnimation } from '@angular/animations';
+import { flash } from 'ngx-animate';
 
 @Component({
   selector: 'intelowl-job-result',
   templateUrl: './job-result.component.html',
   styleUrls: ['./job-result.component.scss'],
+  animations: [
+    trigger('refreshAnimation', [
+      transition('false => true', useAnimation(flash)),
+    ]),
+  ],
 })
 export class JobResultComponent implements OnInit, OnDestroy {
-  //
+  // Animation
+  flashAnimBool: boolean = false;
+  private toggleAnimation = () => (this.flashAnimBool = !this.flashAnimBool);
+  // if true, shows error template
   public isError: boolean = false;
   // RxJS Subscription
   private sub: Subscription;
@@ -126,6 +136,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
   private async updateJobData(res: Job): Promise<void> {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
+    // toggle animation
+    this.toggleAnimation();
     // not needed anymore
     res.analysis_reports = null;
     if (res.status !== 'running') {
