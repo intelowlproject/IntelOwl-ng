@@ -23,6 +23,15 @@ export class ToastService {
     }
   }
 
+  public onError(e): void {
+    const msg: string = e['detail'] ? e.detail : Object.values(e.error);
+    this.toastrService.danger(
+      `server returned: ${msg} (${e.status}: ${e.statusText})`,
+      'Scan Request Failed!',
+      this.config
+    );
+  }
+
   public infiniteNotification(
     title: string,
     message: string,

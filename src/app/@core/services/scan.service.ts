@@ -4,17 +4,13 @@ import { IndexedDbService } from './indexdb.service';
 import { HttpService } from './http.service';
 import { ObservableForm, FileForm, IRecentScan } from '../models/models';
 import { ToastService } from './toast.service';
-import { ReplaySubject, Observable } from 'rxjs';
-import { scan as rxScan, distinct } from 'rxjs/operators';
 import { JobService } from './job.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ScanService extends HttpService<any> {
-  private _recentScans$: ReplaySubject<IRecentScan> = new ReplaySubject<
-    IRecentScan
-  >(10);
+  public recentScans: Map<string | number, string> = new Map();
 
   constructor(
     private toastr: ToastService,
@@ -23,19 +19,9 @@ export class ScanService extends HttpService<any> {
     private jobService: JobService
   ) {
     super(_httpClient);
-    this.init().then();
-  }
-
-  get recentScans$(): Observable<IRecentScan[]> {
-    return this._recentScans$.asObservable().pipe(
-      distinct((rs: IRecentScan) => rs.jobId),
-      rxScan((acc, curr) => [curr, ...acc], [])
-    );
-  }
-
-  private async init(): Promise<void> {
+    // load recent scans
     this.indexedDB.getRecentScans().then((arr: IRecentScan[]) => {
-      arr.forEach((o: IRecentScan) => this._recentScans$.next(o));
+      arr.forEach((o: IRecentScan) => this.recentScans.set(o.jobId, o.status));
     });
   }
 
@@ -55,7 +41,7 @@ export class ScanService extends HttpService<any> {
         }
       }
     } catch (e) {
-      this.onError(e);
+      this.toastr.onError(e);
     }
   }
 
@@ -78,10 +64,7 @@ export class ScanService extends HttpService<any> {
     } else {
       // tslint:disable-next-line: radix
       const jobId = parseInt(answer.job_id);
-      this._recentScans$.next({
-        jobId: jobId,
-        status: 'primary',
-      } as IRecentScan);
+      this.recentScans.set(jobId, 'primary');
       this.indexedDB.addToRecentScans({
         jobId: jobId,
         status: 'primary',
@@ -119,7 +102,7 @@ export class ScanService extends HttpService<any> {
     if (res['status'] === 'accepted' || res['status'] === 'running') {
       this.onSuccess(res);
     } else {
-      this.onError(res['error']);
+      this.toastr.onError(res);
     }
   }
 
@@ -154,7 +137,7 @@ export class ScanService extends HttpService<any> {
     if (res['status'] === 'accepted' || res['status'] === 'running') {
       this.onSuccess(res);
     } else {
-      this.onError(res['error']);
+      this.toastr.onError(res);
     }
   }
 
@@ -168,22 +151,10 @@ export class ScanService extends HttpService<any> {
       'success'
     );
     // add to recent scans
-    this._recentScans$.next({
-      jobId: res.job_id,
-      status: 'success',
-    } as IRecentScan);
+    this.recentScans.set(res.job_id, 'success');
     this.indexedDB.addToRecentScans({
       jobId: res.job_id,
       status: 'success',
     } as IRecentScan);
-  }
-
-  private onError(e): void {
-    console.error(e);
-    this.toastr.showToast(
-      `backend returned: ${e['error']['error']} (${e['status']}: ${e['statusText']})`,
-      'Scan Request Failed!',
-      'error'
-    );
   }
 }
