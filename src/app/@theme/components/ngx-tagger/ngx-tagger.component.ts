@@ -22,6 +22,7 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
     label: 'label',
     color: '#ffffff',
   } as Tag;
+  private savedTag: Tag = Object.create(null);
   editMode: boolean = false;
 
   constructor(private tagService: TagService) {}
@@ -56,8 +57,9 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
   }
 
   // Tag update/create on client side
-
   editTag(event: Tag): void {
+    // save current state
+    Object.assign(this.savedTag, event);
     this.mutableTag = event;
     this.editMode = true;
   }
@@ -73,16 +75,17 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
   // Tag update/create on server
 
   async updateTag(): Promise<void> {
+    this.editMode = false;
     if (this.mutableTag.id) {
       this.tagService
         .updateTag(this.mutableTag)
-        .then((obj: Tag) => (this.mutableTag = obj));
+        .then((obj: Tag) => Object.assign(this.mutableTag, obj))
+        .catch(() => Object.assign(this.mutableTag, this.savedTag));
     } else {
       this.tagService
         .createTag(this.mutableTag)
         .then((obj: Tag) => this.tags.unshift(obj));
     }
-    this.editMode = false;
   }
 
   ngOnDestroy(): void {
