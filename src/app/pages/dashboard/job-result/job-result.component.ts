@@ -145,12 +145,12 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   async getJobSample(): Promise<void> {
     const url: string = await this.jobService.downloadJobSample(this.jobId);
-    window.open(url);
+    window.open(url, 'rel=noopener,noreferrer');
   }
 
   async getJobRawJson(): Promise<void> {
     const url: string = await this.jobService.downloadJobRawJson(this.jobId);
-    window.open(url);
+    window.open(url, 'rel=noopener,noreferrer');
   }
 
   // event emitted when user clicks on a row in table

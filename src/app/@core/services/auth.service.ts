@@ -40,16 +40,19 @@ export class AuthService extends HttpService<any> {
   }
 
   async logout(): Promise<any> {
-    await this.create(
-      {
-        refresh: this.getRefreshToken(),
-      },
-      {},
-      'auth/logout'
-    );
-    this.removeTokens();
-    this._onTokenChange$.next(null);
-    return location.reload();
+    try {
+      await this.create(
+        {
+          refresh: this.getRefreshToken(),
+        },
+        {},
+        'auth/logout'
+      );
+    } finally {
+      this.removeTokens();
+      this._onTokenChange$.next(null);
+      return location.reload();
+    }
   }
 
   private async refreshToken(): Promise<boolean> {
