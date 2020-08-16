@@ -9,12 +9,23 @@ import { JobService } from '../../@core/services/job.service';
 import { Job, Tag } from '../../@core/models/models';
 import { Subscription } from 'rxjs';
 import { ToastService } from 'src/app/@core/services/toast.service';
+import { flash } from 'ngx-animate';
+import { trigger, transition, useAnimation } from '@angular/animations';
 
 @Component({
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  animations: [
+    trigger('dashboardAnimation', [
+      transition('false => true', useAnimation(flash)),
+    ]),
+  ],
 })
 export class DashboardComponent implements OnDestroy {
+  // animations
+  flashAnimBool: boolean = false;
+  private toggleAnimation = () => (this.flashAnimBool = !this.flashAnimBool);
+  // RxJS subscriptions
   private jobSub: Subscription;
   private tagSub: Subscription;
   private jobs: Job[];
@@ -72,25 +83,15 @@ export class DashboardComponent implements OnDestroy {
         valuePrepareFunction: (c, r) =>
           r.observable_classification || r.file_mimetype,
       },
-      analyzers_requested: {
+      no_of_analyzers_executed: {
         title: 'Analyzers Called',
         width: '10%',
         filter: false,
-        valuePrepareFunction: (c, r) => {
-          const n1 = r.analyzers_to_execute.length;
-          const n2 = r.analyzers_requested.length;
-          return n2 ? `${n1}/${n2}` : 'all';
-        },
       },
       process_time: {
         title: 'Process Time (s)',
         width: '10%',
         filter: false,
-        valuePrepareFunction: (c, r) => {
-          const date1 = new Date(r.received_request_time).getUTCSeconds();
-          const date2 = new Date(r.finished_analysis_time).getUTCSeconds();
-          return Math.abs(date2 - date1);
-        },
       },
       status: {
         title: 'Success',
@@ -107,7 +108,7 @@ export class DashboardComponent implements OnDestroy {
     private readonly toastr: ToastService
   ) {
     this.jobSub = this.jobService.jobs$.subscribe(
-      async (res: Job[]) => this.initData(res),
+      (res: Job[]) => this.initData(res),
       async (err: any) =>
         this.toastr.showToast(
           err.message,
@@ -120,7 +121,9 @@ export class DashboardComponent implements OnDestroy {
   private async initData(res: Job[]): Promise<void> {
     this.jobs = res;
     if (this.jobs) {
+      // load data into table
       this.source.load(this.jobs);
+      // construct visualization data
       this.pieChartData['status'] = await this.constructPieData(
         this.jobs,
         'status'
@@ -197,6 +200,7 @@ export class DashboardComponent implements OnDestroy {
     // reset filters
     this.filterField = null;
     this.filterEl = null;
+    this.toggleAnimation();
     this.jobService.initOrRefresh().then(
       () =>
         this.toastr.showToast(

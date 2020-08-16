@@ -4,7 +4,7 @@
   </ng-container>
 
   <ng-container *ngIf="jobTableData; else loadingTemplate">
-    <div class="col-md-12 row">
+    <div [@refreshAnimation]="flashAnimBool" class="col-md-12 row">
       <!-- Job Information List -->
       <div class="col-md-5">
         <nb-card>

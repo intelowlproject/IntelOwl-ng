@@ -13,11 +13,14 @@
     <button
       nbButton
       class="m-2 p-2"
-      *ngFor="let scan of scanService?.recentScans$ | async; trackBy: trackByFn"
-      [status]="scan?.status"
-      [routerLink]="['/pages/scan/result/', scan.jobId]"
+      *ngFor="
+        let scan of scanService?.recentScans | keyvalue;
+        trackBy: trackByFn
+      "
+      [status]="scan.value"
+      [routerLink]="['/pages/scan/result/', scan.key]"
     >
-      Job #{{ scan?.jobId }}
+      Job #{{ scan.key }}
     </button>
   </div>
 </div>
