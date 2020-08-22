@@ -10,7 +10,7 @@ threat intelligence data about a particular file or observable (ip, domain, url,
 hash) by querying many different analyzers and services that are externally or
 internally available.
 
-Built with [Angular 9](https://github.com/angular/angular) on top of [ngx-admin](https://github.com/akveo/ngx-admin). 
+Built with [Angular 10](https://github.com/angular/angular) on top of [ngx-admin](https://github.com/akveo/ngx-admin). 
 
 #### Demo
 
