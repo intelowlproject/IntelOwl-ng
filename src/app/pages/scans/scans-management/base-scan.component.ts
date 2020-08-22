@@ -1,14 +1,14 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { ScanService } from '../../../@core/services/scan.service';
+import { ScanService } from 'src/app/@core/services/scan.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { IScanForm, IAnalyzersList } from 'src/app/@core/models/models';
 import { Md5 } from 'ts-md5';
-import { IScanForm, IObservableAnalyzers } from 'src/app/@core/models/models';
-import { Observable } from 'rxjs';
 import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'intelowl-base-scan',
-  templateUrl: './intelowl-base-scan.component.html',
+  templateUrl: './base-scan.component.html',
   styles: [
     `
       .json-background {
@@ -22,27 +22,21 @@ import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.se
 export class BaseScanFormComponent implements OnInit {
   @Input() scanForm: NgForm;
   @Input() formData: IScanForm;
-  // analyzers select field
-  public obsAnalyzers: IObservableAnalyzers;
-  public fileAnalyzers: string[];
-  filteredAnalyzers$: Observable<string[]>;
-  // extra
+  analyzersList: IAnalyzersList;
   isBtnDisabled: boolean = false;
   showSpinnerBool: boolean = false;
   formDebugBool: boolean = false;
 
   constructor(
     private scanService: ScanService,
-    private analyzersService: AnalyzerConfigService
+    private readonly analyzerService: AnalyzerConfigService
   ) {}
 
   ngOnInit(): void {
-    this.analyzersService.observableAnalyzers$.subscribe(
-      (obj: IObservableAnalyzers) => (this.obsAnalyzers = obj)
-    );
-    this.analyzersService.fileAnalyzers$.subscribe(
-      (arr: string[]) => (this.fileAnalyzers = arr)
-    );
+    // rxjs/first() -> take first and complete observable
+    this.analyzerService.analyzersList$
+      .pipe(first())
+      .subscribe((aList: IAnalyzersList) => (this.analyzersList = aList));
   }
 
   isNotError816() {
@@ -64,7 +58,7 @@ export class BaseScanFormComponent implements OnInit {
   async onScanSubmit(): Promise<void> {
     // spinner on
     this.showSpinnerBool = true;
-    if (this.formData.is_sample) {
+    if (this.formData.classification === 'file') {
       const fr = new FileReader();
       fr.onload = (event) => {
         this.formData.md5 = Md5.hashAsciiStr(event.target.result.toString());

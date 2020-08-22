@@ -12,6 +12,17 @@ nb-list-item {
   color: inherit;
 }
 
+:host #goto-top-btn {
+  position: fixed; /* Fixed/sticky position */
+  bottom: 30px; /* Place the button at the bottom of the page */
+  right: 45px; /* Place the button 30px from the right */
+  z-index: 99; /* Make sure it does not overlap */
+}
+
+:host #goto-top-btn:focus {
+  box-shadow: none !important;
+}
+
 // JSON Editor
 
 #result-json-viewer {

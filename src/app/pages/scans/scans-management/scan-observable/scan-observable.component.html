@@ -1,7 +1,7 @@
 <div ngForm="observableScanForm" #observableScanForm="ngForm">
   <intelowl-base-scan [scanForm]="observableScanForm" [formData]="formData">
     <nb-radio-group
-      [(ngModel)]="formData.observable_classification"
+      [(ngModel)]="formData.classification"
       (ngModelChange)="onObsClassificationChange()"
       class="d-flex justify-content-start"
       name="classifier"
@@ -14,8 +14,7 @@
 
     <div class="form-group">
       <label class="label form-control-label"
-        >Enter {{ formData.observable_classification | ngxCapitalize }} To
-        Scan</label
+        >Enter {{ formData.classification | ngxCapitalize }} To Scan</label
       >
       <input
         nbInput
@@ -31,14 +30,13 @@
       />
       <ng-container *ngIf="value.invalid && (value.dirty || value.touched)">
         <p class="caption status-danger" *ngIf="value.errors.required">
-          {{ formData.observable_classification }} is required.
+          {{ formData.classification }} is required.
         </p>
         <p class="caption status-danger" *ngIf="value.errors.minlength">
-          {{ formData.observable_classification }} must be at least 4 characters
-          long.
+          {{ formData.classification }} must be at least 4 characters long.
         </p>
         <p class="caption status-danger" *ngIf="value.errors.pattern">
-          Invalid {{ formData.observable_classification }}
+          Invalid {{ formData.classification }}
         </p>
       </ng-container>
     </div>

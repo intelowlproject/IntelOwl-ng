@@ -11,8 +11,7 @@ export class ScanObservableComponent {
 
   constructor() {
     this.formData = {
-      is_sample: false,
-      observable_classification: 'ip',
+      classification: 'ip',
       observable_name: null,
       analyzers_requested: [],
       force_privacy: false,
@@ -25,7 +24,7 @@ export class ScanObservableComponent {
   }
 
   onObsClassificationChange(): void {
-    switch (this.formData.observable_classification) {
+    switch (this.formData.classification) {
       case 'ip':
         this.obsPlaceholder = '8.8.8.8';
         this.obsPattern = '[.0-9]*';

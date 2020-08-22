@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { IScanForm } from '../../../../@core/models/models';
 
 @Component({
   templateUrl: './scan-file.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScanFileComponent {
   formData: IScanForm;
 
   constructor() {
     this.formData = {
-      is_sample: true,
+      classification: 'file',
       file: null,
       file_name: null,
       analyzers_requested: [],

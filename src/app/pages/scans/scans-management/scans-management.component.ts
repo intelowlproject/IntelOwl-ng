@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ScanService } from '../../../@core/services/scan.service';
 
 @Component({

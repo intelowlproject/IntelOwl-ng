@@ -17,22 +17,23 @@
             <!-- Analyzers select field -->
             <div class="form-group">
               <label class="label form-control-label">Select Analyzers</label>
-              <input
-                *ngIf="fileAnalyzers"
-                name="analyzers"
-                nbInput
-                type="text"
-                placeholder="Analyzers To Request"
+              <nb-select
+                *ngIf="analyzersList && formData.classification"
                 fullWidth
-                [nbAutocomplete]="autoControl"
-              />
-              <nb-autocomplete #autoControl>
+                multiple
+                [(selected)]="formData.analyzers_requested"
+                name="analyzers"
+                placeholder="Analyzers To Request"
+              >
                 <nb-option
-                  *ngFor="let analyzer of fileAnalyzers"
+                  *ngFor="
+                    let analyzer of analyzersList[formData.classification]
+                  "
                   [value]="analyzer"
-                  >{{ analyzer }}</nb-option
                 >
-              </nb-autocomplete>
+                  {{ analyzer }}
+                </nb-option>
+              </nb-select>
               <ng-container *ngIf="!isNotError816()">
                 <p class="caption status-danger">
                   either you specify a list of requested analyzers or the
@@ -40,6 +41,7 @@
                 </p>
               </ng-container>
             </div>
+            <!-- /Analyzers select field -->
 
             <!-- Additional Fields -->
             <label class="label form-control-label">Extra configuration</label>
