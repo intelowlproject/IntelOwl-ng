@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IScanForm } from '../../../../@core/models/models';
-import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
 
 @Component({
   templateUrl: './scan-file.component.html',
@@ -8,7 +7,7 @@ import { AnalyzerConfigService } from '../../../../@core/services/analyzer-confi
 export class ScanFileComponent {
   formData: IScanForm;
 
-  constructor(public readonly analyzersService: AnalyzerConfigService) {
+  constructor() {
     this.formData = {
       is_sample: true,
       file: null,

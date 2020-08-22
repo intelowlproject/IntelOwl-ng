@@ -109,8 +109,8 @@ Dockerfile                   multi-staged Dockerfile
 
 ##### Libraries
 
-- [Angular](https://angular.io)
-- [Nebular](https://akveo.github.io/nebular/5.1.0/) - `v5.1.0`
+- [Angular](https://angular.io) - `v10.x`
+- [Nebular](https://akveo.github.io/nebular/5.1.0/) - `v6.0.x`
 - [ngx-admin](https://github.com/akveo/ngx-admin)
 - [RxJS](http://reactivex.io/rxjs)
 - [Eva Icons](https://akveo.github.io/eva-icons/)

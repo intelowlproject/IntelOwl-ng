@@ -14,12 +14,32 @@
             <ng-content></ng-content>
             <!-- /Form specific fields -->
 
-            <ng-container *ngIf="!isNotError816()">
-              <p class="caption status-danger">
-                either you specify a list of requested analyzers or the
-                'run_all_available_analyzers' parameter, not both.
-              </p>
-            </ng-container>
+            <!-- Analyzers select field -->
+            <div class="form-group">
+              <label class="label form-control-label">Select Analyzers</label>
+              <input
+                *ngIf="fileAnalyzers"
+                name="analyzers"
+                nbInput
+                type="text"
+                placeholder="Analyzers To Request"
+                fullWidth
+                [nbAutocomplete]="autoControl"
+              />
+              <nb-autocomplete #autoControl>
+                <nb-option
+                  *ngFor="let analyzer of fileAnalyzers"
+                  [value]="analyzer"
+                  >{{ analyzer }}</nb-option
+                >
+              </nb-autocomplete>
+              <ng-container *ngIf="!isNotError816()">
+                <p class="caption status-danger">
+                  either you specify a list of requested analyzers or the
+                  'run_all_available_analyzers' parameter, not both.
+                </p>
+              </ng-container>
+            </div>
 
             <!-- Additional Fields -->
             <label class="label form-control-label">Extra configuration</label>

@@ -62,11 +62,12 @@ export interface IRecentScan {
   status: string;
 }
 
-export interface IObservableAnalyzers {
-  ip: any[];
-  hash: any[];
-  domain: any[];
-  url: any[];
+export interface IAnalyzersList {
+  ip: string[];
+  hash: string[];
+  domain: string[];
+  url: string[];
+  file: string[];
 }
 
 export interface IRawAnalyzerConfig {

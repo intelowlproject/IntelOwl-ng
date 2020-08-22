@@ -42,28 +42,5 @@
         </p>
       </ng-container>
     </div>
-
-    <!-- Analyzers select field -->
-    <div class="form-group">
-      <label class="label form-control-label">Select Analyzers</label>
-      <nb-select
-        *ngIf="obsAnalyzers"
-        fullWidth
-        multiple
-        [(selected)]="formData.analyzers_requested"
-        name="analyzers"
-        placeholder="Analyzers To Request"
-      >
-        <nb-option
-          *ngFor="
-            let analyzer of obsAnalyzers[formData.observable_classification]
-          "
-          [value]="analyzer?.name"
-        >
-          {{ analyzer?.name }}
-        </nb-option>
-      </nb-select>
-    </div>
-    <!-- /Analyzers select field -->
   </intelowl-base-scan>
 </div>

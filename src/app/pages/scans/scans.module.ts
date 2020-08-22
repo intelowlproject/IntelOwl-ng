@@ -12,16 +12,15 @@ import {
   NbPopoverModule,
   NbSpinnerModule,
   NbTooltipModule,
+  NbAutocompleteModule,
 } from '@nebular/theme';
-import {
-  ScansManagementComponent,
-  BaseScanFormComponent,
-} from './scans-management/scans-management.component';
+import { ScansManagementComponent } from './scans-management/scans-management.component';
 import { ScanFileComponent } from './scans-management/scan-file/scan-file.component';
 import { ScanObservableComponent } from './scans-management/scan-observable/scan-observable.component';
 import { ScansRoutingModule } from './scans-routing.module';
 import { ScanService } from '../../@core/services/scan.service';
 import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagger.component';
+import { BaseScanFormComponent } from './scans-management/intelowl-base-scan.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +44,7 @@ import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagge
     NbPopoverModule,
     NbSpinnerModule,
     NbTooltipModule,
+    NbAutocompleteModule,
   ],
   providers: [ScanService],
 })

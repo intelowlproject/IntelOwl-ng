@@ -1,22 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  IObservableAnalyzers,
-  IScanForm,
-} from '../../../../@core/models/models';
-import { Subscription } from 'rxjs';
-import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
+import { Component } from '@angular/core';
+import { IScanForm } from '../../../../@core/models/models';
 
 @Component({
   templateUrl: './scan-observable.component.html',
 })
-export class ScanObservableComponent implements OnInit, OnDestroy {
-  private sub: Subscription;
-  public obsAnalyzers: IObservableAnalyzers;
+export class ScanObservableComponent {
   public formData: IScanForm;
   public obsPlaceholder: string = '8.8.8.8';
   public obsPattern: string = '[.0-9]*';
 
-  constructor(private readonly analyzersService: AnalyzerConfigService) {
+  constructor() {
     this.formData = {
       is_sample: false,
       observable_classification: 'ip',
@@ -29,13 +22,6 @@ export class ScanObservableComponent implements OnInit, OnDestroy {
       run_all_available_analyzers: true,
       tags_id: [],
     } as IScanForm;
-  }
-
-  ngOnInit(): void {
-    this.sub = this.analyzersService.observableAnalyzers$.subscribe(
-      (res) => (this.obsAnalyzers = res),
-      (err) => console.error(err)
-    );
   }
 
   onObsClassificationChange(): void {
@@ -59,9 +45,5 @@ export class ScanObservableComponent implements OnInit, OnDestroy {
       default:
         break;
     }
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }
