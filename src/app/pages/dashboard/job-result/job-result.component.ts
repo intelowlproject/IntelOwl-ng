@@ -179,6 +179,13 @@ export class JobResultComponent implements OnInit, OnDestroy {
     this.editor.update(json);
   }
 
+  goToTop(): void {
+    document.getElementById('analysis-reports-table').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
   ngOnDestroy(): void {
     // cancel job result polling
     this.pollInterval && clearInterval(this.pollInterval);

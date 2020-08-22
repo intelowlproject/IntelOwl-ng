@@ -1,7 +1,7 @@
 <div ngForm="observableScanForm" #observableScanForm="ngForm">
   <intelowl-base-scan [scanForm]="observableScanForm" [formData]="formData">
     <nb-radio-group
-      [(ngModel)]="formData.observable_classification"
+      [(ngModel)]="formData.classification"
       (ngModelChange)="onObsClassificationChange()"
       class="d-flex justify-content-start"
       name="classifier"
@@ -14,8 +14,7 @@
 
     <div class="form-group">
       <label class="label form-control-label"
-        >Enter {{ formData.observable_classification | ngxCapitalize }} To
-        Scan</label
+        >Enter {{ formData.classification | ngxCapitalize }} To Scan</label
       >
       <input
         nbInput
@@ -31,39 +30,15 @@
       />
       <ng-container *ngIf="value.invalid && (value.dirty || value.touched)">
         <p class="caption status-danger" *ngIf="value.errors.required">
-          {{ formData.observable_classification }} is required.
+          {{ formData.classification }} is required.
         </p>
         <p class="caption status-danger" *ngIf="value.errors.minlength">
-          {{ formData.observable_classification }} must be at least 4 characters
-          long.
+          {{ formData.classification }} must be at least 4 characters long.
         </p>
         <p class="caption status-danger" *ngIf="value.errors.pattern">
-          Invalid {{ formData.observable_classification }}
+          Invalid {{ formData.classification }}
         </p>
       </ng-container>
     </div>
-
-    <!-- Analyzers select field -->
-    <div class="form-group">
-      <label class="label form-control-label">Select Analyzers</label>
-      <nb-select
-        *ngIf="obsAnalyzers"
-        fullWidth
-        multiple
-        [(selected)]="formData.analyzers_requested"
-        name="analyzers"
-        placeholder="Analyzers To Request"
-      >
-        <nb-option
-          *ngFor="
-            let analyzer of obsAnalyzers[formData.observable_classification]
-          "
-          [value]="analyzer?.name"
-        >
-          {{ analyzer?.name }}
-        </nb-option>
-      </nb-select>
-    </div>
-    <!-- /Analyzers select field -->
   </intelowl-base-scan>
 </div>

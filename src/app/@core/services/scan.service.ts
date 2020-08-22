@@ -70,7 +70,6 @@ export class ScanService extends HttpService<any> {
 
   private async _newScan(data: IScanForm, type: string): Promise<void> {
     const obj: any = {
-      is_sample: data.is_sample,
       md5: data.md5,
       analyzers_requested: data.analyzers_requested,
       run_all_available_analyzers: data.run_all_available_analyzers,
@@ -80,10 +79,12 @@ export class ScanService extends HttpService<any> {
       tags_id: data.tags_id || [],
     };
     if (type === 'observable') {
-      (obj.observable_name = data.observable_name),
-        (obj.observable_classification = data.observable_classification),
-        await this._createObservableScan(obj);
+      obj.is_sample = false;
+      obj.observable_name = data.observable_name;
+      obj.observable_classification = data.classification;
+      await this._createObservableScan(obj);
     } else {
+      obj.is_sample = true;
       obj.file_name = data.file_name;
       await this._createFileScan(obj, data.file);
     }

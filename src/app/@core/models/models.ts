@@ -1,6 +1,6 @@
 export interface IScanForm {
   tags_id: number[];
-  is_sample: boolean;
+  classification: string;
   md5?: string | Int32Array;
   analyzers_requested?: string[];
   force_privacy: boolean;
@@ -9,7 +9,6 @@ export interface IScanForm {
   run_all_available_analyzers?: boolean;
   private?: boolean;
   // for observable form
-  observable_classification?: string;
   observable_name?: string;
   // for file form
   file?: File;
@@ -62,11 +61,12 @@ export interface IRecentScan {
   status: string;
 }
 
-export interface IObservableAnalyzers {
-  ip: any[];
-  hash: any[];
-  domain: any[];
-  url: any[];
+export interface IAnalyzersList {
+  ip: string[];
+  hash: string[];
+  domain: string[];
+  url: string[];
+  file: string[];
 }
 
 export interface IRawAnalyzerConfig {

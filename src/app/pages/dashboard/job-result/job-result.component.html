@@ -138,7 +138,10 @@
           >
         </nb-alert>
         <nb-card>
-          <nb-card-header class="d-flex justify-content-between">
+          <nb-card-header
+            id="analysis-reports-table"
+            class="d-flex justify-content-between"
+          >
             <span>Analysis Reports</span>
             <span
               >completed: {{ tableDataSource.count() }}/{{
@@ -172,6 +175,17 @@
       </nb-card-body>
     </nb-card>
   </ng-container>
+
+  <button
+    nbTooltip="Scroll To Top"
+    id="goto-top-btn"
+    nbButton
+    size="medium"
+    status="info"
+    (click)="goToTop()"
+  >
+    <nb-icon icon="arrow-upward-outline"></nb-icon>
+  </button>
 </div>
 
 <ng-template #loadingTemplate>

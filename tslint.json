@@ -3,6 +3,9 @@
 		"node_modules/codelyzer"
 	],
 	"rules": {
+    "deprecation": {
+      "severity": "warning"
+    },
 		"trailing-comma": [
 			true,
 			{

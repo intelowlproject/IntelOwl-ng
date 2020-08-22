@@ -2,86 +2,81 @@ import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
 import { ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { IObservableAnalyzers, IRawAnalyzerConfig } from '../models/models';
+import { IAnalyzersList, IRawAnalyzerConfig } from '../models/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AnalyzerConfigService extends HttpService<any> {
-  public rawAnalyzerConfig: IRawAnalyzerConfig[];
-  private _observableAnalyzers$: ReplaySubject<
-    IObservableAnalyzers
-  > = new ReplaySubject<IObservableAnalyzers>() as ReplaySubject<
-    IObservableAnalyzers
-  >;
-
-  private _fileAnalyzers$: ReplaySubject<any> = new ReplaySubject<
-    any
-  >() as ReplaySubject<any>;
+  public rawAnalyzerConfig: IRawAnalyzerConfig[] = new Array();
+  private _analyzersList$: ReplaySubject<IAnalyzersList> = new ReplaySubject(1);
 
   constructor(private _httpClient: HttpClient) {
     super(_httpClient);
     this.init().then();
   }
 
-  get fileAnalyzers$() {
-    return this._fileAnalyzers$.asObservable();
-  }
-
-  get observableAnalyzers$() {
-    return this._observableAnalyzers$.asObservable();
+  get analyzersList$() {
+    return this._analyzersList$.asObservable();
   }
 
   private async init(): Promise<void> {
     try {
-      const resp: any = await this.query({}, 'get_analyzer_configs');
-      const data: any[] = Object.entries(resp).map(([k, v]) => {
-        v['name'] = k;
-        return v;
+      const resp: { [key: string]: IRawAnalyzerConfig } = await this.query(
+        {},
+        'get_analyzer_configs'
+      );
+      Object.entries(resp).forEach(([key, obj]) => {
+        obj['name'] = key;
+        if (!obj.hasOwnProperty('external_service')) {
+          obj['external_service'] = false;
+        }
+        if (!obj.hasOwnProperty('requires_configuration')) {
+          obj['requires_configuration'] = false;
+        }
+        if (!obj.hasOwnProperty('leaks_info')) {
+          obj['leaks_info'] = false;
+        }
+        if (!obj.disabled) this.rawAnalyzerConfig.push(obj);
       });
-      this.rawAnalyzerConfig = data.filter(
-        (o) => !o.disabled
-      ) as IRawAnalyzerConfig[];
-      this.parse().then(([_arr, _obj]) => {
-        this._fileAnalyzers$.next(_arr);
-        this._observableAnalyzers$.next(_obj);
-      });
+      this.makeAnalyzersList();
     } catch (e) {
       console.error(e);
     }
   }
 
-  private async parse(): Promise<any[]> {
-    const fileAnalyzersArr = [] as any[];
-    const obsAnalyzers: IObservableAnalyzers = {
+  makeAnalyzersList(): void {
+    const analyzers: IAnalyzersList = {
       ip: [],
       hash: [],
       domain: [],
       url: [],
-    } as IObservableAnalyzers;
+      file: [],
+    };
 
     this.rawAnalyzerConfig.forEach((obj) => {
+      const name = obj.name;
       if (obj['type'] === 'file') {
-        fileAnalyzersArr.push(obj);
+        analyzers['file'].push(name);
         if (obj['run_hash']) {
-          obsAnalyzers['hash'].push(obj);
+          analyzers['hash'].push(name);
         }
       } else {
         if (obj['observable_supported'].includes('ip')) {
-          obsAnalyzers['ip'].push(obj);
+          analyzers['ip'].push(name);
         }
         if (obj['observable_supported'].includes('url')) {
-          obsAnalyzers['url'].push(obj);
+          analyzers['url'].push(name);
         }
         if (obj['observable_supported'].includes('domain')) {
-          obsAnalyzers['domain'].push(obj);
+          analyzers['domain'].push(name);
         }
         if (obj['observable_supported'].includes('hash')) {
-          obsAnalyzers['hash'].push(obj);
+          analyzers['hash'].push(name);
         }
       }
     });
-    return [fileAnalyzersArr, obsAnalyzers];
+    this._analyzersList$.next(analyzers);
   }
 
   constructTableData(): any[] {
@@ -90,16 +85,6 @@ export class AnalyzerConfigService extends HttpService<any> {
         obj['supports'] = obj['observable_supported'];
       } else {
         obj['supports'] = obj['supported_filetypes'];
-      }
-      // for requires_configuration too ?
-      if (!obj.hasOwnProperty('external_service')) {
-        obj['external_service'] = false;
-      }
-      if (!obj.hasOwnProperty('requires_configuration')) {
-        obj['requires_configuration'] = false;
-      }
-      if (!obj.hasOwnProperty('leaks_info')) {
-        obj['leaks_info'] = false;
       }
       return obj;
     });
