@@ -1,0 +1,16 @@
+:host ::ng-deep json-editor,
+:host ::ng-deep json-editor .jsoneditor,
+:host ::ng-deep json-editor > div,
+:host ::ng-deep json-editor jsoneditor-outer {
+  height: 600px;
+  width: 800px;
+}
+
+:host ::ng-deep json-editor jsoneditor-text {
+  min-height: 600px;
+  width: 800px;
+}
+
+:host ::ng-deep json-editor {
+  background-color: #fff !important;
+}

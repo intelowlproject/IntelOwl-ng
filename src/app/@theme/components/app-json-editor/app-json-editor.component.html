@@ -1,0 +1,13 @@
+<nb-card>
+  <nb-card-header
+    >Edit this only if you know what you are doing!</nb-card-header
+  >
+  <nb-card-body>
+    <json-editor [data]="data" [options]="editorOptions"></json-editor>
+  </nb-card-body>
+  <nb-card-footer>
+    <button (click)="save()" size="small" nbButton status="primary">
+      Save
+    </button>
+  </nb-card-footer>
+</nb-card>
