@@ -46,11 +46,12 @@
             <div class="form-group">
               <button
                 nbButton
-                (click)="configParams()"
+                [disabled]="formData.run_all_available_analyzers"
+                (click)="editConfigParams()"
                 size="tiny"
                 status="primary"
               >
-                Additional Configuration
+                Custom Analyzers Configuration
               </button>
             </div>
 

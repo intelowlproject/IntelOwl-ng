@@ -18,7 +18,7 @@ export class ScanObservableComponent {
       disable_external_analyzers: false,
       check_existing_or_force: 'check_all',
       private: false,
-      run_all_available_analyzers: true,
+      run_all_available_analyzers: false,
       tags_id: [],
     } as IScanForm;
   }

@@ -9,8 +9,8 @@ export interface IScanForm {
   private?: boolean;
   // extra config
   tags_id: number[];
-  classification: string;
-  additional_configuration?: Object;
+  classification: 'ip' | 'domain' | 'hash' | 'url' | 'file';
+  runtime_configuration?: Object;
   // for observable form
   observable_name?: string;
   // for file form
@@ -73,6 +73,10 @@ export interface IAnalyzersList {
 }
 
 export interface IRawAnalyzerConfig {
+  [name: string]: IAnalyzerConfig;
+}
+
+export interface IAnalyzerConfig {
   name?: string;
   type: string;
   python_module: string;

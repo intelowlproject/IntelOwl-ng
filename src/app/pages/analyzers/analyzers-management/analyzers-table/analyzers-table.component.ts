@@ -52,6 +52,7 @@ export class AnalyzersTableComponent implements OnInit {
       description: {
         type: 'html',
         title: 'Description',
+        width: '25%',
         valuePrepareFunction: (c, r) => `<small>${c}</small>`,
       },
       supports: {

@@ -20,4 +20,5 @@ export class ScansManagementComponent {
     },
   ];
   constructor(public readonly scanService: ScanService) {}
+  public trackByFn = (_index, item) => item.key;
 }

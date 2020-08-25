@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import {
   IScanForm,
   IAnalyzersList,
-  IRawAnalyzerConfig,
+  IAnalyzerConfig,
 } from 'src/app/@core/models/models';
 import { Md5 } from 'ts-md5';
 import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
@@ -88,27 +88,35 @@ export class BaseScanFormComponent implements OnInit {
   }
 
   /* Additional Config Params */
-  configParams() {
-    const config: any[] = [];
-    this.analyzerService.rawAnalyzerConfig.forEach((ac: IRawAnalyzerConfig) => {
-      if (
-        this.formData.analyzers_requested.includes(ac.name) &&
-        ac.additional_config_params
-      ) {
-        const obj = {};
-        obj[ac.name] = ac.additional_config_params;
-        config.push(obj);
-      }
-    });
+  editConfigParams(): void {
+    let config: any = this.constructAdditionalConfigParam();
+    if (this.formData?.runtime_configuration) {
+      config = { ...config, ...this.formData.runtime_configuration };
+    }
     this.dialogService
       .open(AppJsonEditorComponent, {
         context: {
           editorOptions: this.editorOptions,
           data: config,
         },
-        hasBackdrop: false,
         closeOnEsc: false,
       })
-      .onClose.subscribe((d) => (this.formData.additional_configuration = d));
+      .onClose.pipe(first())
+      .subscribe((newConfig) => {
+        if (newConfig) {
+          this.formData.runtime_configuration = newConfig;
+        }
+      });
+  }
+
+  constructAdditionalConfigParam(): any {
+    const config: any = {};
+    this.formData.analyzers_requested.forEach((name: string) => {
+      const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
+      if (ac?.additional_config_params) {
+        config[name] = ac.additional_config_params;
+      }
+    });
+    return config;
   }
 }

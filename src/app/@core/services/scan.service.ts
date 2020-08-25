@@ -77,6 +77,7 @@ export class ScanService extends HttpService<any> {
       private: data.private,
       disable_external_analyzers: data.disable_external_analyzers,
       tags_id: data.tags_id || [],
+      runtime_configuration: data.runtime_configuration,
     };
     if (type === 'observable') {
       obj.is_sample = false;
