@@ -43,6 +43,18 @@
             </div>
             <!-- /Analyzers select field -->
 
+            <div class="form-group">
+              <button
+                nbButton
+                [disabled]="formData.run_all_available_analyzers"
+                (click)="editConfigParams()"
+                size="tiny"
+                status="primary"
+              >
+                Custom Analyzers Configuration
+              </button>
+            </div>
+
             <!-- Additional Fields -->
             <label class="label form-control-label">Extra configuration</label>
             <div class="form-group">

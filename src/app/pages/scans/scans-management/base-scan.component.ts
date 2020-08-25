@@ -1,10 +1,17 @@
 import { ScanService } from 'src/app/@core/services/scan.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { IScanForm, IAnalyzersList } from 'src/app/@core/models/models';
+import {
+  IScanForm,
+  IAnalyzersList,
+  IAnalyzerConfig,
+} from 'src/app/@core/models/models';
 import { Md5 } from 'ts-md5';
 import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
 import { first } from 'rxjs/operators';
+import { JsonEditorOptions } from 'ang-jsoneditor';
+import { NbDialogService } from '@nebular/theme';
+import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
 
 @Component({
   selector: 'intelowl-base-scan',
@@ -26,11 +33,18 @@ export class BaseScanFormComponent implements OnInit {
   isBtnDisabled: boolean = false;
   showSpinnerBool: boolean = false;
   formDebugBool: boolean = false;
+  // JSON Editor
+  private editorOptions: JsonEditorOptions;
 
   constructor(
-    private scanService: ScanService,
-    private readonly analyzerService: AnalyzerConfigService
-  ) {}
+    private readonly scanService: ScanService,
+    private readonly analyzerService: AnalyzerConfigService,
+    private dialogService: NbDialogService
+  ) {
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.modes = ['code'];
+    this.editorOptions.mode = 'code';
+  }
 
   ngOnInit(): void {
     // rxjs/first() -> take first and complete observable
@@ -71,5 +85,38 @@ export class BaseScanFormComponent implements OnInit {
     }
     // spinner off
     setTimeout(() => (this.showSpinnerBool = false), 1000);
+  }
+
+  /* Additional Config Params */
+  editConfigParams(): void {
+    let config: any = this.constructAdditionalConfigParam();
+    if (this.formData?.runtime_configuration) {
+      config = { ...config, ...this.formData.runtime_configuration };
+    }
+    this.dialogService
+      .open(AppJsonEditorComponent, {
+        context: {
+          editorOptions: this.editorOptions,
+          data: config,
+        },
+        closeOnEsc: false,
+      })
+      .onClose.pipe(first())
+      .subscribe((newConfig) => {
+        if (newConfig) {
+          this.formData.runtime_configuration = newConfig;
+        }
+      });
+  }
+
+  constructAdditionalConfigParam(): any {
+    const config: any = {};
+    this.formData.analyzers_requested.forEach((name: string) => {
+      const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
+      if (ac?.additional_config_params) {
+        config[name] = ac.additional_config_params;
+      }
+    });
+    return config;
   }
 }

@@ -1,6 +1,5 @@
 export interface IScanForm {
-  tags_id: number[];
-  classification: string;
+  // required default ones
   md5?: string | Int32Array;
   analyzers_requested?: string[];
   force_privacy: boolean;
@@ -8,6 +7,10 @@ export interface IScanForm {
   check_existing_or_force?: string;
   run_all_available_analyzers?: boolean;
   private?: boolean;
+  // extra config
+  tags_id: number[];
+  classification: 'ip' | 'domain' | 'hash' | 'url' | 'file';
+  runtime_configuration?: Object;
   // for observable form
   observable_name?: string;
   // for file form
@@ -70,6 +73,10 @@ export interface IAnalyzersList {
 }
 
 export interface IRawAnalyzerConfig {
+  [name: string]: IAnalyzerConfig;
+}
+
+export interface IAnalyzerConfig {
   name?: string;
   type: string;
   python_module: string;
