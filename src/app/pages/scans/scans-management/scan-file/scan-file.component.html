@@ -29,24 +29,5 @@
         />
       </div>
     </div>
-
-    <!-- Analyzers select field -->
-    <div class="form-group">
-      <label class="label form-control-label">Select Analyzers</label>
-      <nb-select
-        [(selected)]="formData.analyzers_requested"
-        name="analyzers"
-        placeholder="Analyzers To Request"
-        fullWidth
-        multiple
-      >
-        <nb-option
-          *ngFor="let analyzer of analyzersService?.fileAnalyzers$ | async"
-          [value]="analyzer?.name"
-          >{{ analyzer?.name }}</nb-option
-        >
-      </nb-select>
-    </div>
-    <!-- /Analyzers select field -->
   </intelowl-base-scan>
 </div>

@@ -5,13 +5,6 @@
         <nb-toggle size="tiny" labelPosition="start" [(checked)]="formDebugBool"
           >Debug Form</nb-toggle
         >
-        <nb-toggle
-          size="tiny"
-          labelPosition="start"
-          nbTooltip="by default an analysis won't be repeated if already available. Enable this flag to force a new evaluation/analysis from scratch"
-          [(checked)]="forceNewScanBool"
-          >Force New Scan</nb-toggle
-        >
         <!-- Form -->
       </nb-card-header>
       <nb-card-body class="p-4">
@@ -21,12 +14,34 @@
             <ng-content></ng-content>
             <!-- /Form specific fields -->
 
-            <ng-container *ngIf="!isNotError816()">
-              <p class="caption status-danger">
-                either you specify a list of requested analyzers or the
-                'run_all_available_analyzers' parameter, not both.
-              </p>
-            </ng-container>
+            <!-- Analyzers select field -->
+            <div class="form-group">
+              <label class="label form-control-label">Select Analyzers</label>
+              <nb-select
+                *ngIf="analyzersList && formData.classification"
+                fullWidth
+                multiple
+                [(selected)]="formData.analyzers_requested"
+                name="analyzers"
+                placeholder="Analyzers To Request"
+              >
+                <nb-option
+                  *ngFor="
+                    let analyzer of analyzersList[formData.classification]
+                  "
+                  [value]="analyzer"
+                >
+                  {{ analyzer }}
+                </nb-option>
+              </nb-select>
+              <ng-container *ngIf="!isNotError816()">
+                <p class="caption status-danger">
+                  either you specify a list of requested analyzers or the
+                  'run_all_available_analyzers' parameter, not both.
+                </p>
+              </ng-container>
+            </div>
+            <!-- /Analyzers select field -->
 
             <div class="form-group">
               <button
@@ -37,6 +52,30 @@
               >
                 Additional Configuration
               </button>
+            </div>
+
+            <!-- Additional Fields -->
+            <label class="label form-control-label">Extra configuration</label>
+            <div class="form-group">
+              <nb-radio-group
+                [(ngModel)]="formData.check_existing_or_force"
+                class="d-flex justify-content-around"
+                name="check-existing-or-force-new"
+              >
+                <nb-radio
+                  nbTooltip="analysis won't be repeated if already exists as running or failed"
+                  value="check_all"
+                  >check existing analysis</nb-radio
+                >
+                <nb-radio
+                  nbTooltip="analysis won't be repeated if already running"
+                  value="running_only"
+                  >check only running analysis</nb-radio
+                >
+                <nb-radio nbTooltip="force new analysis" value="force_new"
+                  >force new analysis</nb-radio
+                >
+              </nb-radio-group>
             </div>
 
             <div class="form-group">
@@ -57,10 +96,10 @@
             <div class="form-group">
               <nb-checkbox
                 class="col-md-6"
-                [(ngModel)]="formData.running_only"
-                name="running_only"
+                [(ngModel)]="formData.private"
+                name="private"
               >
-                check only running analysis
+                limit view permissions to my groups
               </nb-checkbox>
               <nb-checkbox
                 class="col-md-6"
@@ -70,6 +109,7 @@
                 run all available analyzers
               </nb-checkbox>
             </div>
+            <!-- /Additional Fields -->
 
             <!-- ngx-tagger/ Tag Selection Popover -->
             <div class="form-group">
@@ -77,7 +117,8 @@
                 >Select Tags To Apply</label
               >
               <ngx-tagger
-                (tagWasClicked)="formData.tags_id = $event"
+                (onOpen)="isBtnDisabled = true"
+                (onClose)="formData.tags_id = $event; isBtnDisabled = false"
               ></ngx-tagger>
             </div>
             <!--/ ngx-tagger/ Tag Selection Popover -->

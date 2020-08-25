@@ -1,5 +1,7 @@
 import Dexie from 'dexie';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class DexieService extends Dexie {
   constructor() {
     super('IntelOwlAppDatabase');

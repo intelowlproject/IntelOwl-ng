@@ -2,19 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IndexedDbService } from './indexdb.service';
 import { HttpService } from './http.service';
-import { ObservableForm, FileForm, IRecentScan } from '../models/models';
+import { IRecentScan, IScanForm } from '../models/models';
 import { ToastService } from './toast.service';
-import { ReplaySubject, Observable } from 'rxjs';
-import { scan as rxScan, distinct } from 'rxjs/operators';
 import { JobService } from './job.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ScanService extends HttpService<any> {
-  private _recentScans$: ReplaySubject<IRecentScan> = new ReplaySubject<
-    IRecentScan
-  >(10);
+  public recentScans: Map<string | number, string> = new Map();
 
   constructor(
     private toastr: ToastService,
@@ -23,30 +19,16 @@ export class ScanService extends HttpService<any> {
     private jobService: JobService
   ) {
     super(_httpClient);
-    this.init().then();
-  }
-
-  get recentScans$(): Observable<IRecentScan[]> {
-    return this._recentScans$.asObservable().pipe(
-      distinct((rs: IRecentScan) => rs.jobId),
-      rxScan((acc, curr) => [curr, ...acc], [])
-    );
-  }
-
-  private async init(): Promise<void> {
+    // load recent scans
     this.indexedDB.getRecentScans().then((arr: IRecentScan[]) => {
-      arr.forEach((o: IRecentScan) => this._recentScans$.next(o));
+      arr.forEach((o: IRecentScan) => this.recentScans.set(o.jobId, o.status));
     });
   }
 
   // only this function is callable from the components
-  public async requestScan(
-    rqstData: any,
-    type: string,
-    forceNewScanBool: boolean
-  ): Promise<void> {
+  public async requestScan(rqstData: IScanForm, type: string): Promise<void> {
     try {
-      if (forceNewScanBool) {
+      if (rqstData.check_existing_or_force === 'force_new') {
         await this._newScan(rqstData, type);
       } else {
         const exists: boolean = await this._checkInExistingScans(rqstData);
@@ -55,13 +37,11 @@ export class ScanService extends HttpService<any> {
         }
       }
     } catch (e) {
-      this.onError(e);
+      this.toastr.onError(e);
     }
   }
 
-  private async _checkInExistingScans(
-    data: ObservableForm | FileForm
-  ): Promise<boolean> {
+  private async _checkInExistingScans(data: IScanForm): Promise<boolean> {
     const query = {
       md5: data.md5,
       analyzers_needed: data.analyzers_requested,
@@ -69,7 +49,7 @@ export class ScanService extends HttpService<any> {
     if (data.run_all_available_analyzers) {
       query['run_all_available_analyzers'] = 'True';
     }
-    if (data.running_only) {
+    if (data.check_existing_or_force === 'running_only') {
       query['running_only'] = 'True';
     }
     const answer = await this.query(query, 'ask_analysis_availability');
@@ -78,10 +58,7 @@ export class ScanService extends HttpService<any> {
     } else {
       // tslint:disable-next-line: radix
       const jobId = parseInt(answer.job_id);
-      this._recentScans$.next({
-        jobId: jobId,
-        status: 'primary',
-      } as IRecentScan);
+      this.recentScans.set(jobId, 'primary');
       this.indexedDB.addToRecentScans({
         jobId: jobId,
         status: 'primary',
@@ -91,70 +68,56 @@ export class ScanService extends HttpService<any> {
     }
   }
 
-  private async _newScan(
-    data: ObservableForm | FileForm,
-    type: string
-  ): Promise<void> {
+  private async _newScan(data: IScanForm, type: string): Promise<void> {
+    const obj: any = {
+      md5: data.md5,
+      analyzers_requested: data.analyzers_requested,
+      run_all_available_analyzers: data.run_all_available_analyzers,
+      force_privacy: data.force_privacy,
+      private: data.private,
+      disable_external_analyzers: data.disable_external_analyzers,
+      tags_id: data.tags_id || [],
+    };
     if (type === 'observable') {
-      await this._createObservableScan(data);
+      obj.is_sample = false;
+      obj.observable_name = data.observable_name;
+      obj.observable_classification = data.classification;
+      await this._createObservableScan(obj);
     } else {
-      await this._createFileScan(data);
+      obj.is_sample = true;
+      obj.file_name = data.file_name;
+      await this._createFileScan(obj, data.file);
     }
   }
 
   // should never be called without context
-  private async _createObservableScan(data: ObservableForm): Promise<void> {
-    const obj = {
-      is_sample: false,
-      md5: data.md5,
-      observable_name: data.observable_name,
-      observable_classification: data.observable_classification,
-      analyzers_requested: data.analyzers_requested,
-      run_all_available_analyzers: data.run_all_available_analyzers,
-      force_privacy: data.force_privacy,
-      disable_external_analyzers: data.disable_external_analyzers,
-      tags_id: data.tags_id || [],
-    };
+  private async _createObservableScan(obj: any): Promise<void> {
     const res = await this.create(obj, {}, 'send_analysis_request');
     if (res['status'] === 'accepted' || res['status'] === 'running') {
       this.onSuccess(res);
     } else {
-      this.onError(res['error']);
+      this.toastr.onError(res);
     }
   }
 
   // should never be called without context
-  private async _createFileScan(data: FileForm): Promise<any> {
+  private async _createFileScan(obj: any, file: File): Promise<void> {
     const postFormData: FormData = new FormData();
-    const jsonData = {
-      is_sample: 'True',
-      md5: data.md5,
-      file_name: data.file_name,
-      analyzers_requested: data.analyzers_requested,
-      run_all_available_analyzers: data.run_all_available_analyzers
-        ? 'True'
-        : 'False',
-      force_privacy: data.force_privacy ? 'True' : 'False',
-      disable_external_analyzers: data.disable_external_analyzers
-        ? 'True'
-        : 'False',
-      tags_id: data.tags_id || [],
-    };
-    for (const key in jsonData) {
-      if (jsonData.hasOwnProperty(key)) {
-        if (Array.isArray(jsonData[key])) {
-          jsonData[key].forEach((el) => postFormData.append(key, el));
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (Array.isArray(obj[key])) {
+          obj[key].forEach((el) => postFormData.append(key, el));
         } else {
-          postFormData.append(key, jsonData[key]);
+          postFormData.append(key, obj[key]);
         }
       }
     }
-    postFormData.append('file', data.file, data.file_name);
+    postFormData.append('file', file, obj.file_name);
     const res = await this.create(postFormData, {}, 'send_analysis_request');
     if (res['status'] === 'accepted' || res['status'] === 'running') {
       this.onSuccess(res);
     } else {
-      this.onError(res['error']);
+      this.toastr.onError(res);
     }
   }
 
@@ -168,22 +131,10 @@ export class ScanService extends HttpService<any> {
       'success'
     );
     // add to recent scans
-    this._recentScans$.next({
-      jobId: res.job_id,
-      status: 'success',
-    } as IRecentScan);
+    this.recentScans.set(res.job_id, 'success');
     this.indexedDB.addToRecentScans({
       jobId: res.job_id,
       status: 'success',
     } as IRecentScan);
-  }
-
-  private onError(e): void {
-    console.error(e);
-    this.toastr.showToast(
-      `backend returned: ${e['error']['error']} (${e['status']}: ${e['statusText']})`,
-      'Scan Request Failed!',
-      'error'
-    );
   }
 }

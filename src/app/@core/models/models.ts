@@ -1,20 +1,19 @@
-interface IntelOwlScanForm {
-  is_sample: boolean;
+export interface IScanForm {
+  // required default ones
   md5?: string | Int32Array;
   analyzers_requested?: string[];
   force_privacy: boolean;
   disable_external_analyzers: boolean;
-  running_only?: boolean;
+  check_existing_or_force?: string;
   run_all_available_analyzers?: boolean;
+  private?: boolean;
+  // extra config
   tags_id: number[];
-}
-
-export interface ObservableForm extends IntelOwlScanForm {
-  observable_classification?: string;
+  classification: string;
+  additional_configuration?: Object;
+  // for observable form
   observable_name?: string;
-}
-
-export interface FileForm extends IntelOwlScanForm {
+  // for file form
   file?: File;
   file_name?: string;
 }
@@ -65,11 +64,12 @@ export interface IRecentScan {
   status: string;
 }
 
-export interface IObservableAnalyzers {
-  ip: any[];
-  hash: any[];
-  domain: any[];
-  url: any[];
+export interface IAnalyzersList {
+  ip: string[];
+  hash: string[];
+  domain: string[];
+  url: string[];
+  file: string[];
 }
 
 export interface IRawAnalyzerConfig {

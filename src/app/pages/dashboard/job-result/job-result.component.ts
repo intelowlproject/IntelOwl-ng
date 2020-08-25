@@ -6,14 +6,26 @@ import { Job } from '../../../@core/models/models';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
+import { trigger, transition, useAnimation } from '@angular/animations';
+import { flash } from 'ngx-animate';
 
 @Component({
   selector: 'intelowl-job-result',
   templateUrl: './job-result.component.html',
   styleUrls: ['./job-result.component.scss'],
+  animations: [
+    trigger('refreshAnimation', [
+      transition('false => true', useAnimation(flash)),
+    ]),
+  ],
 })
 export class JobResultComponent implements OnInit, OnDestroy {
-  // RxJS subscriptions
+  // Animation
+  flashAnimBool: boolean = false;
+  private toggleAnimation = () => (this.flashAnimBool = !this.flashAnimBool);
+  // if true, shows error template
+  public isError: boolean = false;
+  // RxJS Subscription
   private sub: Subscription;
 
   // interval var
@@ -61,7 +73,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   public tableDataSource: LocalDataSource = new LocalDataSource();
 
   // Job ID whose result is being displayed
-  private jobId: number;
+  public jobId: number;
 
   // Job Data for current jobId
   public jobTableData: Job;
@@ -88,15 +100,18 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // subscribe to jobResult
-    this.jobService.pollForJob(this.jobId).then(() => {
-      this.sub.add(
-        this.jobService.jobResult$.subscribe(
-          async (res: Job) => await this.updateJobData(res)
-        )
-      );
-      // only called once
-      this.initData();
-    });
+    this.jobService
+      .pollForJob(this.jobId)
+      .then(() => {
+        this.sub.add(
+          this.jobService.jobResult$.subscribe(
+            async (res: Job) => await this.updateJobData(res)
+          )
+        );
+        // only called once
+        this.initData();
+      })
+      .catch(() => (this.isError = true));
   }
 
   private initData(): void {
@@ -121,6 +136,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
   private async updateJobData(res: Job): Promise<void> {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
+    // toggle animation
+    this.toggleAnimation();
     // not needed anymore
     res.analysis_reports = null;
     if (res.status !== 'running') {
@@ -129,12 +146,10 @@ export class JobResultComponent implements OnInit, OnDestroy {
       // converting date time to locale string
       const date1 = new Date(res.received_request_time);
       const date2 = new Date(res.finished_analysis_time);
-      res.received_request_time = date1.toLocaleString();
-      res.finished_analysis_time = date2.toLocaleString();
+      res.received_request_time = date1.toString();
+      res.finished_analysis_time = date2.toString();
       // calculate job process time
-      res.job_process_time = Math.abs(
-        date2.getUTCSeconds() - date1.getUTCSeconds()
-      );
+      res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
     }
     // finally assign it to our class' member variable
     this.jobTableData = res;
@@ -142,12 +157,12 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   async getJobSample(): Promise<void> {
     const url: string = await this.jobService.downloadJobSample(this.jobId);
-    window.open(url);
+    window.open(url, 'rel=noopener,noreferrer');
   }
 
   async getJobRawJson(): Promise<void> {
     const url: string = await this.jobService.downloadJobRawJson(this.jobId);
-    window.open(url);
+    window.open(url, 'rel=noopener,noreferrer');
   }
 
   // event emitted when user clicks on a row in table
@@ -162,6 +177,13 @@ export class JobResultComponent implements OnInit, OnDestroy {
       ? event.data.report
       : event.data.errors;
     this.editor.update(json);
+  }
+
+  goToTop(): void {
+    document.getElementById('analysis-reports-table').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   }
 
   ngOnDestroy(): void {

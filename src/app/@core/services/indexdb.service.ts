@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DexieService } from './dexie.service';
+import { IRecentScan } from '../models/models';
 
 @Injectable()
 export class IndexedDbService {
@@ -11,15 +12,15 @@ export class IndexedDbService {
     return await this.dexieService.table(tableName).get(key);
   }
 
-  async getRecentScans() {
+  async getRecentScans(): Promise<IRecentScan[]> {
     return await this.dexieService.table('recent_scans').toArray();
   }
 
-  async addToRecentScans(obj) {
+  async addToRecentScans(obj: IRecentScan) {
     const table = this.dexieService.table('recent_scans');
-    if ((await table.count()) > 10) {
+    if ((await table.count()) >= 10) {
       // at a time, there shouldn't be more than 10 entries
-      await table.limit(3).delete();
+      table.limit(3).delete();
     }
     await table.put(obj);
   }
