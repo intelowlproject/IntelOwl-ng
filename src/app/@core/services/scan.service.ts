@@ -77,17 +77,17 @@ export class ScanService extends HttpService<any> {
       private: data.private,
       disable_external_analyzers: data.disable_external_analyzers,
       tags_id: data.tags_id || [],
-      runtime_configuration: data.runtime_configuration,
     };
     if (type === 'observable') {
       obj.is_sample = false;
       obj.observable_name = data.observable_name;
       obj.observable_classification = data.classification;
+      obj.runtime_configuration = data.runtime_configuration;
       await this._createObservableScan(obj);
     } else {
       obj.is_sample = true;
       obj.file_name = data.file_name;
-      await this._createFileScan(obj, data.file);
+      await this._createFileScan(obj, data.file, data.runtime_configuration);
     }
   }
 
@@ -102,7 +102,11 @@ export class ScanService extends HttpService<any> {
   }
 
   // should never be called without context
-  private async _createFileScan(obj: any, file: File): Promise<void> {
+  private async _createFileScan(
+    obj: any,
+    file: File,
+    runtimeCfg: any
+  ): Promise<void> {
     const postFormData: FormData = new FormData();
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
@@ -112,6 +116,9 @@ export class ScanService extends HttpService<any> {
           postFormData.append(key, obj[key]);
         }
       }
+    }
+    if (runtimeCfg != null && Object.keys(runtimeCfg).length) {
+      postFormData.append('runtime_configuration', JSON.stringify(runtimeCfg));
     }
     postFormData.append('file', file, obj.file_name);
     const res = await this.create(postFormData, {}, 'send_analysis_request');
