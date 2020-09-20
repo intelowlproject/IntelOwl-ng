@@ -94,11 +94,11 @@ export class JobResultComponent implements OnDestroy {
 
   init(jobId: number): void {
     this.jobId = jobId;
-    const job = saved_jobs_for_demo.find((o) => (o.id = this.jobId));
+    const job = saved_jobs_for_demo.find((o) => o.id === this.jobId);
+    this.updateJobData(job);
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
     // ...so we show `all available analyzers` so user does not gets confused.
-    this.updateJobData(job);
     this.jobTableData.analyzers_requested = this.jobTableData
       .analyzers_requested.length
       ? this.jobTableData.analyzers_requested
@@ -131,7 +131,6 @@ export class JobResultComponent implements OnDestroy {
 
   // event emitted when user clicks on a row in table
   async onRowSelect(event): Promise<void> {
-    console.log('HERE!');
     this.selectedRowName = event.data.name;
     this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
       behavior: 'smooth',
