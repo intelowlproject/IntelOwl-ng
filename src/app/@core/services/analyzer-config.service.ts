@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from './http.service';
 import { ReplaySubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { IAnalyzersList, IRawAnalyzerConfig } from '../models/models';
+import { saved_analyzer_config_json } from 'src/assets/analyzers_list';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AnalyzerConfigService extends HttpService<any> {
+export class AnalyzerConfigService {
   public rawAnalyzerConfig: IRawAnalyzerConfig = {};
   private _analyzersList$: ReplaySubject<IAnalyzersList> = new ReplaySubject(1);
 
-  constructor(private _httpClient: HttpClient) {
-    super(_httpClient);
+  constructor() {
     this.init().then();
   }
 
@@ -22,7 +20,7 @@ export class AnalyzerConfigService extends HttpService<any> {
 
   private async init(): Promise<void> {
     try {
-      this.rawAnalyzerConfig = await this.query({}, 'get_analyzer_configs');
+      this.rawAnalyzerConfig = saved_analyzer_config_json;
       this.makeAnalyzersList();
     } catch (e) {
       console.error(e);

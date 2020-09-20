@@ -31,10 +31,10 @@
       <nb-icon icon="moon-outline" size="tiny"></nb-icon>
     </nb-action>
     <!-- User actions -->
-    <nb-action class="user-action" *ngIf="userService.user$ | async as user">
+    <nb-action class="user-action">
       <nb-user
         class="cursor-pointer"
-        [name]="user?.username"
+        name="demo"
         [nbContextMenu]="userMenu"
         nbContextMenuTag="user"
       >

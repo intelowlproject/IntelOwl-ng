@@ -72,17 +72,7 @@ export class BaseScanFormComponent implements OnInit {
   async onScanSubmit(): Promise<void> {
     // spinner on
     this.showSpinnerBool = true;
-    if (this.formData.classification === 'file') {
-      const fr = new FileReader();
-      fr.onload = (event) => {
-        this.formData.md5 = Md5.hashAsciiStr(event.target.result.toString());
-      };
-      fr.readAsBinaryString(this.formData.file);
-      fr.onloadend = () => this.scanService.requestScan(this.formData, 'file');
-    } else {
-      this.formData.md5 = Md5.hashStr(this.formData.observable_name);
-      this.scanService.requestScan(this.formData, 'observable');
-    }
+    this.scanService.requestScan();
     // spinner off
     setTimeout(() => (this.showSpinnerBool = false), 1000);
   }

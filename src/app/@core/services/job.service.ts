@@ -1,13 +1,12 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject, Observable } from 'rxjs';
-import { HttpService } from './http.service';
 import { Job } from '../models/models';
+import { saved_jobs_for_demo } from 'src/assets/job_data';
 
 @Injectable({
   providedIn: 'root',
 })
-export class JobService extends HttpService<any> {
+export class JobService {
   private _jobs$: ReplaySubject<Job[]> = new ReplaySubject(1) as ReplaySubject<
     Job[]
   >;
@@ -15,8 +14,7 @@ export class JobService extends HttpService<any> {
     null
   ) as BehaviorSubject<Job>;
 
-  constructor(private _httpClient: HttpClient) {
-    super(_httpClient);
+  constructor() {
     this.initOrRefresh().then();
   }
 
@@ -32,7 +30,7 @@ export class JobService extends HttpService<any> {
   // sync button
   async initOrRefresh(): Promise<any> {
     try {
-      const resp: Job[] = await this.query({}, 'jobs');
+      const resp: Job[] = saved_jobs_for_demo;
       resp.map((job) => {
         if (job.is_sample) {
           job['type'] = 'file';
@@ -48,47 +46,4 @@ export class JobService extends HttpService<any> {
       return Promise.reject(e);
     }
   }
-
-  async pollForJob(id: number): Promise<void> {
-    console.info(`Polling for Job with id: ${id}`);
-    return this.get(id, {}, 'jobs')
-      .then((res: Job) => this._jobResult$.next(res))
-      .catch(() => Promise.reject());
-  }
-
-  async downloadJobSample(jobId: number): Promise<string> {
-    try {
-      const query = {
-        job_id: jobId,
-      };
-      const blob: Blob = await this.downloadFile(query, 'download_sample');
-      const url: string = window.URL.createObjectURL(blob);
-      return url;
-    } catch (e) {
-      console.error(e);
-      return Promise.reject(e);
-    }
-  }
-
-  async downloadJobRawJson(jobId: number): Promise<string> {
-    try {
-      const blob: Blob = await this.downloadFile({}, `jobs/${jobId}`);
-      const url = window.URL.createObjectURL(blob);
-      return url;
-    } catch (e) {
-      console.error(e);
-      return Promise.reject(e);
-    }
-  }
-
-  /* deprecated atm
-   * See Issue: https://github.com/intelowlproject/IntelOwl-ng/issues/16
-   */
-  /*
-  private async offlineInit() {
-    this.indexDB.getAllInstances('jobs').then((res) => {
-      this._jobs$.next(res);
-    });
-  }
-  */
 }

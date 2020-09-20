@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JobService } from '../../../@core/services/job.service';
 import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -8,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { flash } from 'ngx-animate';
+import { saved_jobs_for_demo } from 'src/assets/job_data';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -22,14 +22,10 @@ import { flash } from 'ngx-animate';
 export class JobResultComponent implements OnInit, OnDestroy {
   // Animation
   flashAnimBool: boolean = false;
-  private toggleAnimation = () => (this.flashAnimBool = !this.flashAnimBool);
   // if true, shows error template
   public isError: boolean = false;
   // RxJS Subscription
   private sub: Subscription;
-
-  // interval var
-  private pollInterval: any;
 
   // ng2-smart-table settings
   public tableSettings = {
@@ -86,10 +82,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   @ViewChild(JsonEditorComponent, { static: false })
   editor: JsonEditorComponent;
 
-  constructor(
-    private readonly activateRoute: ActivatedRoute,
-    private readonly jobService: JobService
-  ) {
+  constructor(private readonly activateRoute: ActivatedRoute) {
     this.sub = this.activateRoute.params.subscribe(
       (res) => (this.jobId = res.jobId)
     );
@@ -99,32 +92,11 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // subscribe to jobResult
-    this.jobService
-      .pollForJob(this.jobId)
-      .then(() => {
-        this.sub.add(
-          this.jobService.jobResult$.subscribe(
-            async (res: Job) => await this.updateJobData(res)
-          )
-        );
-        // only called once
-        this.initData();
-      })
-      .catch(() => (this.isError = true));
-  }
-
-  private initData(): void {
-    // poll for changes to job result if status=running
-    if (this.jobTableData.status === 'running') {
-      this.pollInterval = setInterval(
-        () => this.jobService.pollForJob(this.jobId),
-        5000
-      );
-    }
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
     // ...so we show `all available analyzers` so user does not gets confused.
+    const job = saved_jobs_for_demo.find((o) => (o.id = this.jobId));
+    this.updateJobData(job);
     this.jobTableData.analyzers_requested = this.jobTableData
       .analyzers_requested.length
       ? this.jobTableData.analyzers_requested
@@ -133,36 +105,28 @@ export class JobResultComponent implements OnInit, OnDestroy {
     this.selectedRowName = "Click on a row in the table to view it's result!";
   }
 
-  private async updateJobData(res: Job): Promise<void> {
+  private updateJobData(res: Job): void {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
-    // toggle animation
-    this.toggleAnimation();
     // not needed anymore
     res.analysis_reports = null;
-    if (res.status !== 'running') {
-      // stop polling
-      clearInterval(this.pollInterval);
-      // converting date time to locale string
-      const date1 = new Date(res.received_request_time);
-      const date2 = new Date(res.finished_analysis_time);
-      res.received_request_time = date1.toString();
-      res.finished_analysis_time = date2.toString();
-      // calculate job process time
-      res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
-    }
+    // converting date time to locale string
+    const date1 = new Date(res.received_request_time);
+    const date2 = new Date(res.finished_analysis_time);
+    res.received_request_time = date1.toString();
+    res.finished_analysis_time = date2.toString();
+    // calculate job process time
+    res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
     // finally assign it to our class' member variable
     this.jobTableData = res;
   }
 
   async getJobSample(): Promise<void> {
-    const url: string = await this.jobService.downloadJobSample(this.jobId);
-    window.open(url, 'rel=noopener,noreferrer');
+    alert('not present in demo');
   }
 
   async getJobRawJson(): Promise<void> {
-    const url: string = await this.jobService.downloadJobRawJson(this.jobId);
-    window.open(url, 'rel=noopener,noreferrer');
+    alert('not present in demo');
   }
 
   // event emitted when user clicks on a row in table
@@ -187,8 +151,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // cancel job result polling
-    this.pollInterval && clearInterval(this.pollInterval);
     // unsubscribe to observables to prevent memory leakage
     this.sub && this.sub.unsubscribe();
   }

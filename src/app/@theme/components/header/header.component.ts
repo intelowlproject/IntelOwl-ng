@@ -5,7 +5,6 @@ import {
   NbSidebarService,
   NbThemeService,
 } from '@nebular/theme';
-import { UserService } from '../../../@core/services/user.service';
 import { filter, map } from 'rxjs/operators';
 
 @Component({
@@ -23,7 +22,6 @@ export class HeaderComponent implements OnInit {
   constructor(
     private sidebarService: NbSidebarService,
     private nbMenuService: NbMenuService,
-    public userService: UserService,
     private themeService: NbThemeService
   ) {
     this.isDarkTheme = HeaderComponent.getThemeName() === 'dark' ? true : false;
@@ -38,14 +36,6 @@ export class HeaderComponent implements OnInit {
       )
       .subscribe(async (item) => {
         switch (item.title) {
-          case 'Django Admin Interface': {
-            document.location.assign('/admin');
-            break;
-          }
-          case 'Log out': {
-            this.userService.logOut();
-            break;
-          }
           default: {
             break;
           }

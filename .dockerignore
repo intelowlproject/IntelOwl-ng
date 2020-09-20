@@ -1,6 +1,0 @@
-dist
-node_modules
-.git
-.gitignore
-proxy.conf.json
-.travis.yml
