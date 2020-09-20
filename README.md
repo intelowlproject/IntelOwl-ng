@@ -14,9 +14,7 @@ Built with [Angular 10](https://github.com/angular/angular) on top of [ngx-admin
 
 #### Demo
 
-[Live Demo](https://intelowlclient.firebaseapp.com/)
-
-> The demo does not yet contain many new features.
+[Live Demo](https://intelowlclient.firebaseapp.com/) hosted on firebase. (_Last Updated for IntelOwl v1.7.x_)
 
 ## Features
 
