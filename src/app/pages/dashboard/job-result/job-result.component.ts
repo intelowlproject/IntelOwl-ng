@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
@@ -8,6 +8,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { flash } from 'ngx-animate';
 import { saved_jobs_for_demo } from 'src/assets/job_data';
+import { JobService } from 'src/app/@core/services/job.service';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -19,7 +20,7 @@ import { saved_jobs_for_demo } from 'src/assets/job_data';
     ]),
   ],
 })
-export class JobResultComponent implements OnInit, OnDestroy {
+export class JobResultComponent implements OnDestroy {
   // Animation
   flashAnimBool: boolean = false;
   // if true, shows error template
@@ -83,19 +84,20 @@ export class JobResultComponent implements OnInit, OnDestroy {
   editor: JsonEditorComponent;
 
   constructor(private readonly activateRoute: ActivatedRoute) {
-    this.sub = this.activateRoute.params.subscribe(
-      (res) => (this.jobId = res.jobId)
+    this.sub = this.activateRoute.params.subscribe((res) =>
+      this.init(res.jobId)
     );
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['text', 'tree'];
     this.editorOptions.onEditable = () => false;
   }
 
-  ngOnInit(): void {
+  init(jobId: number): void {
+    this.jobId = jobId;
+    const job = saved_jobs_for_demo.find((o) => (o.id = this.jobId));
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
     // ...so we show `all available analyzers` so user does not gets confused.
-    const job = saved_jobs_for_demo.find((o) => (o.id = this.jobId));
     this.updateJobData(job);
     this.jobTableData.analyzers_requested = this.jobTableData
       .analyzers_requested.length
@@ -108,8 +110,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
   private updateJobData(res: Job): void {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
-    // not needed anymore
-    res.analysis_reports = null;
     // converting date time to locale string
     const date1 = new Date(res.received_request_time);
     const date2 = new Date(res.finished_analysis_time);
@@ -131,6 +131,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   // event emitted when user clicks on a row in table
   async onRowSelect(event): Promise<void> {
+    console.log('HERE!');
     this.selectedRowName = event.data.name;
     this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
       behavior: 'smooth',

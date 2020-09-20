@@ -10,9 +10,6 @@ export class JobService {
   private _jobs$: ReplaySubject<Job[]> = new ReplaySubject(1) as ReplaySubject<
     Job[]
   >;
-  private _jobResult$: BehaviorSubject<Job> = new BehaviorSubject(
-    null
-  ) as BehaviorSubject<Job>;
 
   constructor() {
     this.initOrRefresh().then();
@@ -20,10 +17,6 @@ export class JobService {
 
   get jobs$(): Observable<Job[]> {
     return this._jobs$.asObservable();
-  }
-
-  get jobResult$(): Observable<Job> {
-    return this._jobResult$.asObservable();
   }
 
   // not private since it should be accessible for dashboard's
