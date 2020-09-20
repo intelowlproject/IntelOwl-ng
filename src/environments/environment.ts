@@ -11,5 +11,5 @@
 export const environment = {
   production: false,
   api: '/api/',
-  intel_owl_version: 'v1.5.x',
+  intel_owl_version: 'v1.7.x',
 };
