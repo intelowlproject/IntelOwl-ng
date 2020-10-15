@@ -1,35 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, ReplaySubject } from 'rxjs';
-import { IToken } from '../models/models';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpService } from './http.service';
+import { ILoginPayload } from '../models/models';
+import { ToastService } from './toast.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService extends HttpService<any> {
-  private readonly JWT_TOKEN = 'JWT_TOKEN';
-  private readonly REFRESH_TOKEN = 'REFRESH_TOKEN';
+  private readonly TOKEN_NAME = 'TOKEN';
+  private readonly PAYLOAD_NAME = 'PAYLOAD';
 
-  private _onTokenChange$: ReplaySubject<JWTToken> = new ReplaySubject(
+  private _onTokenChange$: ReplaySubject<string> = new ReplaySubject(
     1
-  ) as ReplaySubject<JWTToken>;
+  ) as ReplaySubject<string>;
 
-  constructor(private _httpClient: HttpClient) {
+  constructor(
+    private _httpClient: HttpClient,
+    private toastr: ToastService,
+    private router: Router
+  ) {
     super(_httpClient);
-    this.getAccessToken()
+    this.getToken()
       .toPromise()
-      .then((token: JWTToken) => this._onTokenChange$.next(token));
+      .then((token: string) => this._onTokenChange$.next(token));
   }
 
   async login(user: { username: string; password: string }): Promise<any> {
     return this.create(user, {}, 'auth/login').then(
-      (token: IToken) => {
-        this.storeTokens(token);
-        const jwt = new JWTToken(token.access);
-        this._onTokenChange$.next(jwt);
+      (resp: ILoginPayload) => {
+        this.storePayload(resp);
+        this._onTokenChange$.next(resp.token);
         return true;
       },
       (err: any) => {
@@ -39,50 +43,21 @@ export class AuthService extends HttpService<any> {
     );
   }
 
-  async logout(): Promise<any> {
+  async logout(): Promise<void> {
     try {
-      await this.create(
-        {
-          refresh: this.getRefreshToken(),
-        },
-        {},
-        'auth/logout'
-      );
+      await this.create({}, {}, 'auth/logout');
     } finally {
-      this.removeTokens();
-      this._onTokenChange$.next(null);
-      return location.reload();
+      this.removePayload();
+      this.toastr.showToast("You've been logged out.", 'Unauthorized', 'error');
+      setTimeout(() => this.router.navigate(['auth/login']), 1000);
     }
-  }
-
-  private async refreshToken(): Promise<boolean> {
-    const refreshToken = this.getRefreshToken();
-    if (!refreshToken) {
-      return false;
-    }
-    return await this.create(
-      { refresh: refreshToken },
-      {},
-      'auth/refresh-token'
-    ).then(
-      (token: IToken) => {
-        this.storeTokens(token);
-        const jwt = new JWTToken(token.access);
-        this._onTokenChange$.next(jwt);
-        return true;
-      },
-      (err: any) => {
-        this._onTokenChange$.error(err);
-        return false;
-      }
-    );
   }
 
   /**
    * Returns tokens stream
-   * @returns {Observable<JWTToken>}
+   * @returns {Observable<string>}
    */
-  get onTokenChange$(): Observable<JWTToken> {
+  get onTokenChange$(): Observable<string> {
     return this._onTokenChange$.asObservable();
   }
 
@@ -91,86 +66,35 @@ export class AuthService extends HttpService<any> {
    * @returns {Observable<boolean>}
    */
   isAuthenticated(): Observable<boolean> {
-    return this.getAccessToken().pipe(
-      map((token: JWTToken) => token.isValid())
-    );
+    return this.getToken().pipe(map((token: string) => !!token));
   }
 
   /**
-   * Returns true if valid auth token is present in the localStorage.
-   * If not, calls function refreshToken, and returns isAuthenticated() if success, false otherwise
-   * @returns {Observable<boolean>}
+   * returns current token as an observable stream
+   * @returns {Observable<string>}
    */
-  isAuthenticatedOrRefresh(): Observable<boolean> {
-    return this.getAccessToken().pipe(
-      switchMap(async (token: JWTToken) => {
-        if (!token.isValid()) {
-          return await this.refreshToken();
-        } else {
-          return await this.isAuthenticated().toPromise();
-        }
-      })
-    );
+  getToken(): Observable<string> {
+    return of(localStorage.getItem(this.TOKEN_NAME));
   }
 
   /**
-   * returns current access token as an observable stream
-   * @returns {=Observable<JWTToken>}
-   */
-  getAccessToken(): Observable<JWTToken> {
-    return of(new JWTToken(localStorage.getItem(this.JWT_TOKEN)));
-  }
-
-  /**
-   * fetches refresh token from localStorage.
-   * internal use only.
-   * @returns {string}
-   */
-  private getRefreshToken(): string {
-    return localStorage.getItem(this.REFRESH_TOKEN);
-  }
-
-  /**
-   * stores tokens in localStorage.
+   * stores login payload in localStorage.
    * Internal use only.
    */
-  private storeTokens(token: IToken) {
-    localStorage.setItem(this.JWT_TOKEN, token.access);
-    localStorage.setItem(this.REFRESH_TOKEN, token.refresh);
+  private storePayload(payload: ILoginPayload): void {
+    localStorage.setItem(this.TOKEN_NAME, payload.token);
+    localStorage.setItem(this.PAYLOAD_NAME, payload.username);
+  }
+
+  getPayload(): string {
+    return localStorage.getItem(this.PAYLOAD_NAME);
   }
 
   /**
-   * removes tokens from localStorage
+   * removes token from localStorage
    */
-  public removeTokens() {
-    localStorage.removeItem(this.JWT_TOKEN);
-    localStorage.removeItem(this.REFRESH_TOKEN);
-  }
-}
-
-export class JWTToken {
-  private token: string = null;
-  private readonly helper = new JwtHelperService();
-
-  constructor(jwt: string) {
-    this.token = jwt;
-  }
-
-  // helper functions
-
-  getValue(): string {
-    return this.token;
-  }
-
-  getPayload(): any {
-    return this.helper.decodeToken(this.token);
-  }
-
-  getExpirationDate(): Date {
-    return this.helper.getTokenExpirationDate(this.token);
-  }
-
-  isValid(): boolean {
-    return this.token && !this.helper.isTokenExpired(this.token);
+  public removePayload(): void {
+    localStorage.removeItem(this.TOKEN_NAME);
+    localStorage.removeItem(this.PAYLOAD_NAME);
   }
 }
