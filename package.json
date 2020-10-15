@@ -50,7 +50,6 @@
     "@angular/platform-browser": "^10.0.11",
     "@angular/platform-browser-dynamic": "^10.0.11",
     "@angular/router": "^10.0.11",
-    "@auth0/angular-jwt": "^5.0.1",
     "@nebular/eva-icons": "6.0.0",
     "@nebular/theme": "6.0.0",
     "ang-jsoneditor": "^1.10.0",

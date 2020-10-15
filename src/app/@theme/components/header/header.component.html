@@ -34,7 +34,7 @@
     <nb-action class="user-action" *ngIf="userService.user$ | async as user">
       <nb-user
         class="cursor-pointer"
-        [name]="user?.username"
+        [name]="user"
         [nbContextMenu]="userMenu"
         nbContextMenuTag="user"
       >

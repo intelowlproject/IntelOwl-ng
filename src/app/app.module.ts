@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NbMenuModule, NbSidebarModule, NbToastrModule } from '@nebular/theme';
 
-import { JWTInterceptor } from './@core/services/http.intercepter';
+import { TokenInterceptor } from './@core/services/http.intercepter';
 import { APP_BASE_HREF } from '@angular/common';
 import { AuthGuard } from './@core/services/auth-gaurd.service';
 import { DexieService } from './@core/services/dexie.service';
@@ -36,7 +36,7 @@ import { ToastService } from './@core/services/toast.service';
     ToastService,
     DexieService,
     IndexedDbService,
-    { provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: APP_BASE_HREF, useValue: '/' },
   ],
 })
