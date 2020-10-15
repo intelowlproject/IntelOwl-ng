@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpService } from './http.service';
 import { ILoginPayload } from '../models/models';
 import { ToastService } from './toast.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,11 @@ export class AuthService extends HttpService<any> {
     1
   ) as ReplaySubject<string>;
 
-  constructor(private _httpClient: HttpClient, private toastr: ToastService) {
+  constructor(
+    private _httpClient: HttpClient,
+    private toastr: ToastService,
+    private router: Router
+  ) {
     super(_httpClient);
     this.getToken()
       .toPromise()
@@ -44,7 +49,7 @@ export class AuthService extends HttpService<any> {
     } finally {
       this.removePayload();
       this.toastr.showToast("You've been logged out.", 'Unauthorized', 'error');
-      setTimeout(() => location.reload, 1000);
+      setTimeout(() => this.router.navigate(['auth/login']), 1000);
     }
   }
 
