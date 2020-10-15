@@ -1,38 +1,32 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { IUser } from '../models/models';
-import { AuthService, JWTToken } from './auth.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private _user$: ReplaySubject<IUser> = new ReplaySubject(1) as ReplaySubject<
-    IUser
+  private _user$: ReplaySubject<string> = new ReplaySubject(1) as ReplaySubject<
+    string
   >;
 
   constructor(private readonly authService: AuthService) {
-    this.authService.onTokenChange$.subscribe(async (token: JWTToken) => {
+    this.authService.onTokenChange$.subscribe(async (token: string) => {
       if (token) {
-        this.init(token.getPayload());
+        try {
+          const username: string = this.authService.getPayload();
+          if (username) {
+            this._user$.next(username);
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }
     });
   }
 
-  get user$(): Observable<IUser> {
+  get user$(): Observable<string> {
     return this._user$.asObservable();
-  }
-
-  private async init(tokenPayload: any) {
-    try {
-      const user: IUser = {
-        id: tokenPayload.user_id,
-        username: tokenPayload.username,
-      } as IUser;
-      this._user$.next(user);
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   async logOut() {

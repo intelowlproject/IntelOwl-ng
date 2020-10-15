@@ -18,17 +18,6 @@ export interface IScanForm {
   file_name?: string;
 }
 
-export interface IUser {
-  id: number | string;
-  email?: string;
-  username: string;
-}
-
-export interface IToken {
-  access: string;
-  refresh: string;
-}
-
 export interface Tag {
   id?: number;
   label?: string;
@@ -89,4 +78,9 @@ export interface IAnalyzerConfig {
   disabled?: boolean;
   run_hash?: boolean;
   additional_config_params?: any;
+}
+
+export interface ILoginPayload {
+  token?: string;
+  username?: string;
 }
