@@ -51,7 +51,14 @@ export class LoginComponent {
       (err: any) => {
         console.error(err);
         this.submitted = false;
-        this.errors.push(err.error.error);
+        const errMsg: string = (
+          err?.error?.error ||
+          err?.error?.non_field_errors ||
+          err?.detail ||
+          err?.message ||
+          JSON.stringify(err)
+        ).toString();
+        this.errors.push(errMsg);
       }
     );
   }
