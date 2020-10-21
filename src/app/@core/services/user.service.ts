@@ -29,7 +29,7 @@ export class UserService {
     return this._user$.asObservable();
   }
 
-  async logOut() {
-    await this.authService.logout();
+  logOut() {
+    this.authService.logout();
   }
 }

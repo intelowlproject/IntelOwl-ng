@@ -49,7 +49,7 @@ export class AuthService extends HttpService<any> {
     } finally {
       this.removePayload();
       this.toastr.showToast("You've been logged out.", 'Unauthorized', 'error');
-      setTimeout(() => this.router.navigate(['auth/login']), 1000);
+      setTimeout(() => this.router.navigate(['auth/login']), 2000);
     }
   }
 
@@ -83,7 +83,7 @@ export class AuthService extends HttpService<any> {
    */
   private storePayload(payload: ILoginPayload): void {
     localStorage.setItem(this.TOKEN_NAME, payload.token);
-    localStorage.setItem(this.PAYLOAD_NAME, payload.username);
+    localStorage.setItem(this.PAYLOAD_NAME, payload.user.username);
   }
 
   getPayload(): string {

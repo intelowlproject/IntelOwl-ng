@@ -83,4 +83,5 @@ export interface IAnalyzerConfig {
 export interface ILoginPayload {
   token?: string;
   username?: string;
+  user?: { username?: string };
 }

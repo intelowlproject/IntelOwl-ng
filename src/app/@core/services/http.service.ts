@@ -62,16 +62,7 @@ export abstract class HttpService<T> {
       this.buildUrl(undefined, url),
       HttpService.buildRequestOptions(query)
     );
-    return new Promise((resolve, reject) =>
-      request.subscribe(
-        (res) => {
-          return resolve(res);
-        },
-        (err) => {
-          return reject(err);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => request.subscribe(resolve, reject));
   }
 
   public downloadFile(query?: IRestQuery, url?: string): Promise<Blob> {
@@ -79,16 +70,7 @@ export abstract class HttpService<T> {
       this.buildUrl(undefined, url),
       HttpService.buildRequestOptions(query, 'blob')
     );
-    return new Promise((resolve, reject) =>
-      request.subscribe(
-        (res) => {
-          return resolve(res);
-        },
-        (err) => {
-          return reject(err);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => request.subscribe(resolve, reject));
   }
 
   public get(
@@ -100,16 +82,7 @@ export abstract class HttpService<T> {
       this.buildUrl(id, url),
       HttpService.buildRequestOptions(query)
     );
-    return new Promise((resolve, reject) =>
-      request.subscribe(
-        (res) => {
-          return resolve(res);
-        },
-        (err) => {
-          return reject(err);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => request.subscribe(resolve, reject));
   }
 
   public create(obj: T, query?: IRestQuery, url?: string): Promise<T> {
@@ -118,16 +91,7 @@ export abstract class HttpService<T> {
       obj,
       HttpService.buildRequestOptions(query)
     );
-    return new Promise((resolve, reject) =>
-      request.subscribe(
-        (res) => {
-          return resolve(res);
-        },
-        (err) => {
-          return reject(err);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => request.subscribe(resolve, reject));
   }
 
   public update(
@@ -141,16 +105,7 @@ export abstract class HttpService<T> {
       obj,
       HttpService.buildRequestOptions(query)
     );
-    return new Promise((resolve, reject) =>
-      request.subscribe(
-        (res) => {
-          return resolve(res);
-        },
-        (err) => {
-          return reject(err);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => request.subscribe(resolve, reject));
   }
 
   public patch(obj: T, query?: IRestQuery, url?: string): Promise<T> {
@@ -159,16 +114,7 @@ export abstract class HttpService<T> {
       obj,
       HttpService.buildRequestOptions(query)
     );
-    return new Promise((resolve, reject) =>
-      request.subscribe(
-        (res) => {
-          return resolve(res);
-        },
-        (err) => {
-          return reject(err);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => request.subscribe(resolve, reject));
   }
 
   public delete(
@@ -180,16 +126,7 @@ export abstract class HttpService<T> {
       this.buildUrl(id, url),
       HttpService.buildRequestOptions(query)
     );
-    return new Promise((resolve, reject) =>
-      request.subscribe(
-        (res) => {
-          return resolve(res);
-        },
-        (err) => {
-          return reject(err);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => request.subscribe(resolve, reject));
   }
 
   protected buildUrl(id?: string | number, newUrl?: string): string {

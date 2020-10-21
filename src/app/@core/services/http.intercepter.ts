@@ -38,25 +38,38 @@ export class TokenInterceptor implements HttpInterceptor {
                     Authorization: `Token ${token}`,
                   },
                 });
-                return next.handle(req);
+                return next
+                  .handle(req)
+                  .pipe(
+                    catchError((err: any, _caught: any) =>
+                      this.handleError(err)
+                    )
+                  );
               })
             );
           } else {
             // Request is sent to server without authentication so that the client code
             // receives the 401/403 error and can act as desired ('session expired', redirect to login, aso)
-            return next.handle(req).pipe(
-              catchError((err: any, _caught: any) => {
-                if (err.status === 401) this.authService.logout();
-                const error = err.error.message || err.statusText;
-                return throwError(error);
-              })
-            );
+            return next.handle(req);
           }
         })
       );
     } else {
       return next.handle(req);
     }
+  }
+
+  private handleError(err: any) {
+    if (err.status === 401 && !err.url.includes('logout'))
+      this.authService.logout();
+    const errMsg: string = (
+      err?.error?.error ||
+      err?.error?.non_field_errors ||
+      err?.detail ||
+      err?.message ||
+      JSON.stringify(err)
+    ).toString();
+    return throwError(new Error(errMsg));
   }
 
   protected get authService(): AuthService {
