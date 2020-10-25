@@ -29,7 +29,7 @@ export class AuthService extends HttpService<any> {
       .then((token: string) => this._onTokenChange$.next(token));
   }
 
-  async login(user: { username: string; password: string }): Promise<any> {
+  login(user: { username: string; password: string }): any {
     return this.create(user, {}, 'auth/login').then(
       (resp: ILoginPayload) => {
         this.storePayload(resp);
@@ -43,9 +43,9 @@ export class AuthService extends HttpService<any> {
     );
   }
 
-  async logout(): Promise<void> {
+  logout(): void {
     try {
-      await this.create({}, {}, 'auth/logout');
+      this.create({}, {}, 'auth/logout');
     } finally {
       this.removePayload();
       this.toastr.showToast("You've been logged out.", 'Unauthorized', 'error');
