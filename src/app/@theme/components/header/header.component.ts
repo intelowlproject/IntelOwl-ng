@@ -6,7 +6,7 @@ import {
   NbThemeService,
 } from '@nebular/theme';
 import { UserService } from '../../../@core/services/user.service';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-header',
@@ -33,10 +33,11 @@ export class HeaderComponent implements OnInit {
     this.nbMenuService
       .onItemClick()
       .pipe(
+        take(1),
         filter(({ tag }) => tag === 'user'),
         map(({ item }) => item)
       )
-      .subscribe(async (item) => {
+      .subscribe((item) => {
         switch (item.title) {
           case 'Django Admin Interface': {
             document.location.assign('/admin');
