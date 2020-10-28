@@ -44,13 +44,11 @@ export class AuthService extends HttpService<any> {
   }
 
   logout(): void {
-    try {
-      this.create({}, {}, 'auth/logout');
-    } finally {
+    this.create({}, {}, 'auth/logout').finally(() => {
       this.removePayload();
       this.toastr.showToast("You've been logged out.", 'Unauthorized', 'error');
-      setTimeout(() => this.router.navigate(['auth/login']), 2000);
-    }
+      setTimeout(() => this.router.navigate(['auth/login']), 1000);
+    });
   }
 
   /**

@@ -50,7 +50,11 @@ export class TokenInterceptor implements HttpInterceptor {
           } else {
             // Request is sent to server without authentication so that the client code
             // receives the 401/403 error and can act as desired ('session expired', redirect to login, aso)
-            return next.handle(req);
+            return next
+              .handle(req)
+              .pipe(
+                catchError((err: any, _caught: any) => this.handleError(err))
+              );
           }
         })
       );
