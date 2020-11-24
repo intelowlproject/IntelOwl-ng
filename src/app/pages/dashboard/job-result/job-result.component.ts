@@ -8,7 +8,6 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { flash } from 'ngx-animate';
 import { saved_jobs_for_demo } from 'src/assets/job_data';
-import { JobService } from 'src/app/@core/services/job.service';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -85,7 +84,8 @@ export class JobResultComponent implements OnDestroy {
 
   constructor(private readonly activateRoute: ActivatedRoute) {
     this.sub = this.activateRoute.params.subscribe((res) =>
-      this.init(res.jobId)
+      // tslint:disable-next-line: radix
+      this.init(parseInt(res.jobId))
     );
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['text', 'tree'];
@@ -94,7 +94,7 @@ export class JobResultComponent implements OnDestroy {
 
   init(jobId: number): void {
     this.jobId = jobId;
-    const job = saved_jobs_for_demo.find((o) => o.id === this.jobId);
+    const job = saved_jobs_for_demo.find((o: Job) => o.id === this.jobId);
     this.updateJobData(job);
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
