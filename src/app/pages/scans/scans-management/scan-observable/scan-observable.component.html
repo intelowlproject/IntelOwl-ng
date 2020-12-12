@@ -10,6 +10,7 @@
       <nb-radio value="url">URL</nb-radio>
       <nb-radio value="domain">Domain</nb-radio>
       <nb-radio value="hash">Hash</nb-radio>
+      <nb-radio value="generic">Generic IoC</nb-radio>
     </nb-radio-group>
 
     <div class="form-group">
@@ -21,7 +22,8 @@
         fullWidth
         [(ngModel)]="formData.observable_name"
         #value="ngModel"
-        minlength="4"
+        minlength="3"
+        maxlength="512"
         name="value"
         [attr.placeholder]="obsPlaceholder"
         [pattern]="obsPattern"
@@ -33,7 +35,7 @@
           {{ formData.classification }} is required.
         </p>
         <p class="caption status-danger" *ngIf="value.errors.minlength">
-          {{ formData.classification }} must be at least 4 characters long.
+          {{ formData.classification }} must be at least 3 characters long.
         </p>
         <p class="caption status-danger" *ngIf="value.errors.pattern">
           Invalid {{ formData.classification }}
