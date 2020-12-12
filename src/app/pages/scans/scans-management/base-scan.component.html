@@ -1,6 +1,6 @@
 <ng-container>
   <div class="row d-flex justify-content-center p-2">
-    <nb-card style="max-width: 800px;">
+    <nb-card style="max-width: 775px;">
       <nb-card-header class="d-flex align-items-center justify-content-between">
         <nb-toggle size="tiny" labelPosition="start" [(checked)]="formDebugBool"
           >Debug Form</nb-toggle
@@ -25,13 +25,27 @@
                 name="analyzers"
                 placeholder="Analyzers To Request"
               >
+                <!-- Custom Label -->
+                <nb-select-label>{{
+                  formData.analyzers_requested
+                }}</nb-select-label>
+                <!-- Options Loop -->
                 <nb-option
                   *ngFor="
                     let analyzer of analyzersList[formData.classification]
                   "
                   [value]="analyzer"
                 >
-                  {{ analyzer }}
+                  <span>{{ analyzer }}</span>
+                  &nbsp;
+                  <span
+                    ><small
+                      >({{
+                        analyzerService.rawAnalyzerConfig[analyzer]
+                          ?.description
+                      }})</small
+                    ></span
+                  >
                 </nb-option>
               </nb-select>
               <ng-container *ngIf="!isNotError816()">
