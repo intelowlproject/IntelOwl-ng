@@ -33,6 +33,7 @@ export class BaseScanFormComponent implements OnInit {
   isBtnDisabled: boolean = false;
   showSpinnerBool: boolean = false;
   formDebugBool: boolean = false;
+  showDescriptionBool: boolean = true;
   // JSON Editor
   private editorOptions: JsonEditorOptions;
 
