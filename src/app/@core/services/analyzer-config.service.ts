@@ -23,20 +23,23 @@ export class AnalyzerConfigService extends HttpService<any> {
   private async init(): Promise<void> {
     try {
       this.rawAnalyzerConfig = await this.query({}, 'get_analyzer_configs');
-      this.makeAnalyzersList();
+      await this.makeAnalyzersList();
     } catch (e) {
       console.error(e);
     }
   }
 
-  private makeAnalyzersList(): void {
+  private async makeAnalyzersList(): Promise<void> {
     const analyzers: IAnalyzersList = {
       ip: [],
       hash: [],
       domain: [],
       url: [],
+      generic: [],
       file: [],
     };
+
+    const obsToCheck: string[] = ['ip', 'url', 'domain', 'hash', 'generic'];
 
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
       if (obj['type'] === 'file') {
@@ -45,18 +48,11 @@ export class AnalyzerConfigService extends HttpService<any> {
           analyzers['hash'].push(key);
         }
       } else {
-        if (obj['observable_supported'].includes('ip')) {
-          analyzers['ip'].push(key);
-        }
-        if (obj['observable_supported'].includes('url')) {
-          analyzers['url'].push(key);
-        }
-        if (obj['observable_supported'].includes('domain')) {
-          analyzers['domain'].push(key);
-        }
-        if (obj['observable_supported'].includes('hash')) {
-          analyzers['hash'].push(key);
-        }
+        obsToCheck.forEach((clsfn: string) => {
+          if (obj['observable_supported'].includes(clsfn)) {
+            analyzers[clsfn].push(key);
+          }
+        });
       }
     });
     this._analyzersList$.next(analyzers);
