@@ -25,6 +25,6 @@ export class ScanFileComponent {
 
   handleFileInput(files) {
     this.formData.file = files.item(0);
-    this.formData.file_name = files.item(0).name;
+    this.formData.file_name = (files.item(0).name as string).slice(0, 512);
   }
 }
