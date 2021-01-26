@@ -14,7 +14,7 @@ Built with [Angular 10](https://github.com/angular/angular) on top of [ngx-admin
 
 #### Demo
 
-[Live Demo](https://intelowlclient.firebaseapp.com/) hosted on firebase. (_Last Updated for IntelOwl v1.7.x_)
+[Live Demo](https://intelowlclient.firebaseapp.com/) hosted on firebase. (_Last Updated for IntelOwl v2.0.0_)
 
 ## Features
 
@@ -108,9 +108,9 @@ Dockerfile                   multi-staged Dockerfile
 ##### Libraries
 
 - [Angular](https://angular.io) - `v10.x`
-- [Nebular](https://akveo.github.io/nebular/5.1.0/) - `v6.0.x`
+- [Nebular](https://akveo.github.io/nebular/5.1.0/) - `v6.2.x`
 - [ngx-admin](https://github.com/akveo/ngx-admin)
-- [RxJS](http://reactivex.io/rxjs)
+- [RxJS](http://reactivex.io/rxjs) - `v6.6.x`
 - [Eva Icons](https://akveo.github.io/eva-icons/)
 - [Bootstrap 4](https://getbootstrap.com/docs/4.5/getting-started/introduction/)
 - [ng2-smart-table](https://akveo.github.io/ng2-smart-table/#/)
