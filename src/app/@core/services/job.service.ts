@@ -8,9 +8,9 @@ import { Job } from '../models/models';
   providedIn: 'root',
 })
 export class JobService extends HttpService<any> {
-  private _jobs$: ReplaySubject<Job[]> = new ReplaySubject(1) as ReplaySubject<
-    Job[]
-  >;
+  private _jobs$: BehaviorSubject<Job[]> = new BehaviorSubject(
+    null
+  ) as BehaviorSubject<Job[]>;
   private _jobResult$: BehaviorSubject<Job> = new BehaviorSubject(
     null
   ) as BehaviorSubject<Job>;
@@ -78,6 +78,18 @@ export class JobService extends HttpService<any> {
     } catch (e) {
       console.error(e);
       return Promise.reject(e);
+    }
+  }
+
+  async deleteJobById(jobId: number): Promise<boolean> {
+    try {
+      const _answer = await this.delete(jobId, {}, 'jobs');
+      // update jobs list
+      const filteredJobs = this._jobs$.getValue().filter((j) => j.id != jobId);
+      this._jobs$.next(filteredJobs);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 

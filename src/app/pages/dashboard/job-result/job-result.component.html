@@ -10,18 +10,27 @@
         <nb-card>
           <nb-card-header>
             <h5 class="d-flex justify-content-between">
-              <span *ngIf="jobTableData['is_sample']">
+              <span *ngIf="jobTableData.is_sample">
                 <nb-icon icon="file-outline"></nb-icon>
                 {{ jobTableData?.file_name }}
               </span>
-              <span *ngIf="!jobTableData['is_sample']">
+              <span *ngIf="!jobTableData.is_sample">
                 <nb-icon icon="globe-outline"></nb-icon>
                 {{ jobTableData?.observable_name }}
               </span>
               <span>
+                <!-- Delete Job Button -->
+                <nb-icon
+                  class="dl-btn"
+                  status="danger"
+                  nbTooltip="Delete Job"
+                  icon="trash-2-outline"
+                  (click)="deleteJob()"
+                >
+                </nb-icon>
                 <!-- Download Sample btn -->
                 <nb-icon
-                  *ngIf="jobTableData['is_sample']"
+                  *ngIf="jobTableData.is_sample"
                   class="dl-btn"
                   nbTooltip="Download File"
                   icon="download-outline"
@@ -70,11 +79,11 @@
                 <pre class="text-json">{{ jobTableData?.md5 | json }}</pre>
               </nb-list-item>
               <!-- Observable or File ? -->
-              <nb-list-item *ngIf="!jobTableData['is_sample']">
+              <nb-list-item *ngIf="!jobTableData.is_sample">
                 Classification
                 <strong>{{ jobTableData?.observable_classification }}</strong>
               </nb-list-item>
-              <nb-list-item *ngIf="jobTableData['is_sample']">
+              <nb-list-item *ngIf="jobTableData.is_sample">
                 File Mimetype
                 <strong>{{ jobTableData?.file_mimetype }}</strong>
               </nb-list-item>
