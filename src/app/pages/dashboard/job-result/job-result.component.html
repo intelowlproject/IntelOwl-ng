@@ -19,25 +19,13 @@
                 {{ jobTableData?.observable_name }}
               </span>
               <span>
-                <!-- Kill Job Button -->
-                <nb-icon
-                  *ngIf="jobTableData.status == 'running'"
-                  class="dl-btn"
-                  status="warning"
-                  nbTooltip="kill running analyzers and mark as 'killed'"
-                  icon="stop-circle-outline"
-                  (click)="killJob()"
-                >
-                </nb-icon>
-                <!-- Delete Job Button -->
-                <nb-icon
-                  class="dl-btn"
-                  status="danger"
-                  nbTooltip="Delete Job"
-                  icon="trash-2-outline"
-                  (click)="deleteJob()"
-                >
-                </nb-icon>
+                <!-- Job Status Icon -->
+                <intelowl-job-status-icon
+                  [value]="jobTableData?.status"
+                  rowData=""
+                ></intelowl-job-status-icon>
+                <!-- Divider -->
+                <p class="vr mx-2"></p>
                 <!-- Download Sample btn -->
                 <nb-icon
                   *ngIf="jobTableData.is_sample"
@@ -54,11 +42,24 @@
                   (click)="getJobRawJson()"
                 >
                 </nb-icon>
-                <!-- Job Status Icon -->
-                <intelowl-job-status-icon
-                  [value]="jobTableData?.status"
-                  rowData=""
-                ></intelowl-job-status-icon>
+                <!-- Kill Job Button -->
+                <nb-icon
+                  *ngIf="jobTableData.status === 'running'"
+                  class="dl-btn"
+                  status="warning"
+                  nbTooltip="kill running analyzers and mark as 'killed'"
+                  icon="slash"
+                  (click)="killJob()"
+                >
+                </nb-icon>
+                <!-- Delete Job Button -->
+                <nb-icon
+                  status="danger"
+                  nbTooltip="Delete Job"
+                  icon="trash-2-outline"
+                  (click)="deleteJob()"
+                >
+                </nb-icon>
               </span>
             </h5>
             <intelowl-job-tags

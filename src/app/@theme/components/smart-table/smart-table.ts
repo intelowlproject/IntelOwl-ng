@@ -55,6 +55,9 @@ export class JobStatusIconRenderComponent
     } else if (value === 'reported_with_fails') {
       this.iconName = 'alert-triangle-outline';
       this.iconStatus = 'warning';
+    } else if (value === 'killed') {
+      this.iconName = 'slash';
+      this.iconStatus = 'danger';
     } else {
       this.iconName = 'close-circle-outline';
       this.iconStatus = 'danger';
