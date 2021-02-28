@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpService } from './http.service';
 import { Job } from '../models/models';
 
@@ -8,9 +8,9 @@ import { Job } from '../models/models';
   providedIn: 'root',
 })
 export class JobService extends HttpService<any> {
-  private _jobs$: ReplaySubject<Job[]> = new ReplaySubject(1) as ReplaySubject<
-    Job[]
-  >;
+  private _jobs$: BehaviorSubject<Job[]> = new BehaviorSubject(
+    null
+  ) as BehaviorSubject<Job[]>;
   private _jobResult$: BehaviorSubject<Job> = new BehaviorSubject(
     null
   ) as BehaviorSubject<Job>;
@@ -78,6 +78,33 @@ export class JobService extends HttpService<any> {
     } catch (e) {
       console.error(e);
       return Promise.reject(e);
+    }
+  }
+
+  async deleteJobById(jobId: number): Promise<boolean> {
+    try {
+      const _answer = await this.delete(jobId, {}, 'jobs');
+      // update jobs list
+      const filteredJobs = this._jobs$.getValue().filter((j) => j.id != jobId);
+      this._jobs$.next(filteredJobs);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async killJobById(jobId: number): Promise<boolean> {
+    try {
+      const _answer = await this.patch({}, {}, `jobs/${jobId}/kill`);
+      // update jobs list
+      const filteredJobs = this._jobs$.getValue().map((j) => {
+        if (j.id == jobId) j.status = 'killed';
+        return j;
+      });
+      this._jobs$.next(filteredJobs);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
