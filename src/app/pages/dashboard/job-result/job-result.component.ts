@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JobService } from '../../../@core/services/job.service';
 import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { flash } from 'ngx-animate';
+import { ToastService } from 'src/app/@core/services/toast.service';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -88,7 +89,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly activateRoute: ActivatedRoute,
-    private readonly jobService: JobService
+    private readonly jobService: JobService,
+    private readonly router: Router,
+    private readonly toastr: ToastService
   ) {
     this.sub = this.activateRoute.params.subscribe(
       (res) => (this.jobId = res.jobId)
@@ -163,6 +166,46 @@ export class JobResultComponent implements OnInit, OnDestroy {
   async getJobRawJson(): Promise<void> {
     const url: string = await this.jobService.downloadJobRawJson(this.jobId);
     window.open(url, 'rel=noopener,noreferrer');
+  }
+
+  async deleteJob(): Promise<void> {
+    const sure = confirm('Are you sure?');
+    if (!sure) return;
+    const success = await this.jobService.deleteJobById(this.jobId);
+    if (success) {
+      this.ngOnDestroy();
+      this.toastr.showToast(
+        'Deleted successfully.',
+        `Job #${this.jobId}`,
+        'success'
+      );
+      setTimeout(() => this.router.navigate(['/']), 1000);
+    } else {
+      this.toastr.showToast(
+        'Could not be deleted. Reason: "Insufficient Permission".',
+        `Job #${this.jobId}`,
+        'error'
+      );
+    }
+  }
+
+  async killJob(): Promise<void> {
+    const sure = confirm('Are you sure?');
+    if (!sure) return;
+    const success = await this.jobService.killJobById(this.jobId);
+    if (success) {
+      this.toastr.showToast(
+        'Marked as "killed" successfully.',
+        `Job #${this.jobId}`,
+        'success'
+      );
+    } else {
+      this.toastr.showToast(
+        'Could not be "killed". Reason: "Insufficient Permission".',
+        `Job #${this.jobId}`,
+        'error'
+      );
+    }
   }
 
   // event emitted when user clicks on a row in table

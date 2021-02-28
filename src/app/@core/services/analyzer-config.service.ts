@@ -42,16 +42,16 @@ export class AnalyzerConfigService extends HttpService<any> {
     const obsToCheck: string[] = ['ip', 'url', 'domain', 'hash', 'generic'];
 
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
-      if (obj['type'] === 'file') {
-        analyzers['file'].push(key);
-        if (obj['run_hash']) {
-          analyzers['hash'].push(key);
-        }
+      // exlude `disabled:true`
+      if (obj.disabled) return;
+      // filter on basis of type
+      if (obj.type === 'file') {
+        analyzers.file.push(key);
+        if (obj.run_hash) analyzers.hash.push(key);
       } else {
         obsToCheck.forEach((clsfn: string) => {
-          if (obj['observable_supported'].includes(clsfn)) {
+          if (obj.observable_supported.includes(clsfn))
             analyzers[clsfn].push(key);
-          }
         });
       }
     });

@@ -42,7 +42,8 @@ export abstract class HttpService<T> {
 
   protected static buildRequestOptions(
     query?: any,
-    responseType?: string
+    responseType?: string,
+    observe?: string
   ): IOption {
     for (const i in query) {
       if (query.hasOwnProperty(i)) {
@@ -55,6 +56,7 @@ export abstract class HttpService<T> {
       responseType: responseType ? responseType : 'json',
       params: query,
       withCredentials: false,
+      observe: observe ? observe : 'body',
     };
   }
 
@@ -120,14 +122,12 @@ export abstract class HttpService<T> {
   }
 
   public patch(obj: T, query?: IRestQuery, url?: string): Promise<T> {
-    const request: Observable<any> = this.http.put(
+    const request: Observable<any> = this.http.patch(
       this.buildUrl(undefined, url),
       obj,
       HttpService.buildRequestOptions(query)
     );
-    return new Promise((resolve, reject) =>
-      request.pipe(first()).subscribe(resolve, reject)
-    );
+    return request.toPromise();
   }
 
   public delete(
@@ -137,11 +137,9 @@ export abstract class HttpService<T> {
   ): Promise<T> {
     const request: Observable<any> = this.http.delete(
       this.buildUrl(id, url),
-      HttpService.buildRequestOptions(query)
+      HttpService.buildRequestOptions(query, 'json', 'response')
     );
-    return new Promise((resolve, reject) =>
-      request.pipe(first()).subscribe(resolve, reject)
-    );
+    return request.toPromise();
   }
 
   protected buildUrl(id?: string | number, newUrl?: string): string {
