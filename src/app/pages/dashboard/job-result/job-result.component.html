@@ -19,6 +19,16 @@
                 {{ jobTableData?.observable_name }}
               </span>
               <span>
+                <!-- Kill Job Button -->
+                <nb-icon
+                  *ngIf="jobTableData.status == 'running'"
+                  class="dl-btn"
+                  status="warning"
+                  nbTooltip="kill running analyzers and mark as 'killed'"
+                  icon="stop-circle-outline"
+                  (click)="killJob()"
+                >
+                </nb-icon>
                 <!-- Delete Job Button -->
                 <nb-icon
                   class="dl-btn"

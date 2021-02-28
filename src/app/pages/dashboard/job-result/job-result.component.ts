@@ -173,6 +173,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
     if (!sure) return;
     const success = await this.jobService.deleteJobById(this.jobId);
     if (success) {
+      this.ngOnDestroy();
       this.toastr.showToast(
         'Deleted successfully.',
         `Job #${this.jobId}`,
@@ -181,7 +182,26 @@ export class JobResultComponent implements OnInit, OnDestroy {
       setTimeout(() => this.router.navigate(['/']), 1000);
     } else {
       this.toastr.showToast(
-        'Could not be deleted. Reason: Insufficient Permission.',
+        'Could not be deleted. Reason: "Insufficient Permission".',
+        `Job #${this.jobId}`,
+        'error'
+      );
+    }
+  }
+
+  async killJob(): Promise<void> {
+    const sure = confirm('Are you sure?');
+    if (!sure) return;
+    const success = await this.jobService.killJobById(this.jobId);
+    if (success) {
+      this.toastr.showToast(
+        'Marked as "killed" successfully.',
+        `Job #${this.jobId}`,
+        'success'
+      );
+    } else {
+      this.toastr.showToast(
+        'Could not be "killed". Reason: "Insufficient Permission".',
         `Job #${this.jobId}`,
         'error'
       );
