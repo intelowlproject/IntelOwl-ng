@@ -1,0 +1,20 @@
+{
+    "name": "IntelOwl",
+    "short_name": "IntelOwl",
+    "description": "Analyze files, domains, IPs in multiple ways from a single API at scale. ",
+    "icons": [
+        {
+            "src": "icons/192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#151a30",
+    "display": "standalone"
+}

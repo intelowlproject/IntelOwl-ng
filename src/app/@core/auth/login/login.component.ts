@@ -34,7 +34,15 @@ export class LoginComponent {
     },
   ];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  isDarkTheme: boolean;
+
+  constructor(private authService: AuthService, private router: Router) {
+    this.isDarkTheme = LoginComponent.getThemeName() === 'dark' ? true : false;
+  }
+
+  static getThemeName(): string {
+    return localStorage.getItem('themeName') || 'dark';
+  }
 
   async login() {
     this.errors = [];
