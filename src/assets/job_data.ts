@@ -1,4 +1,6 @@
-export const saved_jobs_for_demo = [
+import { Job } from 'src/app/@core/models/models';
+
+export const saved_jobs_for_demo: Array<Job> = [
   {
     id: 1,
     tags: [],

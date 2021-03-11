@@ -27,34 +27,30 @@ export class AnalyzerConfigService {
     }
   }
 
-  private makeAnalyzersList(): void {
+  private async makeAnalyzersList(): Promise<void> {
     const analyzers: IAnalyzersList = {
       ip: [],
       hash: [],
       domain: [],
       url: [],
+      generic: [],
       file: [],
     };
 
+    const obsToCheck: string[] = ['ip', 'url', 'domain', 'hash', 'generic'];
+
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
-      if (obj['type'] === 'file') {
-        analyzers['file'].push(key);
-        if (obj['run_hash']) {
-          analyzers['hash'].push(key);
-        }
+      // exlude `disabled:true`
+      if (obj.disabled) return;
+      // filter on basis of type
+      if (obj.type === 'file') {
+        analyzers.file.push(key);
+        if (obj.run_hash) analyzers.hash.push(key);
       } else {
-        if (obj['observable_supported'].includes('ip')) {
-          analyzers['ip'].push(key);
-        }
-        if (obj['observable_supported'].includes('url')) {
-          analyzers['url'].push(key);
-        }
-        if (obj['observable_supported'].includes('domain')) {
-          analyzers['domain'].push(key);
-        }
-        if (obj['observable_supported'].includes('hash')) {
-          analyzers['hash'].push(key);
-        }
+        obsToCheck.forEach((clsfn: string) => {
+          if (obj.observable_supported.includes(clsfn))
+            analyzers[clsfn].push(key);
+        });
       }
     });
     this._analyzersList$.next(analyzers);

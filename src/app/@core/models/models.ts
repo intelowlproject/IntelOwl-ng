@@ -9,24 +9,13 @@ export interface IScanForm {
   private?: boolean;
   // extra config
   tags_id: number[];
-  classification: 'ip' | 'domain' | 'hash' | 'url' | 'file';
+  classification: 'ip' | 'domain' | 'hash' | 'url' | 'generic' | 'file';
   runtime_configuration?: Object;
   // for observable form
   observable_name?: string;
   // for file form
   file?: File;
   file_name?: string;
-}
-
-export interface IUser {
-  id: number | string;
-  email?: string;
-  username: string;
-}
-
-export interface IToken {
-  access: string;
-  refresh: string;
 }
 
 export interface Tag {
@@ -43,7 +32,7 @@ export interface Job {
   is_sample?: boolean | string;
   md5: string;
   observable_name?: string;
-  observable_classification?: string;
+  observable_classification?: 'ip' | 'domain' | 'hash' | 'url' | 'generic' | '';
   file_name?: string;
   file_mimetype?: string;
   status: string;
@@ -69,6 +58,7 @@ export interface IAnalyzersList {
   hash: string[];
   domain: string[];
   url: string[];
+  generic: string[];
   file: string[];
 }
 
@@ -78,15 +68,23 @@ export interface IRawAnalyzerConfig {
 
 export interface IAnalyzerConfig {
   name?: string;
+  // common fields
   type: string;
   python_module: string;
-  // one of supported_filetypes or observable_supported
-  supported_filetypes?: string[];
-  observable_supported?: string[];
   external_service?: boolean;
   requires_configuration?: boolean;
   leaks_info?: boolean;
   disabled?: boolean;
   run_hash?: boolean;
   additional_config_params?: any;
+  description?: string;
+  // one of supported_filetypes or observable_supported
+  supported_filetypes?: string[];
+  observable_supported?: string[];
+}
+
+export interface ILoginPayload {
+  token?: string;
+  username?: string;
+  user?: { username?: string };
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `
+    <!---- https://lotr.fandom.com/wiki/One_Ring -->
     <h5>One API to rule them all. Here's a list of integrated services.</h5>
     <nb-card>
       <nb-route-tabset

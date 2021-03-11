@@ -42,6 +42,10 @@ export class ScanObservableComponent {
         this.obsPlaceholder = '446c5fbb11b9ce058450555c1c27153c';
         this.obsPattern = '^[a-zA-Z0-9]{4,}$';
         break;
+      case 'generic':
+        this.obsPlaceholder = 'email, phone no., city, country, registry etc.';
+        this.obsPattern = '.*';
+        break;
       default:
         break;
     }
