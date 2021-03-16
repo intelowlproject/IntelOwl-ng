@@ -32,6 +32,11 @@ export class LoginComponent {
       target: '_blank',
       icon: 'twitter',
     },
+    {
+      url: 'https://www.youtube.com/channel/UCudh0pRD6Fniu9X2hasGK8w',
+      target: '_blank',
+      icon: 'video',
+    },
   ];
 
   isDarkTheme: boolean;
