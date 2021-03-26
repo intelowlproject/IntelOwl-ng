@@ -6,12 +6,6 @@ nb-list-item {
   justify-content: space-between;
 }
 
-.dl-btn {
-  margin-right: 6.5px;
-  cursor: pointer;
-  color: inherit;
-}
-
 :host #goto-top-btn {
   position: fixed; /* Fixed/sticky position */
   bottom: 30px; /* Place the button at the bottom of the page */
