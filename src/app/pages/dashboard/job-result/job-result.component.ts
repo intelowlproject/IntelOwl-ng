@@ -224,7 +224,10 @@ export class JobResultComponent implements OnInit, OnDestroy {
       : event.data.errors;
     this.editor.update(json);
 
-    if ('screenshot' in json && json['screenshot'].length)
+    if (
+      Object.prototype.hasOwnProperty.call(json, 'screenshot') &&
+      json['screenshot'].length
+    )
       this.imageResult = json.screenshot;
   }
 
