@@ -15,6 +15,7 @@ import {
 } from '../../@theme/components/smart-table/smart-table';
 import { JobService } from '../../@core/services/job.service';
 import { JobResultComponent } from './job-result/job-result.component';
+import { JobActionsMenuComponent } from './job-result/job-actions-menu/job-actions-menu.component';
 import { DashboardComponent } from './dashboard.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
@@ -38,6 +39,7 @@ import * as echarts from 'echarts';
   declarations: [
     DashboardComponent,
     JobResultComponent,
+    JobActionsMenuComponent,
     ViewResultButtonComponent,
     JobStatusIconRenderComponent,
     TagsRenderComponent,

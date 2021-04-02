@@ -26,40 +26,7 @@
                 ></intelowl-job-status-icon>
                 <!-- Divider -->
                 <p class="vr mx-2"></p>
-                <!-- Download Sample btn -->
-                <nb-icon
-                  *ngIf="jobTableData.is_sample"
-                  class="dl-btn"
-                  nbTooltip="Download File"
-                  icon="download-outline"
-                  (click)="getJobSample()"
-                ></nb-icon>
-                <!-- Raw JSON -->
-                <nb-icon
-                  class="dl-btn"
-                  nbTooltip="View raw JSON"
-                  icon="code-outline"
-                  (click)="getJobRawJson()"
-                >
-                </nb-icon>
-                <!-- Kill Job Button -->
-                <nb-icon
-                  *ngIf="jobTableData.status === 'running'"
-                  class="dl-btn"
-                  status="warning"
-                  nbTooltip="kill running analyzers and mark as 'killed'"
-                  icon="slash"
-                  (click)="killJob()"
-                >
-                </nb-icon>
-                <!-- Delete Job Button -->
-                <nb-icon
-                  status="danger"
-                  nbTooltip="Delete Job"
-                  icon="trash-2-outline"
-                  (click)="deleteJob()"
-                >
-                </nb-icon>
+                <job-actions-menu [job]="jobTableData"></job-actions-menu>
               </span>
             </h5>
             <intelowl-job-tags
