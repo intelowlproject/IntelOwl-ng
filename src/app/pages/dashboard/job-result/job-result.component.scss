@@ -23,6 +23,19 @@ nb-list-item {
   box-shadow: none !important;
 }
 
+// Report Viewer Parent
+#selected-row-report {
+  height: auto;
+}
+
+// Image Viewer
+#result-image-viewer {
+  overflow: scroll;
+  margin-top: 20px;
+  padding: 0;
+  height: 600px;
+}
+
 // JSON Editor
 
 #result-json-viewer {

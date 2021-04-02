@@ -192,6 +192,12 @@
         <div id="result-json-viewer">
           <json-editor [options]="editorOptions"></json-editor>
         </div>
+        <!-- image view -->
+        <div *ngIf="imageResult" id="result-image-viewer">
+          <intelowl-image-visualizer
+            [imageResult]="imageResult"
+          ></intelowl-image-visualizer>
+        </div>
       </nb-card-body>
     </nb-card>
   </ng-container>
