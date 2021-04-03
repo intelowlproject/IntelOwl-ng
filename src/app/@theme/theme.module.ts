@@ -17,6 +17,7 @@ import {
 
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { ImageVisualizerComponent } from './components/image-visualizer/image-visualizer.component';
 
 import { CapitalizePipe, TimingPipe, NumberWithCommasPipe } from './pipes';
 import {
@@ -45,6 +46,7 @@ const NB_MODULES = [
 const COMPONENTS = [
   HeaderComponent,
   FooterComponent,
+  ImageVisualizerComponent,
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
