@@ -31,6 +31,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
   // interval var
   private pollInterval: any;
 
+  // image viewer var
+  public imageResult: string = '';
+
   // ng2-smart-table settings
   public tableSettings = {
     attr: {
@@ -167,6 +170,12 @@ export class JobResultComponent implements OnInit, OnDestroy {
       ? event.data.report
       : event.data.errors;
     this.editor.update(json);
+
+    if (
+      Object.prototype.hasOwnProperty.call(json, 'screenshot') &&
+      json['screenshot'].length
+    )
+      this.imageResult = json.screenshot;
   }
 
   goToTop(): void {
