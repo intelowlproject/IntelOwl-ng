@@ -12,30 +12,8 @@
       src="../../../../assets/intel_owl_positive.png"
       alt="IntelOwl logo"
     />
-    <section
-      *ngIf="socialLinks && socialLinks.length > 0"
-      class="links"
-      aria-label="Social links"
-    >
-      <div class="socials">
-        <ng-container *ngFor="let socialLink of socialLinks">
-          <a
-            *ngIf="socialLink.url"
-            [attr.href]="socialLink.url"
-            [attr.target]="socialLink.target"
-            [attr.class]="socialLink.icon"
-            [class.with-icon]="socialLink.icon"
-            rel="noreferrer"
-          >
-            <nb-icon
-              *ngIf="socialLink.icon; else title"
-              [icon]="socialLink.icon"
-            ></nb-icon>
-            <ng-template #title>{{ socialLink.title }}</ng-template>
-          </a>
-        </ng-container>
-      </div>
-    </section>
+    <!-- social links -->
+    <intelowl-social-links-component></intelowl-social-links-component>
   </nb-card-header>
   <nb-card-body>
     <!-- IntelOwl Logo -->

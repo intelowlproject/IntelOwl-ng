@@ -18,6 +18,7 @@ import {
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ImageVisualizerComponent } from './components/image-visualizer/image-visualizer.component';
+import { SocialLinksComponentComponent } from './components/social-links-component/social-links-component.component';
 
 import { CapitalizePipe, TimingPipe, NumberWithCommasPipe } from './pipes';
 import {
@@ -50,6 +51,7 @@ const COMPONENTS = [
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
+  SocialLinksComponentComponent,
 ];
 
 const PIPES = [CapitalizePipe, TimingPipe, NumberWithCommasPipe];
