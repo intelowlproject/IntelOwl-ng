@@ -9,6 +9,8 @@ import { filter, map, take } from 'rxjs/operators';
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements OnInit {
+  isDarkTheme: boolean;
+
   userMenu: NbMenuItem[] = [
     { title: 'Django Admin Interface' },
     { title: 'Log out' },
@@ -18,7 +20,9 @@ export class HeaderComponent implements OnInit {
     private sidebarService: NbSidebarService,
     private nbMenuService: NbMenuService,
     public userService: UserService
-  ) {}
+  ) {
+    this.isDarkTheme = HeaderComponent.getThemeName() === 'dark' ? true : false;
+  }
 
   ngOnInit(): void {
     this.nbMenuService
@@ -53,5 +57,9 @@ export class HeaderComponent implements OnInit {
   navigateHome(): boolean {
     this.nbMenuService.navigateHome();
     return false;
+  }
+
+  static getThemeName(): string {
+    return localStorage.getItem('themeName') || 'dark';
   }
 }
