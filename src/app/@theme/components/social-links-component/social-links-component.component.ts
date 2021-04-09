@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'intelowl-social-links-component',
   templateUrl: './social-links-component.component.html',
   styleUrls: ['./social-links-component.component.scss'],
 })
-export class SocialLinksComponentComponent implements OnInit {
+export class SocialLinksComponentComponent {
   socialLinks: any[] = [
     {
       url: 'https://github.com/intelowlproject',
@@ -23,8 +23,4 @@ export class SocialLinksComponentComponent implements OnInit {
       icon: 'twitter',
     },
   ];
-
-  constructor() {}
-
-  ngOnInit(): void {}
 }
