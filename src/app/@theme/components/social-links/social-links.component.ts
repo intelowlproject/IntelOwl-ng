@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'intelowl-social-links-component',
-  templateUrl: './social-links-component.component.html',
-  styleUrls: ['./social-links-component.component.scss'],
+  selector: 'intelowl-social-links',
+  templateUrl: './social-links.component.html',
+  styleUrls: ['./social-links.component.scss'],
 })
-export class SocialLinksComponentComponent {
+export class SocialLinksComponent {
   socialLinks: any[] = [
     {
       url: 'https://github.com/intelowlproject',
