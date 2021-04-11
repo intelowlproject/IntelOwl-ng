@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  NbMenuItem,
-  NbMenuService,
-  NbSidebarService,
-  NbThemeService,
-} from '@nebular/theme';
+import { NbMenuItem, NbMenuService, NbSidebarService } from '@nebular/theme';
 import { UserService } from '../../../@core/services/user.service';
 import { filter, map, take } from 'rxjs/operators';
+import { ThemeSwitcherComponent } from './theme-switcher/theme-switcher.component';
 
 @Component({
   selector: 'ngx-header',
@@ -14,19 +10,20 @@ import { filter, map, take } from 'rxjs/operators';
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements OnInit {
+  isDarkTheme: boolean;
+
   userMenu: NbMenuItem[] = [
     { title: 'Django Admin Interface' },
     { title: 'Log out' },
   ];
-  isDarkTheme: boolean;
 
   constructor(
     private sidebarService: NbSidebarService,
     private nbMenuService: NbMenuService,
-    public userService: UserService,
-    private themeService: NbThemeService
+    public userService: UserService
   ) {
-    this.isDarkTheme = HeaderComponent.getThemeName() === 'dark' ? true : false;
+    this.isDarkTheme =
+      ThemeSwitcherComponent.getThemeName() === 'dark' ? true : false;
   }
 
   ngOnInit(): void {
@@ -54,13 +51,6 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  changeTheme(toggleFlag: boolean): void {
-    let themeName: string;
-    toggleFlag ? (themeName = 'dark') : (themeName = 'default');
-    localStorage.setItem('themeName', themeName);
-    this.themeService.changeTheme(themeName);
-  }
-
   toggleSidebar(): boolean {
     this.sidebarService.toggle(true, 'menu-sidebar');
     return false;
@@ -69,9 +59,5 @@ export class HeaderComponent implements OnInit {
   navigateHome(): boolean {
     this.nbMenuService.navigateHome();
     return false;
-  }
-
-  static getThemeName(): string {
-    return localStorage.getItem('themeName') || 'dark';
   }
 }
