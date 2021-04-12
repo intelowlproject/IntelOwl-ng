@@ -18,7 +18,7 @@ import {
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ImageVisualizerComponent } from './components/image-visualizer/image-visualizer.component';
-import { ThemeSwitcherComponent } from './components/header/theme-switcher/theme-switcher.component';
+
 import { CapitalizePipe, TimingPipe, NumberWithCommasPipe } from './pipes';
 import {
   OneColumnLayoutComponent,
@@ -50,7 +50,6 @@ const COMPONENTS = [
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
-  ThemeSwitcherComponent,
 ];
 
 const PIPES = [CapitalizePipe, TimingPipe, NumberWithCommasPipe];
@@ -72,7 +71,7 @@ export class ThemeModule {
       providers: [
         ...NbThemeModule.forRoot(
           {
-            name: ThemeSwitcherComponent.getThemeName(),
+            name: HeaderComponent.getThemeName(),
           },
           [DEFAULT_THEME, DARK_THEME]
         ).providers,
