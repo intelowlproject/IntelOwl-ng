@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { ThemeSwitcherComponent } from '../../../@theme/components/header/theme-switcher/theme-switcher.component';
 
 @Component({
   templateUrl: './login.component.html',
@@ -20,8 +19,11 @@ export class LoginComponent {
   isDarkTheme: boolean;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.isDarkTheme =
-      ThemeSwitcherComponent.getThemeName() === 'dark' ? true : false;
+    this.isDarkTheme = LoginComponent.getThemeName() === 'dark' ? true : false;
+  }
+
+  static getThemeName(): string {
+    return localStorage.getItem('themeName') || 'dark';
   }
 
   async login() {
