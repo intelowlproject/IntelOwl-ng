@@ -1,0 +1,13 @@
+.links {
+  text-align: center;
+
+  .socials a {
+    margin: 0 1rem;
+    text-decoration: none;
+    vertical-align: middle;
+
+    &.with-icon {
+      font-size: 2rem;
+    }
+  }
+}
