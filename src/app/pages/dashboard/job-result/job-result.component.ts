@@ -7,7 +7,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
-import { flash } from 'ngx-animate';
+import { flash } from 'ng-animate';
 
 @Component({
   selector: 'intelowl-job-result',
