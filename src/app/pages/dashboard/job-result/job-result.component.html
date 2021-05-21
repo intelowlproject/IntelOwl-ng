@@ -3,34 +3,42 @@
     <h4>No data available for Job ID #{{ jobId }}.</h4>
   </ng-container>
 
-  <ng-container *ngIf="jobTableData; else loadingTemplate">
+  <ng-container *ngIf="jobObj; else loadingTemplate">
     <div [@refreshAnimation]="flashAnimBool" class="col-md-12 row">
       <!-- Job Information List -->
       <div class="col-md-5">
         <nb-card>
           <nb-card-header>
-            <h5 class="d-flex justify-content-between">
-              <span *ngIf="jobTableData.is_sample">
+            <h5 class="d-flex">
+              <div
+                *ngIf="jobObj.is_sample"
+                [nbTooltip]="jobObj?.file_name"
+                class="text-truncate w-75"
+              >
                 <nb-icon icon="file-outline"></nb-icon>
-                {{ jobTableData?.file_name }}
-              </span>
-              <span *ngIf="!jobTableData.is_sample">
+                {{ jobObj?.file_name }}
+              </div>
+              <div
+                *ngIf="!jobObj.is_sample"
+                [nbTooltip]="jobObj?.observable_name"
+                class="text-truncate w-75"
+              >
                 <nb-icon icon="globe-outline"></nb-icon>
-                {{ jobTableData?.observable_name }}
-              </span>
-              <span>
+                {{ jobObj?.observable_name }}
+              </div>
+              <div class="ml-auto">
                 <!-- Job Status Icon -->
                 <intelowl-job-status-icon
-                  [value]="jobTableData?.status"
+                  [value]="jobObj?.status"
                   rowData=""
                 ></intelowl-job-status-icon>
                 <!-- Divider -->
                 <p class="vr mx-2"></p>
-                <job-actions-menu [job]="jobTableData"></job-actions-menu>
-              </span>
+                <job-actions-menu [job]="jobObj"></job-actions-menu>
+              </div>
             </h5>
             <intelowl-job-tags
-              [value]="jobTableData?.tags"
+              [value]="jobObj?.tags"
               rowData=""
             ></intelowl-job-tags>
           </nb-card-header>
@@ -39,76 +47,72 @@
               <!-- Job ID -->
               <nb-list-item>
                 Job ID
-                <strong>{{ jobTableData?.id }}</strong>
+                <strong>{{ jobObj?.id }}</strong>
               </nb-list-item>
               <!-- Source -->
               <nb-list-item>
                 Source
-                <strong>{{ jobTableData?.source }}</strong>
+                <strong>{{ jobObj?.source }}</strong>
               </nb-list-item>
               <!-- Status -->
               <nb-list-item>
                 Status
-                <strong>{{ jobTableData?.status }}</strong>
+                <strong>{{ jobObj?.status }}</strong>
               </nb-list-item>
               <!-- MD5 hash -->
               <nb-list-item>
                 md5
-                <pre class="text-json">{{ jobTableData?.md5 | json }}</pre>
+                <pre class="text-json">{{ jobObj?.md5 | json }}</pre>
               </nb-list-item>
               <!-- Observable or File ? -->
-              <nb-list-item *ngIf="!jobTableData.is_sample">
+              <nb-list-item *ngIf="!jobObj.is_sample">
                 Classification
-                <strong>{{ jobTableData?.observable_classification }}</strong>
+                <strong>{{ jobObj?.observable_classification }}</strong>
               </nb-list-item>
-              <nb-list-item *ngIf="jobTableData.is_sample">
+              <nb-list-item *ngIf="jobObj.is_sample">
                 File Mimetype
-                <strong>{{ jobTableData?.file_mimetype }}</strong>
+                <strong>{{ jobObj?.file_mimetype }}</strong>
               </nb-list-item>
               <!-- Requested Analyzers -->
               <nb-list-item>
                 Requested Analyzers
                 <pre class="text-json">{{
-                  jobTableData?.analyzers_requested | json
+                  jobObj?.analyzers_requested | json
                 }}</pre>
               </nb-list-item>
               <!-- Received Request Time -->
               <nb-list-item>
                 Received Request Time
                 <small
-                  ><strong>{{
-                    jobTableData?.received_request_time
-                  }}</strong></small
+                  ><strong>{{ jobObj?.received_request_time }}</strong></small
                 >
               </nb-list-item>
               <!-- Finished Analysis Time -->
               <nb-list-item>
                 Finished Analysis Time
                 <small
-                  ><strong>{{
-                    jobTableData?.finished_analysis_time
-                  }}</strong></small
+                  ><strong>{{ jobObj?.finished_analysis_time }}</strong></small
                 >
               </nb-list-item>
               <!-- Time taken to finish analysis -->
               <nb-list-item>
                 Process Time
-                <strong>{{ jobTableData?.job_process_time }} seconds</strong>
+                <strong>{{ jobObj?.job_process_time }} seconds</strong>
               </nb-list-item>
               <!-- Force Privacy -->
               <nb-list-item>
                 Force Privacy
-                <strong>{{ jobTableData?.force_privacy }}</strong>
+                <strong>{{ jobObj?.force_privacy }}</strong>
               </nb-list-item>
               <!-- Disable External Analyzers -->
               <nb-list-item>
                 Disable External Analyzers
-                <strong>{{ jobTableData?.disable_external_analyzers }}</strong>
+                <strong>{{ jobObj?.disable_external_analyzers }}</strong>
               </nb-list-item>
               <!-- Errors -->
               <nb-list-item>
                 Errors
-                <pre class="text-json">{{ jobTableData?.errors | json }}</pre>
+                <pre class="text-json">{{ jobObj?.errors | json }}</pre>
               </nb-list-item>
             </nb-list>
           </nb-card-body>
@@ -117,7 +121,7 @@
 
       <!-- Job Analysis Result Table -->
       <div class="col-md-7">
-        <nb-alert *ngIf="jobTableData?.status === 'running'" status="info">
+        <nb-alert *ngIf="jobObj?.status === 'running'" status="info">
           <span><nb-icon icon="info-outline"></nb-icon></span>
           <span
             >This analysis is still running. The result is synced with the
@@ -132,12 +136,13 @@
             <span>Analysis Reports</span>
             <span
               >completed: {{ tableDataSource.count() }}/{{
-                jobTableData?.analyzers_to_execute.length
+                jobObj?.analyzers_to_execute.length
               }}</span
             >
           </nb-card-header>
           <nb-card-body>
             <ng2-smart-table
+              nbTooltip="Click on a row to view it's result!"
               (userRowSelect)="onRowSelect($event)"
               [settings]="tableSettings"
               [source]="tableDataSource"
@@ -157,7 +162,7 @@
       <nb-card-body>
         <!-- JSON/code view -->
         <div id="result-json-viewer">
-          <json-editor [options]="editorOptions"></json-editor>
+          <json-editor [debug]="true" [options]="editorOptions"></json-editor>
         </div>
         <!-- image view -->
         <div *ngIf="imageResult" id="result-image-viewer">

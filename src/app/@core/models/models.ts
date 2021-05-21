@@ -38,7 +38,7 @@ export interface Job {
   status: string;
   analyzers_requested: string[] | string;
   analyzers_to_execute: string[];
-  analysis_reports?: any;
+  analysis_reports?: any[];
   received_request_time: string | Date;
   finished_analysis_time?: string | Date;
   force_privacy: boolean | string;
