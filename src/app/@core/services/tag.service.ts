@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpService } from './http.service';
 import { Tag } from '../models/models';
 import { ToastService } from './toast.service';
-import { Subject } from 'rxjs/internal/Subject';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

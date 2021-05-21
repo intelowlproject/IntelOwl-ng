@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../@core/services/job.service';
 import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
@@ -7,8 +7,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
-import { flash } from 'ngx-animate';
-import { ToastService } from 'src/app/@core/services/toast.service';
+import { flash } from 'ng-animate';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -80,7 +79,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   public jobId: number;
 
   // Job Data for current jobId
-  public jobTableData: Job;
+  public jobObj: Job;
 
   // row whose report/error is currently being shown
   public selectedRowName: string;
@@ -92,9 +91,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly activateRoute: ActivatedRoute,
-    private readonly jobService: JobService,
-    private readonly router: Router,
-    private readonly toastr: ToastService
+    private readonly jobService: JobService
   ) {
     this.sub = this.activateRoute.params.subscribe(
       (res) => (this.jobId = res.jobId)
@@ -110,8 +107,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
       .pollForJob(this.jobId)
       .then(() => {
         this.sub.add(
-          this.jobService.jobResult$.subscribe(
-            async (res: Job) => await this.updateJobData(res)
+          this.jobService.jobResult$.subscribe((res: Job) =>
+            this.updateJobData(res)
           )
         );
         // only called once
@@ -122,7 +119,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   private initData(): void {
     // poll for changes to job result if status=running
-    if (this.jobTableData.status === 'running') {
+    if (this.jobObj.status === 'running') {
       this.pollInterval = setInterval(
         () => this.jobService.pollForJob(this.jobId),
         5000
@@ -131,21 +128,21 @@ export class JobResultComponent implements OnInit, OnDestroy {
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
     // ...so we show `all available analyzers` so user does not gets confused.
-    this.jobTableData.analyzers_requested = this.jobTableData
-      .analyzers_requested.length
-      ? this.jobTableData.analyzers_requested
+    this.jobObj.analyzers_requested = this.jobObj.analyzers_requested.length
+      ? this.jobObj.analyzers_requested
       : 'all available analyzers';
-    // just a little helper message for the user
-    this.selectedRowName = "Click on a row in the table to view it's result!";
+    // simulate click event to select the first row of the table as the default one on
+    setTimeout(
+      () => this.onRowSelect({ data: this.jobObj.analysis_reports[0] }, false),
+      500
+    );
   }
 
-  private async updateJobData(res: Job): Promise<void> {
+  private updateJobData(res: Job): void {
     // load data into the table data source
     this.tableDataSource.load(res.analysis_reports);
     // toggle animation
     this.toggleAnimation();
-    // not needed anymore
-    res.analysis_reports = null;
     if (res.status !== 'running') {
       // stop polling
       clearInterval(this.pollInterval);
@@ -158,66 +155,17 @@ export class JobResultComponent implements OnInit, OnDestroy {
       res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
     }
     // finally assign it to our class' member variable
-    this.jobTableData = res;
-  }
-
-  async getJobSample(): Promise<void> {
-    const url: string = await this.jobService.downloadJobSample(this.jobId);
-    window.open(url, 'rel=noopener,noreferrer');
-  }
-
-  async getJobRawJson(): Promise<void> {
-    const url: string = await this.jobService.downloadJobRawJson(this.jobId);
-    window.open(url, 'rel=noopener,noreferrer');
-  }
-
-  async deleteJob(): Promise<void> {
-    const sure = confirm('Are you sure?');
-    if (!sure) return;
-    const success = await this.jobService.deleteJobById(this.jobId);
-    if (success) {
-      this.ngOnDestroy();
-      this.toastr.showToast(
-        'Deleted successfully.',
-        `Job #${this.jobId}`,
-        'success'
-      );
-      setTimeout(() => this.router.navigate(['/']), 1000);
-    } else {
-      this.toastr.showToast(
-        'Could not be deleted. Reason: "Insufficient Permission".',
-        `Job #${this.jobId}`,
-        'error'
-      );
-    }
-  }
-
-  async killJob(): Promise<void> {
-    const sure = confirm('Are you sure?');
-    if (!sure) return;
-    const success = await this.jobService.killJobById(this.jobId);
-    if (success) {
-      this.toastr.showToast(
-        'Marked as "killed" successfully.',
-        `Job #${this.jobId}`,
-        'success'
-      );
-    } else {
-      this.toastr.showToast(
-        'Could not be "killed". Reason: "Insufficient Permission".',
-        `Job #${this.jobId}`,
-        'error'
-      );
-    }
+    this.jobObj = res;
   }
 
   // event emitted when user clicks on a row in table
-  async onRowSelect(event): Promise<void> {
+  onRowSelect(event, shouldScroll: boolean = true): void {
     this.selectedRowName = event.data.name;
-    this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+    if (shouldScroll)
+      this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     // if `report` exists shows report, otherwise the `errors`
     const json = Object.entries(event.data.report).length
       ? event.data.report
@@ -232,7 +180,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   goToTop(): void {
-    document.getElementById('analysis-reports-table').scrollIntoView({
+    document.getElementsByClassName('layout-container')[0].scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
