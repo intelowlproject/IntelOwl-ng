@@ -50,7 +50,7 @@ export class EchartsTreeComponent implements OnInit, OnDestroy {
         series: [
           {
             type: 'tree',
-            name: 'Integrations Tree',
+            name: 'Analyzers Tree',
             // orient: "TB",
             data: [this.treeInputData],
             top: '0%',

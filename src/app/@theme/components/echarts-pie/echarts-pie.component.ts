@@ -9,7 +9,6 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
-import { EChartOption } from 'echarts';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -18,7 +17,7 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EchartsPieComponent implements OnChanges, OnDestroy {
-  options: EChartOption;
+  options: any;
   private themeSubscription: Subscription;
 
   @Input() pieChartData: any;
@@ -54,7 +53,7 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)',
+          formatter: '<b>{b}</b> : {c} ({d}%)',
         },
         legend: {
           orient: 'horizontal',
@@ -65,6 +64,9 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
             color: echarts.textColor,
           },
         },
+        textStyle: {
+          color: echarts.textColor,
+        },
         series: [
           {
             name: this.pieChartName,
@@ -73,25 +75,16 @@ export class EchartsPieComponent implements OnChanges, OnDestroy {
             height: 375,
             center: ['50%', '50%'],
             data: this.pieChartData,
-            itemStyle: {
-              emphasis: {
+            emphasis: {
+              itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
                 shadowColor: echarts.itemHoverShadowColor,
               },
             },
-            label: {
-              normal: {
-                textStyle: {
-                  color: echarts.textColor,
-                },
-              },
-            },
             labelLine: {
-              normal: {
-                lineStyle: {
-                  color: echarts.axisLineColor,
-                },
+              lineStyle: {
+                color: echarts.axisLineColor,
               },
             },
           },

@@ -7,7 +7,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
-import { flash } from 'ngx-animate';
+import { flash } from 'ng-animate';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -159,7 +159,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   // event emitted when user clicks on a row in table
-  onRowSelect(event, shouldScroll: boolean = false): void {
+  onRowSelect(event, shouldScroll: boolean = true): void {
     this.selectedRowName = event.data.name;
     if (shouldScroll)
       this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
