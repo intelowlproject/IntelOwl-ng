@@ -159,7 +159,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   // event emitted when user clicks on a row in table
-  onRowSelect(event, shouldScroll: boolean = false): void {
+  onRowSelect(event, shouldScroll: boolean = true): void {
     this.selectedRowName = event.data.name;
     if (shouldScroll)
       this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
