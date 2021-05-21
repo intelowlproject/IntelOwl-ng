@@ -7,7 +7,6 @@ import {
 } from '@nebular/theme';
 import { UserService } from '../../../@core/services/user.service';
 import { filter, map, take } from 'rxjs/operators';
-import { ThemeSwitcherComponent } from './theme-switcher/theme-switcher.component';
 
 @Component({
   selector: 'ngx-header',
@@ -28,9 +27,8 @@ export class HeaderComponent implements OnInit {
     private nbThemeService: NbThemeService,
     public userService: UserService
   ) {
-    this.nbThemeService.onThemeChange().subscribe(() => {
-      this.isDarkTheme =
-        ThemeSwitcherComponent.getThemeName() === 'dark' ? true : false;
+    this.nbThemeService.onThemeChange().subscribe((themeName) => {
+      this.isDarkTheme = themeName?.name === 'dark' ? true : false;
     });
   }
 

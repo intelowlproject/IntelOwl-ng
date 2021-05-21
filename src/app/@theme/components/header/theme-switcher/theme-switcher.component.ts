@@ -4,7 +4,6 @@ import { NbThemeService } from '@nebular/theme';
 @Component({
   selector: 'theme-switcher',
   templateUrl: './theme-switcher.component.html',
-  styleUrls: ['./theme-switcher.component.scss'],
 })
 export class ThemeSwitcherComponent {
   isDarkTheme: boolean;
