@@ -24,6 +24,13 @@ const routes: Routes = [
           import('./analyzers/analyzers.module').then((m) => m.AnalyzersModule),
       },
       {
+        path: 'connectors',
+        loadChildren: () =>
+          import('./connectors/connectors.module').then(
+            (m) => m.ConnectorsModule
+          ),
+      },
+      {
         path: 'scan',
         loadChildren: () =>
           import('./scans/scans.module').then((m) => m.ScansModule),

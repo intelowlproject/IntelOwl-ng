@@ -49,5 +49,19 @@ export class PagesComponent {
       icon: 'file-add-outline',
       link: '/pages/scan/file',
     },
+    {
+      title: 'Connectors Management',
+      group: true,
+    },
+    {
+      title: 'Connectors',
+      icon: 'question-mark-circle-outline',
+      link: '/pages/connectors',
+    },
+    {
+      title: 'Connector Calls',
+      icon: 'question-mark-circle-outline',
+      link: '/pages/connectors/calls',
+    },
   ];
 }
