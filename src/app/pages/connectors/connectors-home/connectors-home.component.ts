@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
+import {
+  ConnectorActiveToggleRenderComponent,
+  ConnectorHealthCheckButtonRenderComponent,
+  ConnectorHealthStatusRenderComponent,
+  JSONRenderComponent,
+} from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
   templateUrl: './connectors-home.component.html',
@@ -27,22 +33,38 @@ export class ConnectorsHomeComponent {
       config: {
         title: 'Configurations Added',
         filter: false,
+        type: 'custom',
+        renderComponent: JSONRenderComponent,
       },
       secrets: {
         title: 'Secrets Required',
         filter: false,
+        type: 'html',
+        valuePrepareFunction: (c, r) => {
+          let result: string = '';
+          c.forEach((sec) => {
+            result += sec.set ? `${sec.name}<br>` : `${sec.name} (missing)<br>`;
+          });
+          return result;
+        },
       },
       active: {
         title: 'Active',
         filter: false,
+        type: 'custom',
+        renderComponent: ConnectorActiveToggleRenderComponent,
       },
-      healthStatus: {
+      health: {
         title: 'Health Status',
         filter: false,
+        type: 'custom',
+        renderComponent: ConnectorHealthStatusRenderComponent,
       },
       healthCheck: {
         title: 'Health Check',
         filter: false,
+        type: 'custom',
+        renderComponent: ConnectorHealthCheckButtonRenderComponent,
       },
     },
   };
@@ -52,11 +74,24 @@ export class ConnectorsHomeComponent {
     this.source.load([
       {
         name: 'MISP',
-        config: JSON.stringify({
+        config: {
           default: true,
-        }),
-        secrets: ['MISP_URL', 'MISP_KEY'],
+        },
+        secrets: [
+          {
+            name: 'MISP_URL',
+            set: false,
+          },
+          {
+            name: 'MISP_KEY',
+            set: true,
+          },
+        ],
         active: true,
+        health: {
+          status: 'Healthy',
+          lastChecked: 'just now',
+        },
       },
     ]);
   }

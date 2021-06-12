@@ -144,3 +144,44 @@ export class JSONRenderComponent implements ViewCell {
   @Input() value: any; // some object
   @Input() rowData: any;
 }
+
+// Connector Active Toggle Renderer
+@Component({
+  template: ` <nb-toggle status="success" [checked]="value"></nb-toggle> `,
+})
+export class ConnectorActiveToggleRenderComponent implements ViewCell {
+  @Input() value: any; // boolean
+  @Input() rowData: any;
+}
+
+// Connector Health Status Renderer
+@Component({
+  template: ` <div class="col">
+    <div class="row">
+      <strong style="color: {{ statusColor }};">{{ value?.status }}</strong>
+    </div>
+    <div class="row">
+      <span>Last Checked {{ value?.lastChecked }}</span>
+    </div>
+  </div>`,
+})
+export class ConnectorHealthStatusRenderComponent implements ViewCell, OnInit {
+  statusColor: string;
+
+  @Input() value: any; // some object
+  @Input() rowData: any;
+
+  ngOnInit(): void {
+    this.statusColor =
+      this.value.status.toLowerCase() === 'healthy' ? 'green' : 'red';
+  }
+}
+
+// Connector Health Check Button Renderer
+@Component({
+  template: ` <button nbButton size="tiny" status="primary">Check</button> `,
+})
+export class ConnectorHealthCheckButtonRenderComponent implements ViewCell {
+  @Input() value: any;
+  @Input() rowData: any;
+}
