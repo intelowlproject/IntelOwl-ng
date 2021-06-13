@@ -23,6 +23,7 @@ import { DebounceClickDirective } from 'src/app/@theme/directives/app-debounce-c
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 import * as echarts from 'echarts';
+import { JobInfoListComponent } from './job-result/job-info-list/job-info-list.component';
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import * as echarts from 'echarts';
     TagsRenderComponent,
     EchartsPieComponent,
     DebounceClickDirective,
+    JobInfoListComponent,
   ],
   providers: [JobService],
 })
