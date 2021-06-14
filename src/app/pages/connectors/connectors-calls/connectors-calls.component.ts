@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
-import { ViewResultButtonComponent } from 'src/app/@theme/components/smart-table/smart-table';
+import { ViewJobConnectorsResultButtonComponent } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
   templateUrl: './connectors-calls.component.html',
@@ -27,7 +27,7 @@ export class ConnectorsCallsComponent {
         width: '3%',
         filter: false,
         sort: false,
-        renderComponent: ViewResultButtonComponent,
+        renderComponent: ViewJobConnectorsResultButtonComponent,
       },
       id: {
         title: 'Id',

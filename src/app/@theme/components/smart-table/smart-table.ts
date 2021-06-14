@@ -91,7 +91,7 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
   }
 }
 
-// View Result Button Component
+// View Result Button Component (Job Analyzers Result)
 @Component({
   template: `
     <nb-icon
@@ -101,7 +101,8 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
     ></nb-icon>
   `,
 })
-export class ViewResultButtonComponent implements ViewCell {
+export class ViewJobAnalyzersResultButtonComponent implements ViewCell {
+  navUri: string = `/pages/scan/result`;
   @Input() value: number;
   @Input() rowData: any;
 
@@ -109,7 +110,34 @@ export class ViewResultButtonComponent implements ViewCell {
 
   async onRowSelect(id) {
     try {
-      this.router.navigate([`/pages/scan/result/${id}/`]).then();
+      this.router.navigate([`${this.navUri}/${id}/`]).then();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
+
+// View Result Button Component (Job Connectors Result)
+// todo: can't override member variables, so how to extend?
+@Component({
+  template: `
+    <nb-icon
+      style="cursor: pointer;"
+      (click)="onRowSelect(rowData.id)"
+      icon="external-link-outline"
+    ></nb-icon>
+  `,
+})
+export class ViewJobConnectorsResultButtonComponent implements ViewCell {
+  navUri: string = `/pages/connectors/result`;
+  @Input() value: number;
+  @Input() rowData: any;
+
+  constructor(private router: Router) {}
+
+  async onRowSelect(id) {
+    try {
+      this.router.navigate([`${this.navUri}/${id}/`]).then();
     } catch (e) {
       console.error(e);
     }
