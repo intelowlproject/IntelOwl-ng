@@ -8,9 +8,9 @@ import {
 } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
-  templateUrl: './connectors-home.component.html',
+  templateUrl: './connectors-table.component.html',
 })
-export class ConnectorsHomeComponent {
+export class ConnectorsTableComponent {
   // ng2-smart-table data source
   source: LocalDataSource = new LocalDataSource();
 

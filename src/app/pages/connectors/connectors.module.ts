@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 
-import { ConnectorsHomeComponent } from './connectors-home/connectors-home.component';
+import { ConnectorsTableComponent } from './connectors-table/connectors-table.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { NbButtonModule, NbIconModule, NbToggleModule } from '@nebular/theme';
 import { ThemeModule } from 'src/app/@theme/theme.module';
@@ -18,7 +18,7 @@ import {
     NbIconModule,
   ],
   declarations: [
-    ConnectorsHomeComponent,
+    ConnectorsTableComponent,
     ConnectorActiveToggleRenderComponent,
     ConnectorHealthCheckButtonRenderComponent,
   ],
