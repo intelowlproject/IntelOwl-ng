@@ -24,6 +24,7 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 import * as echarts from 'echarts';
 import { JobInfoListComponent } from './job-result/job-info-list/job-info-list.component';
+import { JobConnectorsResultComponent } from './job-result/job-connectors-result/job-connectors-result.component';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { JobInfoListComponent } from './job-result/job-info-list/job-info-list.c
   declarations: [
     DashboardComponent,
     JobAnalyzersResultComponent,
+    JobConnectorsResultComponent,
     JobActionsMenuComponent,
     ViewJobAnalyzersResultButtonComponent,
     JobStatusIconRenderComponent,

@@ -7,6 +7,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { ScansModule } from './scans/scans.module';
 import { NbMenuModule } from '@nebular/theme';
 import { AnalyzersModule } from './analyzers/analyzers.module';
+import { ConnectorsModule } from './connectors/connectors.module';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { AnalyzersModule } from './analyzers/analyzers.module';
     ThemeModule,
     DashboardModule,
     AnalyzersModule,
+    ConnectorsModule,
     ScansModule,
   ],
   declarations: [PagesComponent],
