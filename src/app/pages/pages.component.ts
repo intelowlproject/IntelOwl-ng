@@ -58,10 +58,5 @@ export class PagesComponent {
       icon: 'question-mark-circle-outline',
       link: '/pages/connectors',
     },
-    {
-      title: 'Connector Calls',
-      icon: 'question-mark-circle-outline',
-      link: '/pages/connectors/calls',
-    },
   ];
 }

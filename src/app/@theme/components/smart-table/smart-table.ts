@@ -117,33 +117,6 @@ export class ViewJobAnalyzersResultButtonComponent implements ViewCell {
   }
 }
 
-// View Result Button Component (Job Connectors Result)
-// todo: can't override member variables, so how to extend?
-@Component({
-  template: `
-    <nb-icon
-      style="cursor: pointer;"
-      (click)="onRowSelect(rowData.id)"
-      icon="external-link-outline"
-    ></nb-icon>
-  `,
-})
-export class ViewJobConnectorsResultButtonComponent implements ViewCell {
-  navUri: string = `/pages/connectors/result`;
-  @Input() value: number;
-  @Input() rowData: any;
-
-  constructor(private router: Router) {}
-
-  async onRowSelect(id) {
-    try {
-      this.router.navigate([`${this.navUri}/${id}/`]).then();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-}
-
 // Tags badges Renderer
 @Component({
   selector: 'intelowl-job-tags',

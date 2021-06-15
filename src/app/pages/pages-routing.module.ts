@@ -5,6 +5,7 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { JobAnalyzersResultComponent } from './dashboard/job-result/job-analyzers-result/job-analyzers-result.component';
 import { JobConnectorsResultComponent } from './dashboard/job-result/job-connectors-result/job-connectors-result.component';
+import { ConnectorsHomeComponent } from './connectors/connectors-home/connectors-home.component';
 
 const routes: Routes = [
   {
@@ -26,14 +27,7 @@ const routes: Routes = [
       },
       {
         path: 'connectors',
-        loadChildren: () =>
-          import('./connectors/connectors.module').then(
-            (m) => m.ConnectorsModule
-          ),
-      },
-      {
-        path: 'connectors/result/:jobId',
-        component: JobConnectorsResultComponent,
+        component: ConnectorsHomeComponent,
       },
       {
         path: 'scan',
