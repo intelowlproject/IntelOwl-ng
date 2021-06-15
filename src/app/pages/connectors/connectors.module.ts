@@ -11,7 +11,6 @@ import {
   ConnectorHealthCheckButtonRenderComponent,
   ViewJobConnectorsResultButtonComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
-import { JobConnectorsResultComponent } from './connectors-calls/job-connectors-result/job-connectors-result.component';
 
 @NgModule({
   imports: [
@@ -28,7 +27,6 @@ import { JobConnectorsResultComponent } from './connectors-calls/job-connectors-
     ConnectorActiveToggleRenderComponent,
     ConnectorHealthCheckButtonRenderComponent,
     ViewJobConnectorsResultButtonComponent,
-    JobConnectorsResultComponent,
   ],
 })
 export class ConnectorsModule {}
