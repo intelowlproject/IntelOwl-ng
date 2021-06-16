@@ -3,8 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { JobAnalyzersResultComponent } from './dashboard/job-result/job-analyzers-result/job-analyzers-result.component';
-import { JobConnectorsResultComponent } from './dashboard/job-result/job-connectors-result/job-connectors-result.component';
+import { JobResultComponent } from './dashboard/job-result/job-result.component';
 import { ConnectorsTableComponent } from './connectors/connectors-table/connectors-table.component';
 
 const routes: Routes = [
@@ -36,7 +35,7 @@ const routes: Routes = [
       },
       {
         path: 'scan/result/:jobId',
-        component: JobAnalyzersResultComponent,
+        component: JobResultComponent,
       },
     ],
   },

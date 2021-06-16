@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JobService } from '../../../../@core/services/job.service';
-import { JobStatusIconRenderComponent } from '../../../../@theme/components/smart-table/smart-table';
-import { Job } from '../../../../@core/models/models';
+import { JobService } from '../../../@core/services/job.service';
+import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
+import { Job } from '../../../@core/models/models';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
@@ -19,7 +19,7 @@ import { flash } from 'ng-animate';
     ]),
   ],
 })
-export class JobAnalyzersResultComponent implements OnInit, OnDestroy {
+export class JobResultComponent implements OnInit, OnDestroy {
   // Animation
   flashAnimBool: boolean = false;
   private toggleAnimation = () => (this.flashAnimBool = !this.flashAnimBool);

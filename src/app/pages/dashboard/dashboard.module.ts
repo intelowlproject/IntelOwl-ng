@@ -14,7 +14,7 @@ import {
   TagsRenderComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { JobService } from '../../@core/services/job.service';
-import { JobAnalyzersResultComponent } from './job-result/job-analyzers-result/job-analyzers-result.component';
+import { JobResultComponent } from './job-result/job-result.component';
 import { JobActionsMenuComponent } from './job-result/job-actions-menu/job-actions-menu.component';
 import { DashboardComponent } from './dashboard.component';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -24,7 +24,6 @@ import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 import * as echarts from 'echarts';
 import { JobInfoListComponent } from './job-result/job-info-list/job-info-list.component';
-import { JobConnectorsResultComponent } from './job-result/job-connectors-result/job-connectors-result.component';
 
 @NgModule({
   imports: [
@@ -40,8 +39,7 @@ import { JobConnectorsResultComponent } from './job-result/job-connectors-result
   ],
   declarations: [
     DashboardComponent,
-    JobAnalyzersResultComponent,
-    JobConnectorsResultComponent,
+    JobResultComponent,
     JobActionsMenuComponent,
     ViewJobAnalyzersResultButtonComponent,
     JobStatusIconRenderComponent,
