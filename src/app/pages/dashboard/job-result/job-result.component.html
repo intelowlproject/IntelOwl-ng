@@ -12,35 +12,64 @@
 
       <!-- Job Analysis Result Table -->
       <div class="col-md-7">
-        <nb-alert *ngIf="jobObj?.status === 'running'" status="info">
-          <span><nb-icon icon="info-outline"></nb-icon></span>
-          <span
-            >This analysis is still running. The result is synced with the
-            server every 5 seconds.</span
-          >
-        </nb-alert>
-        <nb-card>
-          <nb-card-header
-            id="analysis-reports-table"
-            class="d-flex justify-content-between"
-          >
-            <span>Analysis Reports</span>
-            <span
-              >completed: {{ tableDataSource.count() }}/{{
-                jobObj?.analyzers_to_execute.length
-              }}</span
-            >
-          </nb-card-header>
-          <nb-card-body>
-            <ng2-smart-table
-              nbTooltip="Click on a row to view it's result!"
-              (userRowSelect)="onRowSelect($event)"
-              [settings]="tableSettings"
-              [source]="tableDataSource"
-            >
-            </ng2-smart-table>
-          </nb-card-body>
-        </nb-card>
+        <nb-tabset>
+          <nb-tab tabTitle="Analysis Reports">
+            <!-- Job Running Alert -->
+            <nb-alert *ngIf="jobObj?.status === 'running'" status="info">
+              <span><nb-icon icon="info-outline"></nb-icon></span>
+              <span
+                >This analysis is still running. The result is synced with the
+                server every 5 seconds.</span
+              >
+            </nb-alert>
+            <nb-card>
+              <nb-card-header
+                id="analysis-reports-table"
+                class="d-flex justify-content-between"
+              >
+                <span>Analysis Reports</span>
+                <span
+                  >completed: {{ analysisTableDataSource.count() }}/{{
+                    jobObj?.analyzers_to_execute.length
+                  }}</span
+                >
+              </nb-card-header>
+              <nb-card-body>
+                <ng2-smart-table
+                  nbTooltip="Click on a row to view it's result!"
+                  (userRowSelect)="onRowSelect($event)"
+                  [settings]="tableSettings"
+                  [source]="analysisTableDataSource"
+                >
+                </ng2-smart-table>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Connector Reports">
+            <nb-card>
+              <nb-card-header
+                id="connector-reports-table"
+                class="d-flex justify-content-between"
+              >
+                <span>Connector Reports</span>
+                <span
+                  >completed: {{ connectorTableDataSource.count() }}/{{
+                    jobObj?.analyzers_to_execute.length
+                  }}</span
+                >
+              </nb-card-header>
+              <nb-card-body>
+                <ng2-smart-table
+                  nbTooltip="Click on a row to view it's result!"
+                  (userRowSelect)="onRowSelect($event)"
+                  [settings]="tableSettings"
+                  [source]="connectorTableDataSource"
+                >
+                </ng2-smart-table>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+        </nb-tabset>
       </div>
     </div>
 

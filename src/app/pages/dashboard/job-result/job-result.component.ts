@@ -11,8 +11,8 @@ import { flash } from 'ng-animate';
 
 @Component({
   selector: 'intelowl-job-result',
-  templateUrl: './job-analyzers-result.component.html',
-  styleUrls: ['./job-analyzers-result.component.scss'],
+  templateUrl: './job-result.component.html',
+  styleUrls: ['./job-result.component.scss'],
   animations: [
     trigger('refreshAnimation', [
       transition('false => true', useAnimation(flash)),
@@ -73,7 +73,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
   };
 
   // ng2-smart-table data source
-  public tableDataSource: LocalDataSource = new LocalDataSource();
+  public analysisTableDataSource: LocalDataSource = new LocalDataSource();
+  public connectorTableDataSource: LocalDataSource = new LocalDataSource();
 
   // Job ID whose result is being displayed
   public jobId: number;
@@ -139,8 +140,10 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   private updateJobData(res: Job): void {
-    // load data into the table data source
-    this.tableDataSource.load(res.analysis_reports);
+    // load data into the analysis table data source
+    this.analysisTableDataSource.load(res.analysis_reports);
+    // temp: load data into connectors table data source
+    this.connectorTableDataSource.load(res.analysis_reports);
     // toggle animation
     this.toggleAnimation();
     if (res.status !== 'running') {
