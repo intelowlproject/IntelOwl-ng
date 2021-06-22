@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
+import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 import {
-  ConnectorActiveToggleRenderComponent,
-  ConnectorHealthCheckButtonRenderComponent,
-  ConnectorHealthStatusRenderComponent,
   JSONRenderComponent,
+  TickCrossExtraRenderComponent,
+  TickCrossRenderComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
   templateUrl: './connectors-table.component.html',
 })
-export class ConnectorsTableComponent {
+export class ConnectorsTableComponent implements OnInit {
   // ng2-smart-table data source
-  source: LocalDataSource = new LocalDataSource();
+  tableSource: LocalDataSource = new LocalDataSource();
 
   // ng2-smart-table settings
   settings = {
@@ -30,69 +30,61 @@ export class ConnectorsTableComponent {
         title: 'Name',
         filter: false,
       },
+      description: {
+        title: 'Description',
+        filter: false,
+      },
+      disabled: {
+        title: 'Active',
+        filter: false,
+        type: 'custom',
+        valuePrepareFunction: (c, r) => {
+          return !c; // disabled = !active
+        },
+        renderComponent: TickCrossRenderComponent,
+      },
       config: {
         title: 'Configurations Added',
         filter: false,
         type: 'custom',
         renderComponent: JSONRenderComponent,
       },
-      secrets: {
-        title: 'Secrets Required',
+      missing_secrets: {
+        title: 'Missing Secrets',
         filter: false,
-        type: 'html',
+        type: 'custom',
         valuePrepareFunction: (c, r) => {
-          let result: string = '';
-          c.forEach((sec) => {
-            result += sec.set ? `${sec.name}<br>` : `${sec.name} (missing)<br>`;
-          });
-          return result;
+          return r.verification.missing_secrets;
         },
+        renderComponent: JSONRenderComponent,
       },
-      active: {
-        title: 'Active',
+      configured: {
+        title: 'Configured',
         filter: false,
         type: 'custom',
-        renderComponent: ConnectorActiveToggleRenderComponent,
-      },
-      health: {
-        title: 'Health Status',
-        filter: false,
-        type: 'custom',
-        renderComponent: ConnectorHealthStatusRenderComponent,
-      },
-      healthCheck: {
-        title: 'Health Check',
-        filter: false,
-        type: 'custom',
-        renderComponent: ConnectorHealthCheckButtonRenderComponent,
+        valuePrepareFunction: (c, r) => {
+          return {
+            tick: r.verification.configured,
+            tooltip: r.verification.error_message,
+          };
+        },
+        renderComponent: TickCrossExtraRenderComponent,
       },
     },
   };
 
-  constructor() {
-    // load data into table
-    this.source.load([
-      {
-        name: 'MISP',
-        config: {
-          default: true,
-        },
-        secrets: [
-          {
-            name: 'MISP_URL',
-            set: false,
-          },
-          {
-            name: 'MISP_KEY',
-            set: true,
-          },
-        ],
-        active: true,
-        health: {
-          status: 'Healthy',
-          lastChecked: 'just now',
-        },
-      },
-    ]);
+  constructor(private readonly connectorService: ConnectorConfigService) {}
+
+  ngOnInit(): void {
+    setTimeout(() => this.init(), 4000);
+  }
+
+  private init(): void {
+    if (this.connectorService.rawConnectorConfig) {
+      const data: any[] = this.connectorService.constructTableData();
+      this.tableSource.load(data);
+      // default alphabetically sort.
+      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+    }
   }
 }

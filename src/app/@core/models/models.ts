@@ -83,6 +83,24 @@ export interface IAnalyzerConfig {
   observable_supported?: string[];
 }
 
+export interface IRawConnectorConfig {
+  [name: string]: IConnectorConfig;
+}
+
+export interface IConnectorConfig {
+  name?: string;
+  python_module: string;
+  disabled?: boolean;
+  config?: any;
+  description?: string;
+  secrets?: any;
+  verification?: {
+    configured?: boolean;
+    error_message?: string;
+    missing_secrets?: string[];
+  };
+}
+
 export interface ILoginPayload {
   token?: string;
   username?: string;
