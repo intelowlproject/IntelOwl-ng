@@ -6,7 +6,7 @@
   <div class="col-sm-12">
     <nb-card fullWidth>
       <nb-card-header>
-        <span>Connectors - count: 3</span>
+        <span>Connectors - count: {{ tableSource.count() }}</span>
       </nb-card-header>
       <nb-card-body>
         <ng2-smart-table [settings]="settings" [source]="tableSource">

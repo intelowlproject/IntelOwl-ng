@@ -62,7 +62,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
       process_time: {
         title: 'Process Time (s)',
         filter: false,
-        valuePrepareFunction: (c) => c.toFixed(2),
+        valuePrepareFunction: (c) => parseFloat(c).toFixed(2),
       },
       started_time_str: {
         title: 'Start Time',
@@ -143,7 +143,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
     // load data into the analysis table data source
     this.analysisTableDataSource.load(res.analysis_reports);
     // temp: load data into connectors table data source
-    this.connectorTableDataSource.load(res.analysis_reports);
+    this.connectorTableDataSource.load(res.connector_reports);
     // toggle animation
     this.toggleAnimation();
     if (res.status !== 'running') {
