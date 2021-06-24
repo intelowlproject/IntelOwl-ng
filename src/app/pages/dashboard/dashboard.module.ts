@@ -9,7 +9,7 @@ import {
 import { ThemeModule } from '../../@theme/theme.module';
 import { EchartsPieComponent } from '../../@theme/components/echarts-pie/echarts-pie.component';
 import {
-  ViewJobAnalyzersResultButtonComponent,
+  ViewResultButtonComponent,
   JobStatusIconRenderComponent,
   TagsRenderComponent,
 } from '../../@theme/components/smart-table/smart-table';
@@ -41,7 +41,7 @@ import { JobInfoListComponent } from './job-result/job-info-list/job-info-list.c
     DashboardComponent,
     JobResultComponent,
     JobActionsMenuComponent,
-    ViewJobAnalyzersResultButtonComponent,
+    ViewResultButtonComponent,
     JobStatusIconRenderComponent,
     TagsRenderComponent,
     EchartsPieComponent,

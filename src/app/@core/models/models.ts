@@ -67,33 +67,33 @@ export interface IRawAnalyzerConfig {
   [name: string]: IAnalyzerConfig;
 }
 
-export interface IAnalyzerConfig {
+export interface IRawConnectorConfig {
+  [name: string]: IConnectorConfig;
+}
+
+export interface IAbstractConfig {
+  // Abstract for common fields in IAnalyzerConfig and IConnectorConfig
   name?: string;
+  python_module: string;
+  disabled?: boolean;
+  description?: string;
+}
+
+export interface IAnalyzerConfig extends IAbstractConfig {
   // common fields
   type: string;
-  python_module: string;
   external_service?: boolean;
   requires_configuration?: boolean;
   leaks_info?: boolean;
-  disabled?: boolean;
   run_hash?: boolean;
   additional_config_params?: any;
-  description?: string;
   // one of supported_filetypes or observable_supported
   supported_filetypes?: string[];
   observable_supported?: string[];
 }
 
-export interface IRawConnectorConfig {
-  [name: string]: IConnectorConfig;
-}
-
-export interface IConnectorConfig {
-  name?: string;
-  python_module: string;
-  disabled?: boolean;
+export interface IConnectorConfig extends IAbstractConfig {
   config?: any;
-  description?: string;
   secrets?: any;
   verification?: {
     configured?: boolean;

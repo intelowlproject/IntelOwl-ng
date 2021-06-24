@@ -134,7 +134,7 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
     ></nb-icon>
   `,
 })
-export class ViewJobAnalyzersResultButtonComponent implements ViewCell {
+export class ViewResultButtonComponent implements ViewCell {
   navUri: string = `/pages/scan/result`;
   @Input() value: number;
   @Input() rowData: any;

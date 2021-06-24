@@ -38,9 +38,7 @@ export class ConnectorsTableComponent implements OnInit {
         title: 'Active',
         filter: false,
         type: 'custom',
-        valuePrepareFunction: (c, r) => {
-          return !c; // disabled = !active
-        },
+        valuePrepareFunction: (c, r) => !c, // disabled = !active
         renderComponent: TickCrossRenderComponent,
       },
       config: {
@@ -53,21 +51,17 @@ export class ConnectorsTableComponent implements OnInit {
         title: 'Missing Secrets',
         filter: false,
         type: 'custom',
-        valuePrepareFunction: (c, r) => {
-          return r.verification.missing_secrets;
-        },
+        valuePrepareFunction: (c, r) => r.verification.missing_secrets,
         renderComponent: JSONRenderComponent,
       },
       configured: {
         title: 'Configured',
         filter: false,
         type: 'custom',
-        valuePrepareFunction: (c, r) => {
-          return {
-            tick: r.verification.configured,
-            tooltip: r.verification.error_message,
-          };
-        },
+        valuePrepareFunction: (c, r) => ({
+          tick: r.verification.configured,
+          tooltip: r.verification.error_message,
+        }),
         renderComponent: TickCrossExtraRenderComponent,
       },
     },

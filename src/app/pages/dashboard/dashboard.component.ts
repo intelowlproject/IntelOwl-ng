@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import {
   JobStatusIconRenderComponent,
-  ViewJobAnalyzersResultButtonComponent,
+  ViewResultButtonComponent,
   TagsRenderComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -57,7 +57,7 @@ export class DashboardComponent implements OnDestroy {
         width: '3%',
         filter: false,
         sort: false,
-        renderComponent: ViewJobAnalyzersResultButtonComponent,
+        renderComponent: ViewResultButtonComponent,
       },
       id: {
         title: 'id',
