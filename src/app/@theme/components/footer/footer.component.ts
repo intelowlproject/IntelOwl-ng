@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./footer.component.scss'],
   template: `
     <span class="created-by">
-      Copyright © 2020
+      Copyright © {{ currentYear }}
       <b>
         <a target="_blank" href="https://github.com/orgs/intelowlproject"
           >IntelOwl</a
@@ -15,4 +15,6 @@ import { Component } from '@angular/core';
     </span>
   `,
 })
-export class FooterComponent {}
+export class FooterComponent {
+  currentYear: number = new Date().getFullYear();
+}
