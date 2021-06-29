@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NbRouteTabsetModule, NbSpinnerModule } from '@nebular/theme';
+import { NbRouteTabsetModule, NbSpinnerModule, NbTooltipModule } from '@nebular/theme';
 import { EchartsTreeComponent } from '../../@theme/components/echarts-tree/echarts-tree.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AnalyzersManagementComponent } from './analyzers-management/analyzers-management.component';
@@ -9,6 +9,7 @@ import { AnalyzersTableComponent } from './analyzers-management/analyzers-table/
 import { AnalyzersTreeComponent } from './analyzers-management/analyzers-tree/analyzers-tree.component';
 import {
   TickCrossRenderComponent,
+  TickCrossExtraRenderComponent,
   JSONRenderComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
@@ -21,6 +22,7 @@ import { ThemeModule } from '../../@theme/theme.module';
     NbSpinnerModule,
     Ng2SmartTableModule,
     NgxEchartsModule,
+    NbTooltipModule,
   ],
   declarations: [
     AnalyzersManagementComponent,
@@ -28,6 +30,7 @@ import { ThemeModule } from '../../@theme/theme.module';
     AnalyzersTreeComponent,
     EchartsTreeComponent,
     TickCrossRenderComponent,
+    TickCrossExtraRenderComponent,
     JSONRenderComponent,
   ],
 })

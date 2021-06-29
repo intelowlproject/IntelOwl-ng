@@ -112,12 +112,14 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
   @Input() rowData: any;
 
   ngOnInit() {
-    const tick = this.value.bool;
-    this.tooltip = this.value.tooltip;
+    const tick = this.value.tick;
+
     if (tick === true) {
+      this.tooltip = 'Ready to use!';
       this.iconName = 'checkmark-circle-2-outline';
       this.iconStatus = 'success';
     } else {
+      this.tooltip = this.value.tooltip;
       this.iconName = 'close-circle-outline';
       this.iconStatus = 'danger';
     }

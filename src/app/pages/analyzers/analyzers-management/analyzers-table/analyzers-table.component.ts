@@ -126,19 +126,11 @@ export class AnalyzersTableComponent implements OnInit {
         title: 'Configured',
         type: 'custom',
         width: '3%',
+        filter: false,
         valuePrepareFunction: (c, r) => ({
-          tick: r.configured,
-          tooltip: r.error_message,
+          tick: r.verification.configured,
+          tooltip: r.verification.error_message,
         }),
-        filter: {
-          type: 'list',
-          config: {
-            list: [
-              { value: true, title: 'Yes' },
-              { value: false, title: 'No' },
-            ],
-          },
-        },
         renderComponent: TickCrossExtraRenderComponent,
       },
     },

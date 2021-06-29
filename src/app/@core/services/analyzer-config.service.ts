@@ -72,7 +72,7 @@ export class AnalyzerConfigService extends HttpService<any> {
       if (!obj.hasOwnProperty('leaks_info')) {
         obj['leaks_info'] = false;
       }
-      obj['configured'] = obj['verification'];
+      obj['configured'] = obj.verification;
 
       return obj;
     });
