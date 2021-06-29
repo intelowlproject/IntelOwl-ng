@@ -135,6 +135,7 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
   `,
 })
 export class ViewResultButtonComponent implements ViewCell {
+  navUri: string = `/pages/scan/result`;
   @Input() value: number;
   @Input() rowData: any;
 
@@ -142,7 +143,7 @@ export class ViewResultButtonComponent implements ViewCell {
 
   async onRowSelect(id) {
     try {
-      this.router.navigate([`/pages/scan/result/${id}/`]).then();
+      this.router.navigate([`${this.navUri}/${id}/`]).then();
     } catch (e) {
       console.error(e);
     }

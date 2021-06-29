@@ -84,12 +84,19 @@ export interface IAnalyzerConfig extends IAbstractConfig {
   // common fields
   type: string;
   external_service?: boolean;
-  requires_configuration?: boolean;
   leaks_info?: boolean;
   run_hash?: boolean;
-  additional_config_params?: any;
+  run_hash_type?: string;
+  config?: any;
+  secrets?: any;
+  verification?: {
+    configured?: boolean;
+    error_message?: string;
+    missing_secrets?: string[];
+  };
   // one of supported_filetypes or observable_supported
   supported_filetypes?: string[];
+  not_supported_filetypes?: string[];
   observable_supported?: string[];
 }
 

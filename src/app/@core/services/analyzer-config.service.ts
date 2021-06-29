@@ -69,12 +69,11 @@ export class AnalyzerConfigService extends HttpService<any> {
       if (!obj.hasOwnProperty('external_service')) {
         obj['external_service'] = false;
       }
-      if (!obj.hasOwnProperty('requires_configuration')) {
-        obj['requires_configuration'] = false;
-      }
       if (!obj.hasOwnProperty('leaks_info')) {
         obj['leaks_info'] = false;
       }
+      obj['configured'] = obj['verification'];
+
       return obj;
     });
   }

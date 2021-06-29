@@ -114,9 +114,7 @@ export class BaseScanFormComponent implements OnInit {
     const config: any = {};
     this.formData.analyzers_requested.forEach((name: string) => {
       const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
-      if (ac?.additional_config_params) {
-        config[name] = ac.additional_config_params;
-      }
+      config[name] = { ...ac?.config, ...ac?.secrets };
     });
     return config;
   }
