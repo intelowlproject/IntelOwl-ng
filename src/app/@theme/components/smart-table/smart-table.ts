@@ -41,7 +41,7 @@ export class JobStatusIconRenderComponent
   }
 
   private getIconNameStatus(): void {
-    const value = this.value.toString();
+    const value = this.value.toString().toLowerCase();
     if (
       value === 'true' ||
       value === 'success' ||
@@ -124,7 +124,7 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
   }
 }
 
-// View Result Button Component (Job Analyzers Result)
+// View Result Button Component
 @Component({
   template: `
     <nb-icon
@@ -135,7 +135,6 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
   `,
 })
 export class ViewResultButtonComponent implements ViewCell {
-  navUri: string = `/pages/scan/result`;
   @Input() value: number;
   @Input() rowData: any;
 
@@ -143,7 +142,7 @@ export class ViewResultButtonComponent implements ViewCell {
 
   async onRowSelect(id) {
     try {
-      this.router.navigate([`${this.navUri}/${id}/`]).then();
+      this.router.navigate([`/pages/scan/result/${id}/`]).then();
     } catch (e) {
       console.error(e);
     }

@@ -52,8 +52,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
       name: {
         title: 'Name',
       },
-      success: {
-        title: 'Success',
+      status: {
+        title: 'Status',
         type: 'custom',
         filter: false,
         width: '3%',
@@ -64,10 +64,10 @@ export class JobResultComponent implements OnInit, OnDestroy {
         filter: false,
         valuePrepareFunction: (c) => parseFloat(c).toFixed(2),
       },
-      started_time_str: {
+      start_time: {
         title: 'Start Time',
         filter: false,
-        valuePrepareFunction: (c) => new Date(c).toLocaleString(),
+        valuePrepareFunction: (c, r) => new Date(r.start_time).toLocaleString(),
       },
     },
   };
@@ -142,7 +142,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   private updateJobData(res: Job): void {
     // load data into the analysis table data source
     this.analysisTableDataSource.load(res.analysis_reports);
-    // temp: load data into connectors table data source
+    // load data into connectors table data source
     this.connectorTableDataSource.load(res.connector_reports);
     // toggle animation
     this.toggleAnimation();
