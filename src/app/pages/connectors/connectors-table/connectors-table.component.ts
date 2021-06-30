@@ -70,7 +70,7 @@ export class ConnectorsTableComponent implements OnInit {
   constructor(private readonly connectorService: ConnectorConfigService) {}
 
   ngOnInit(): void {
-    setTimeout(() => this.init(), 4000);
+    setTimeout(() => this.init(), 500);
   }
 
   private init(): void {
