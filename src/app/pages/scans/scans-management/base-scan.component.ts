@@ -70,6 +70,24 @@ export class BaseScanFormComponent implements OnInit {
     );
   }
 
+  isConfigured(name: string): boolean {
+    const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
+    return ac.verification.configured;
+  }
+
+  constructTooltip(name: string): any {
+    const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
+    const tooltip = {};
+    if (ac.verification.configured) {
+      tooltip['message'] = 'Ready to Use!';
+      tooltip['color'] = 'success';
+    } else {
+      tooltip['message'] = ac.verification.error_message;
+      tooltip['color'] = 'danger';
+    }
+    return tooltip;
+  }
+
   async onScanSubmit(): Promise<void> {
     // spinner on
     this.showSpinnerBool = true;
