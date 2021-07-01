@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
+import { first } from 'rxjs/operators';
+import { IRawConnectorConfig } from 'src/app/@core/models/models';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 import {
   JSONRenderComponent,
@@ -13,6 +15,7 @@ import {
 export class ConnectorsTableComponent implements OnInit {
   // ng2-smart-table data source
   tableSource: LocalDataSource = new LocalDataSource();
+  showSpinnerBool: boolean = false;
 
   // ng2-smart-table settings
   settings = {
@@ -70,15 +73,23 @@ export class ConnectorsTableComponent implements OnInit {
   constructor(private readonly connectorService: ConnectorConfigService) {}
 
   ngOnInit(): void {
-    setTimeout(() => this.init(), 500);
+    this.showSpinnerBool = true; // spinner on
+    // rxjs/first() -> take first and complete observable
+    this.connectorService.rawConnectorConfig$.pipe(first()).subscribe((res) =>
+      this.init(res).then(
+        () => (this.showSpinnerBool = false) // spinner off
+      )
+    );
   }
 
-  private init(): void {
-    if (this.connectorService.rawConnectorConfig) {
-      const data: any[] = this.connectorService.constructTableData();
-      this.tableSource.load(data);
-      // default alphabetically sort.
-      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-    }
+  private init(res: IRawConnectorConfig): Promise<void> {
+    const data: any[] = Object.entries(res).map(([key, obj]) => {
+      obj.name = key;
+      return obj;
+    });
+    this.tableSource.load(data);
+    // default alphabetically sort.
+    this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+    return Promise.resolve();
   }
 }

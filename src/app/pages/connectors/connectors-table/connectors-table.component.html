@@ -4,7 +4,12 @@
 
 <div class="row">
   <div class="col-sm-12">
-    <nb-card fullWidth>
+    <nb-card
+      fullWidth
+      [nbSpinner]="showSpinnerBool"
+      nbSpinnerStatus="primary"
+      nbSpinnerSize="large"
+    >
       <nb-card-header>
         <span>Connectors - count: {{ tableSource.count() }}</span>
       </nb-card-header>
