@@ -5,10 +5,15 @@ import {
   TickCrossRenderComponent,
   JSONRenderComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
+import { first } from 'rxjs/operators';
 
 @Component({
   template: `
-    <nb-card>
+    <nb-card
+      [nbSpinner]="showSpinnerBool"
+      nbSpinnerStatus="primary"
+      nbSpinnerSize="large"
+    >
       <nb-card-body>
         <ng2-smart-table [settings]="tableSettings" [source]="tableSource">
         </ng2-smart-table>
@@ -19,6 +24,7 @@ import {
 export class AnalyzersTableComponent implements OnInit {
   // ng2-smart-table data source
   tableSource: LocalDataSource = new LocalDataSource();
+  showSpinnerBool: boolean = false;
 
   // ng2-smart-table settings
   tableSettings = {
@@ -130,15 +136,21 @@ export class AnalyzersTableComponent implements OnInit {
   constructor(private readonly analyzerService: AnalyzerConfigService) {}
 
   ngOnInit(): void {
-    setTimeout(() => this.init(), 500);
+    this.showSpinnerBool = true; // spinner on
+    // rxjs/first() -> take first and complete observable
+    // analyzerList available => rawAnalyzerConfig initialized
+    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) =>
+      this.init().then(
+        () => (this.showSpinnerBool = false) // spinner off
+      )
+    );
   }
 
-  private init(): void {
-    if (this.analyzerService.rawAnalyzerConfig) {
-      const data: any[] = this.analyzerService.constructTableData();
-      this.tableSource.load(data);
-      // default alphabetically sort.
-      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-    }
+  private init(): Promise<void> {
+    const data: any[] = this.analyzerService.constructTableData();
+    this.tableSource.load(data);
+    // default alphabetically sort.
+    this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+    return Promise.resolve();
   }
 }
