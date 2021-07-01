@@ -1,0 +1,22 @@
+<h5>
+  Designed to be enrich any platform. Here's a list of integrated connectors.
+</h5>
+
+<div class="row">
+  <div class="col-sm-12">
+    <nb-card
+      fullWidth
+      [nbSpinner]="showSpinnerBool"
+      nbSpinnerStatus="primary"
+      nbSpinnerSize="large"
+    >
+      <nb-card-header>
+        <span>Connectors - count: {{ tableSource.count() }}</span>
+      </nb-card-header>
+      <nb-card-body>
+        <ng2-smart-table [settings]="settings" [source]="tableSource">
+        </ng2-smart-table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

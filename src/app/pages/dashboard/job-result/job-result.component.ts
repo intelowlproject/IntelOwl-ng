@@ -52,8 +52,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
       name: {
         title: 'Name',
       },
-      success: {
-        title: 'Success',
+      status: {
+        title: 'Status',
         type: 'custom',
         filter: false,
         width: '3%',
@@ -62,18 +62,19 @@ export class JobResultComponent implements OnInit, OnDestroy {
       process_time: {
         title: 'Process Time (s)',
         filter: false,
-        valuePrepareFunction: (c) => c.toFixed(2),
+        valuePrepareFunction: (c) => parseFloat(c).toFixed(2),
       },
-      started_time_str: {
+      start_time: {
         title: 'Start Time',
         filter: false,
-        valuePrepareFunction: (c) => new Date(c).toLocaleString(),
+        valuePrepareFunction: (c, r) => new Date(r.start_time).toLocaleString(),
       },
     },
   };
 
   // ng2-smart-table data source
-  public tableDataSource: LocalDataSource = new LocalDataSource();
+  public analysisTableDataSource: LocalDataSource = new LocalDataSource();
+  public connectorTableDataSource: LocalDataSource = new LocalDataSource();
 
   // Job ID whose result is being displayed
   public jobId: number;
@@ -139,8 +140,10 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   private updateJobData(res: Job): void {
-    // load data into the table data source
-    this.tableDataSource.load(res.analysis_reports);
+    // load data into the analysis table data source
+    this.analysisTableDataSource.load(res.analysis_reports);
+    // load data into connectors table data source
+    this.connectorTableDataSource.load(res.connector_reports);
     // toggle animation
     this.toggleAnimation();
     if (res.status !== 'running') {

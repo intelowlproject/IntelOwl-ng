@@ -38,7 +38,9 @@ export interface Job {
   status: string;
   analyzers_requested: string[] | string;
   analyzers_to_execute: string[];
+  connectors_to_execute: string[];
   analysis_reports?: any[];
+  connector_reports?: any[];
   received_request_time: string | Date;
   finished_analysis_time?: string | Date;
   force_privacy: boolean | string;
@@ -66,21 +68,39 @@ export interface IRawAnalyzerConfig {
   [name: string]: IAnalyzerConfig;
 }
 
-export interface IAnalyzerConfig {
+export interface IRawConnectorConfig {
+  [name: string]: IConnectorConfig;
+}
+
+export interface IAbstractConfig {
+  // Abstract for common fields in IAnalyzerConfig and IConnectorConfig
   name?: string;
+  python_module: string;
+  disabled?: boolean;
+  description?: string;
+}
+
+export interface IAnalyzerConfig extends IAbstractConfig {
   // common fields
   type: string;
-  python_module: string;
   external_service?: boolean;
   requires_configuration?: boolean;
   leaks_info?: boolean;
-  disabled?: boolean;
   run_hash?: boolean;
   additional_config_params?: any;
-  description?: string;
   // one of supported_filetypes or observable_supported
   supported_filetypes?: string[];
   observable_supported?: string[];
+}
+
+export interface IConnectorConfig extends IAbstractConfig {
+  config?: any;
+  secrets?: any;
+  verification?: {
+    configured?: boolean;
+    error_message?: string;
+    missing_secrets?: string[];
+  };
 }
 
 export interface ILoginPayload {

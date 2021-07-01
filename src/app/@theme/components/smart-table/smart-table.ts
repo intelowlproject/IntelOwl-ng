@@ -41,7 +41,7 @@ export class JobStatusIconRenderComponent
   }
 
   private getIconNameStatus(): void {
-    const value = this.value.toString();
+    const value = this.value.toString().toLowerCase();
     if (
       value === 'true' ||
       value === 'success' ||
@@ -82,6 +82,39 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
   ngOnInit() {
     const value = this.value.toString();
     if (value && value === 'true') {
+      this.iconName = 'checkmark-circle-2-outline';
+      this.iconStatus = 'success';
+    } else {
+      this.iconName = 'close-circle-outline';
+      this.iconStatus = 'danger';
+    }
+  }
+}
+
+// Tick/Cross Extra Render Component
+@Component({
+  template: `
+    <nb-icon
+      *ngIf="iconName"
+      [icon]="iconName"
+      [status]="iconStatus"
+      [nbTooltip]="tooltip"
+    ></nb-icon>
+    <span *ngIf="!iconName">{{ value }}</span>
+  `,
+})
+export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
+  iconName: string;
+  iconStatus: string;
+  tooltip: string;
+
+  @Input() value: any; // some object
+  @Input() rowData: any;
+
+  ngOnInit() {
+    const tick = this.value.bool;
+    this.tooltip = this.value.tooltip;
+    if (tick === true) {
       this.iconName = 'checkmark-circle-2-outline';
       this.iconStatus = 'success';
     } else {
