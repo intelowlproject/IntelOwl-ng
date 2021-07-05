@@ -13,7 +13,7 @@
       <!-- Job Analysis Result Table -->
       <div class="col-md-7">
         <nb-tabset>
-          <nb-tab tabTitle="Analysis Reports">
+          <nb-tab tabTitle="Analyzer Reports">
             <!-- Job Running Alert -->
             <nb-alert *ngIf="jobObj?.status === 'running'" status="info">
               <span><nb-icon icon="info-outline"></nb-icon></span>
@@ -27,9 +27,9 @@
                 id="analysis-reports-table"
                 class="d-flex justify-content-between"
               >
-                <span>Analysis Reports</span>
+                <span>Analyzer Reports</span>
                 <span
-                  >completed: {{ analysisTableDataSource.count() }}/{{
+                  >completed: {{ analyzerTableDataSource.count() }}/{{
                     jobObj?.analyzers_to_execute.length
                   }}</span
                 >
@@ -39,7 +39,7 @@
                   nbTooltip="Click on a row to view it's result!"
                   (userRowSelect)="onRowSelect($event)"
                   [settings]="tableSettings"
-                  [source]="analysisTableDataSource"
+                  [source]="analyzerTableDataSource"
                 >
                 </ng2-smart-table>
               </nb-card-body>

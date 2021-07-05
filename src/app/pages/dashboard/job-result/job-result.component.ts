@@ -49,7 +49,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
       perPage: 7,
     },
     columns: {
-      name: {
+      analyzer_name: {
         title: 'Name',
       },
       status: {
@@ -73,7 +73,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
   };
 
   // ng2-smart-table data source
-  public analysisTableDataSource: LocalDataSource = new LocalDataSource();
+  public analyzerTableDataSource: LocalDataSource = new LocalDataSource();
   public connectorTableDataSource: LocalDataSource = new LocalDataSource();
 
   // Job ID whose result is being displayed
@@ -134,14 +134,14 @@ export class JobResultComponent implements OnInit, OnDestroy {
       : 'all available analyzers';
     // simulate click event to select the first row of the table as the default one on
     setTimeout(
-      () => this.onRowSelect({ data: this.jobObj.analysis_reports[0] }, false),
+      () => this.onRowSelect({ data: this.jobObj.analyzer_reports[0] }, false),
       500
     );
   }
 
   private updateJobData(res: Job): void {
     // load data into the analysis table data source
-    this.analysisTableDataSource.load(res.analysis_reports);
+    this.analyzerTableDataSource.load(res.analyzer_reports);
     // load data into connectors table data source
     this.connectorTableDataSource.load(res.connector_reports);
     // toggle animation

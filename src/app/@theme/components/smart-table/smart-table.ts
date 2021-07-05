@@ -99,6 +99,7 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
       [icon]="iconName"
       [status]="iconStatus"
       [nbTooltip]="tooltip"
+      [nbTooltipStatus]="tooltipStatus"
     ></nb-icon>
     <span *ngIf="!iconName">{{ value }}</span>
   `,
@@ -107,6 +108,7 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
   iconName: string;
   iconStatus: string;
   tooltip: string;
+  tooltipStatus: string;
 
   @Input() value: any; // some object
   @Input() rowData: any;
@@ -120,6 +122,7 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
       this.iconStatus = 'success';
     } else {
       this.tooltip = this.value.tooltip;
+      this.tooltipStatus = 'danger';
       this.iconName = 'close-circle-outline';
       this.iconStatus = 'danger';
     }

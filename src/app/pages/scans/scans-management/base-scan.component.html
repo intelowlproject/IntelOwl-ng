@@ -41,9 +41,10 @@
                     let analyzer of analyzersList[formData.classification]
                   "
                   [value]="analyzer"
-                  disabled="{{ isConfigured(analyzer) }}"
-                  nbTooltip="{{ constructTooltip(analyzer).message }}"
-                  nbTooltipStatus="{{ constructTooltip(analyzer).color }}"
+                  disabled="{{
+                    !analyzerService.rawAnalyzerConfig[analyzer].verification
+                      .configured
+                  }}"
                 >
                   <span>{{ analyzer }}</span>
                   &nbsp;
