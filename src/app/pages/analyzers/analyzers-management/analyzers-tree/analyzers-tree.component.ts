@@ -48,35 +48,25 @@ export class AnalyzersTreeComponent implements OnInit {
           children: [
             {
               name: 'IP',
-              children: aList['ip'].map((name: string) => {
-                return { name: name };
-              }),
+              children: aList['ip'],
             },
             {
               name: 'URL',
-              children: aList['url'].map((name: string) => {
-                return { name: name };
-              }),
+              children: aList['url'],
             },
             {
               name: 'Domain',
-              children: aList['domain'].map((name: string) => {
-                return { name: name };
-              }),
+              children: aList['domain'],
             },
             {
               name: 'Hash',
-              children: aList['hash'].map((name: string) => {
-                return { name: name };
-              }),
+              children: aList['hash'],
             },
           ],
         },
         {
           name: 'File Analyzers',
-          children: aList['file'].map((name: string) => {
-            return { name: name };
-          }),
+          children: aList['file'],
         },
       ],
     };

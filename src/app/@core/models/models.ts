@@ -56,15 +56,6 @@ export interface IRecentScan {
   status: string;
 }
 
-export interface IAnalyzersList {
-  ip: string[];
-  hash: string[];
-  domain: string[];
-  url: string[];
-  generic: string[];
-  file: string[];
-}
-
 export interface IRawAnalyzerConfig {
   [name: string]: IAnalyzerConfig;
 }
@@ -77,17 +68,7 @@ export interface IAbstractConfig {
   // Abstract for common fields in IAnalyzerConfig and IConnectorConfig
   name?: string;
   python_module: string;
-  disabled?: boolean;
   description?: string;
-}
-
-export interface IAnalyzerConfig extends IAbstractConfig {
-  // common fields
-  type: string;
-  external_service?: boolean;
-  leaks_info?: boolean;
-  run_hash?: boolean;
-  run_hash_type?: string;
   config?: any;
   secrets?: any;
   verification?: {
@@ -95,6 +76,15 @@ export interface IAnalyzerConfig extends IAbstractConfig {
     error_message?: string;
     missing_secrets?: string[];
   };
+}
+
+export interface IAnalyzerConfig extends IAbstractConfig {
+  disabled?: boolean;
+  type: string;
+  external_service?: boolean;
+  leaks_info?: boolean;
+  run_hash?: boolean;
+  run_hash_type?: string;
   // one of supported_filetypes or observable_supported
   supported_filetypes?: string[];
   not_supported_filetypes?: string[];
@@ -102,13 +92,16 @@ export interface IAnalyzerConfig extends IAbstractConfig {
 }
 
 export interface IConnectorConfig extends IAbstractConfig {
-  config?: any;
-  secrets?: any;
-  verification?: {
-    configured?: boolean;
-    error_message?: string;
-    missing_secrets?: string[];
-  };
+  disabled?: boolean;
+}
+
+export interface IAnalyzersList {
+  ip: IAnalyzerConfig[];
+  hash: IAnalyzerConfig[];
+  domain: IAnalyzerConfig[];
+  url: IAnalyzerConfig[];
+  generic: IAnalyzerConfig[];
+  file: IAnalyzerConfig[];
 }
 
 export interface ILoginPayload {

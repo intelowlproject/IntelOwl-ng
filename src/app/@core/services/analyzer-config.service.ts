@@ -42,16 +42,18 @@ export class AnalyzerConfigService extends HttpService<any> {
     const obsToCheck: string[] = ['ip', 'url', 'domain', 'hash', 'generic'];
 
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
-      // exlude `disabled:true`
-      if (obj.disabled) return;
+      const acObj = {
+        name: key,
+        ...obj,
+      };
       // filter on basis of type
       if (obj.type === 'file') {
-        analyzers.file.push(key);
-        if (obj.run_hash) analyzers.hash.push(key);
+        analyzers.file.push(acObj);
+        if (obj.run_hash) analyzers.hash.push(acObj);
       } else {
         obsToCheck.forEach((clsfn: string) => {
           if (obj.observable_supported.includes(clsfn))
-            analyzers[clsfn].push(key);
+            analyzers[clsfn].push(acObj);
         });
       }
     });
@@ -72,8 +74,6 @@ export class AnalyzerConfigService extends HttpService<any> {
       if (!obj.hasOwnProperty('leaks_info')) {
         obj['leaks_info'] = false;
       }
-      obj['configured'] = obj.verification;
-
       return obj;
     });
   }

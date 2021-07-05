@@ -39,7 +39,7 @@ export class BaseScanFormComponent implements OnInit {
 
   constructor(
     private readonly scanService: ScanService,
-    public readonly analyzerService: AnalyzerConfigService,
+    private readonly analyzerService: AnalyzerConfigService,
     private dialogService: NbDialogService
   ) {
     this.editorOptions = new JsonEditorOptions();
