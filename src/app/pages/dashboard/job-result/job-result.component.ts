@@ -134,14 +134,14 @@ export class JobResultComponent implements OnInit, OnDestroy {
       : 'all available analyzers';
     // simulate click event to select the first row of the table as the default one on
     setTimeout(
-      () => this.onRowSelect({ data: this.jobObj.analysis_reports[0] }, false),
+      () => this.onRowSelect({ data: this.jobObj.analyzer_reports[0] }, false),
       500
     );
   }
 
   private updateJobData(res: Job): void {
     // load data into the analysis table data source
-    this.analysisTableDataSource.load(res.analysis_reports);
+    this.analysisTableDataSource.load(res.analyzer_reports);
     // load data into connectors table data source
     this.connectorTableDataSource.load(res.connector_reports);
     // toggle animation
