@@ -49,7 +49,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
       perPage: 7,
     },
     columns: {
-      analyzer_name: {
+      name: {
         title: 'Name',
       },
       status: {
@@ -159,6 +159,15 @@ export class JobResultComponent implements OnInit, OnDestroy {
     }
     // finally assign it to our class' member variable
     this.jobObj = res;
+  }
+
+  generateAlertMsgForConnectorReports() {
+    // call only if job status != reported_without_fails
+    const jobStatus = this.jobObj.status;
+    if (jobStatus === 'running' || jobStatus === 'pending')
+      return 'Connectors will be triggered when job analysis finishes without fails.';
+    else if (['failed', 'reported_with_fails', 'killed'].includes(jobStatus))
+      return 'No connectors were triggered because job analysis failed or was killed';
   }
 
   // event emitted when user clicks on a row in table

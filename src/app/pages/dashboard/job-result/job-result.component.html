@@ -46,6 +46,14 @@
             </nb-card>
           </nb-tab>
           <nb-tab tabTitle="Connector Reports">
+            <!-- Alerts for Connector Reports Table -->
+            <nb-alert
+              *ngIf="jobObj?.status !== 'reported_without_fails'"
+              status="info"
+            >
+              <span><nb-icon icon="info-outline"></nb-icon></span>
+              <span>{{ generateAlertMsgForConnectorReports() }}</span>
+            </nb-alert>
             <nb-card>
               <nb-card-header
                 id="connector-reports-table"
