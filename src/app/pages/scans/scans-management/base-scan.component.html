@@ -37,21 +37,27 @@
                 }}</nb-select-label>
                 <!-- Options Loop -->
                 <nb-option
-                  *ngFor="
-                    let analyzer of analyzersList[formData.classification]
-                  "
-                  [value]="analyzer"
+                  *ngFor="let ac of analyzersList[formData.classification]"
+                  [value]="ac.name"
+                  [disabled]="ac.disabled || !ac.verification.configured"
                 >
-                  <span>{{ analyzer }}</span>
-                  &nbsp;
-                  <span [hidden]="!showDescriptionBool"
-                    ><small
-                      >({{
-                        analyzerService.rawAnalyzerConfig[analyzer]
-                          ?.description
-                      }})</small
-                    ></span
-                  >
+                  <div>
+                    <div>
+                      <span>{{ ac?.name }}</span>
+                      &nbsp;
+                      <span [hidden]="!showDescriptionBool"
+                        ><small>({{ ac.description }})</small></span
+                      >
+                    </div>
+                    <div
+                      class="text-danger small"
+                      *ngIf="ac.disabled || !ac.verification.configured"
+                    >
+                      {{
+                        ac.disabled ? 'disabled' : ac.verification.error_message
+                      }}
+                    </div>
+                  </div>
                 </nb-option>
               </nb-select>
               <ng-container *ngIf="!isNotError816()">

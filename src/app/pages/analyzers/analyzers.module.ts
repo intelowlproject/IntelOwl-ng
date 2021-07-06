@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
-import { NbRouteTabsetModule, NbSpinnerModule } from '@nebular/theme';
+import {
+  NbRouteTabsetModule,
+  NbSpinnerModule,
+  NbTooltipModule,
+} from '@nebular/theme';
 import { EchartsTreeComponent } from '../../@theme/components/echarts-tree/echarts-tree.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AnalyzersManagementComponent } from './analyzers-management/analyzers-management.component';
@@ -21,6 +25,7 @@ import { ThemeModule } from '../../@theme/theme.module';
     NbSpinnerModule,
     Ng2SmartTableModule,
     NgxEchartsModule,
+    NbTooltipModule,
   ],
   declarations: [
     AnalyzersManagementComponent,

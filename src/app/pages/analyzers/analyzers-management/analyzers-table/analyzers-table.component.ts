@@ -3,6 +3,7 @@ import { AnalyzerConfigService } from '../../../../@core/services/analyzer-confi
 import { LocalDataSource } from 'ng2-smart-table';
 import {
   TickCrossRenderComponent,
+  TickCrossExtraRenderComponent,
   JSONRenderComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
 import { first } from 'rxjs/operators';
@@ -97,23 +98,8 @@ export class AnalyzersTableComponent implements OnInit {
         },
         renderComponent: TickCrossRenderComponent,
       },
-      requires_configuration: {
-        title: 'Requires Configuration',
-        type: 'custom',
-        width: '5%',
-        filter: {
-          type: 'list',
-          config: {
-            list: [
-              { value: true, title: 'Yes' },
-              { value: false, title: 'No' },
-            ],
-          },
-        },
-        renderComponent: TickCrossRenderComponent,
-      },
-      additional_config_params: {
-        title: 'Additional config',
+      config: {
+        title: 'Configuration Parameters',
         type: 'custom',
         filterFunction: (cell?: any, search?: string): boolean => {
           let ans: boolean = false;
@@ -129,6 +115,23 @@ export class AnalyzersTableComponent implements OnInit {
           return ans;
         },
         renderComponent: JSONRenderComponent,
+      },
+      secrets: {
+        title: 'Secrets',
+        type: 'custom',
+        width: '5%',
+        renderComponent: JSONRenderComponent,
+      },
+      configured: {
+        title: 'Configured',
+        type: 'custom',
+        width: '3%',
+        filter: false,
+        valuePrepareFunction: (c, r) => ({
+          tick: r.verification.configured,
+          tooltip: r.verification.error_message,
+        }),
+        renderComponent: TickCrossExtraRenderComponent,
       },
     },
   };

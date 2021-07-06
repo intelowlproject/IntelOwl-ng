@@ -99,6 +99,7 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
       [icon]="iconName"
       [status]="iconStatus"
       [nbTooltip]="tooltip"
+      [nbTooltipStatus]="tooltipStatus"
     ></nb-icon>
     <span *ngIf="!iconName">{{ value }}</span>
   `,
@@ -107,17 +108,21 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
   iconName: string;
   iconStatus: string;
   tooltip: string;
+  tooltipStatus: string;
 
   @Input() value: any; // some object
   @Input() rowData: any;
 
   ngOnInit() {
-    const tick = this.value.bool;
-    this.tooltip = this.value.tooltip;
+    const tick = this.value.tick;
+
     if (tick === true) {
+      this.tooltip = 'Ready to use!';
       this.iconName = 'checkmark-circle-2-outline';
       this.iconStatus = 'success';
     } else {
+      this.tooltip = this.value.tooltip;
+      this.tooltipStatus = 'danger';
       this.iconName = 'close-circle-outline';
       this.iconStatus = 'danger';
     }
@@ -135,6 +140,7 @@ export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
   `,
 })
 export class ViewResultButtonComponent implements ViewCell {
+  navUri: string = `/pages/scan/result`;
   @Input() value: number;
   @Input() rowData: any;
 
@@ -142,7 +148,7 @@ export class ViewResultButtonComponent implements ViewCell {
 
   async onRowSelect(id) {
     try {
-      this.router.navigate([`/pages/scan/result/${id}/`]).then();
+      this.router.navigate([`${this.navUri}/${id}/`]).then();
     } catch (e) {
       console.error(e);
     }

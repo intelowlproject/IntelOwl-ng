@@ -39,7 +39,7 @@ export class BaseScanFormComponent implements OnInit {
 
   constructor(
     private readonly scanService: ScanService,
-    public readonly analyzerService: AnalyzerConfigService,
+    private readonly analyzerService: AnalyzerConfigService,
     private dialogService: NbDialogService
   ) {
     this.editorOptions = new JsonEditorOptions();
@@ -114,9 +114,7 @@ export class BaseScanFormComponent implements OnInit {
     const config: any = {};
     this.formData.analyzers_requested.forEach((name: string) => {
       const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
-      if (ac?.additional_config_params) {
-        config[name] = ac.additional_config_params;
-      }
+      config[name] = { ...ac?.config, ...ac?.secrets };
     });
     return config;
   }

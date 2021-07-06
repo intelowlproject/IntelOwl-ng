@@ -43,6 +43,7 @@ export interface Job {
   connector_reports?: any[];
   received_request_time: string | Date;
   finished_analysis_time?: string | Date;
+  job_process_time?: number;
   force_privacy: boolean | string;
   disable_external_analyzers: boolean | string;
   errors?: any;
@@ -53,15 +54,6 @@ export interface Job {
 export interface IRecentScan {
   jobId: number | string;
   status: string;
-}
-
-export interface IAnalyzersList {
-  ip: string[];
-  hash: string[];
-  domain: string[];
-  url: string[];
-  generic: string[];
-  file: string[];
 }
 
 export interface IRawAnalyzerConfig {
@@ -76,24 +68,7 @@ export interface IAbstractConfig {
   // Abstract for common fields in IAnalyzerConfig and IConnectorConfig
   name?: string;
   python_module: string;
-  disabled?: boolean;
   description?: string;
-}
-
-export interface IAnalyzerConfig extends IAbstractConfig {
-  // common fields
-  type: string;
-  external_service?: boolean;
-  requires_configuration?: boolean;
-  leaks_info?: boolean;
-  run_hash?: boolean;
-  additional_config_params?: any;
-  // one of supported_filetypes or observable_supported
-  supported_filetypes?: string[];
-  observable_supported?: string[];
-}
-
-export interface IConnectorConfig extends IAbstractConfig {
   config?: any;
   secrets?: any;
   verification?: {
@@ -101,6 +76,32 @@ export interface IConnectorConfig extends IAbstractConfig {
     error_message?: string;
     missing_secrets?: string[];
   };
+}
+
+export interface IAnalyzerConfig extends IAbstractConfig {
+  disabled?: boolean;
+  type: string;
+  external_service?: boolean;
+  leaks_info?: boolean;
+  run_hash?: boolean;
+  run_hash_type?: string;
+  // one of supported_filetypes or observable_supported
+  supported_filetypes?: string[];
+  not_supported_filetypes?: string[];
+  observable_supported?: string[];
+}
+
+export interface IConnectorConfig extends IAbstractConfig {
+  disabled?: boolean;
+}
+
+export interface IAnalyzersList {
+  ip: IAnalyzerConfig[];
+  hash: IAnalyzerConfig[];
+  domain: IAnalyzerConfig[];
+  url: IAnalyzerConfig[];
+  generic: IAnalyzerConfig[];
+  file: IAnalyzerConfig[];
 }
 
 export interface ILoginPayload {
