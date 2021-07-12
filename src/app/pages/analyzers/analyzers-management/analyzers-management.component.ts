@@ -4,6 +4,13 @@ import { Component } from '@angular/core';
   template: `
     <!---- https://lotr.fandom.com/wiki/One_Ring -->
     <h5>One API to rule them all. Here's a list of integrated services.</h5>
+    <nb-alert class="mt-3" status="info">
+      <span><nb-icon icon="bulb-outline"></nb-icon></span>
+      <span
+        >Hover over a configured icon to view configuration status and errors if
+        any.</span
+      >
+    </nb-alert>
     <nb-card>
       <nb-route-tabset
         fullWidth

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {
+  NbAlertModule,
   NbRouteTabsetModule,
   NbSpinnerModule,
   NbTooltipModule,
@@ -21,6 +22,7 @@ import { ThemeModule } from '../../@theme/theme.module';
   imports: [
     ThemeModule,
     AnalyzersRoutingModule,
+    NbAlertModule,
     NbRouteTabsetModule,
     NbSpinnerModule,
     Ng2SmartTableModule,
