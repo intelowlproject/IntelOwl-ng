@@ -101,12 +101,7 @@ export class DashboardComponent implements OnDestroy {
         renderComponent: JobStatusIconRenderComponent,
       },
       no_of_connectors_executed: {
-        title: 'Connectors Called',
-        width: '10%',
-        filter: false,
-      },
-      connectors_process_time: {
-        title: 'Process Time (s)',
+        title: 'Connectors Triggered',
         width: '10%',
         filter: false,
       },
