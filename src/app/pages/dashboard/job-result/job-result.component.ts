@@ -49,7 +49,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
       perPage: 7,
     },
     columns: {
-      analyzer_name: {
+      name: {
         title: 'Name',
       },
       status: {
