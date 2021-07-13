@@ -29,7 +29,7 @@
               >
                 <span>Analyzer Reports</span>
                 <span
-                  >completed: {{ analyzerTableDataSource.count() }}/{{
+                  >completed: {{ jobObj?.analyzer_reports.length }}/{{
                     jobObj?.analyzers_to_execute.length
                   }}</span
                 >
@@ -61,7 +61,7 @@
               >
                 <span>Connector Reports</span>
                 <span
-                  >completed: {{ connectorTableDataSource.count() }}/{{
+                  >completed: {{ jobObj?.connector_reports.length }}/{{
                     jobObj?.connectors_to_execute.length
                   }}</span
                 >
