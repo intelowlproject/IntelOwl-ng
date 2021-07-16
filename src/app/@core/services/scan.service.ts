@@ -93,7 +93,7 @@ export class ScanService extends HttpService<any> {
 
   // should never be called without context
   private async _createObservableScan(obj: any): Promise<void> {
-    const res = await this.create(obj, {}, 'send_analysis_request');
+    const res = await this.create(obj, {}, 'analyze_observable');
     if (res['status'] === 'accepted' || res['status'] === 'running') {
       this.onSuccess(res);
     } else {
@@ -121,7 +121,7 @@ export class ScanService extends HttpService<any> {
       postFormData.append('runtime_configuration', JSON.stringify(runtimeCfg));
     }
     postFormData.append('file', file, obj.file_name);
-    const res = await this.create(postFormData, {}, 'send_analysis_request');
+    const res = await this.create(postFormData, {}, 'analyze_file');
     if (res['status'] === 'accepted' || res['status'] === 'running') {
       this.onSuccess(res);
     } else {
