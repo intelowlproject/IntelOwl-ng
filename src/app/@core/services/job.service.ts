@@ -61,7 +61,10 @@ export class JobService extends HttpService<any> {
       const query = {
         job_id: jobId,
       };
-      const blob: Blob = await this.downloadFile(query, 'download_sample');
+      const blob: Blob = await this.downloadFile(
+        query,
+        `jobs/${jobId}/download_sample`
+      );
       const url: string = window.URL.createObjectURL(blob);
       return url;
     } catch (e) {
