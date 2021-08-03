@@ -183,3 +183,63 @@ export class JSONRenderComponent implements ViewCell {
   @Input() value: any; // some object
   @Input() rowData: any;
 }
+
+// Plugin Actions (kill/retry)
+@Component({
+  // selector: 'intelowl-job-status-icon',
+  template: `
+    <div class="d-flex justify-content-around">
+      <nb-icon
+        class="mr-2 cursor-pointer"
+        nbTooltip="kill"
+        icon="slash"
+        [status]="killIconStatus"
+        (click)="onKillReport($event); $event.stopPropagation()"
+      ></nb-icon>
+      <nb-icon
+        class="cursor-pointer"
+        nbTooltip="retry"
+        icon="refresh-outline"
+        [status]="retryIconStatus"
+        (click)="onRetryReport($event); $event.stopPropagation()"
+      ></nb-icon>
+    </div>
+  `,
+})
+export class PluginActionsRenderComponent
+  implements ViewCell, OnInit, OnChanges {
+  @Input() value: any;
+  @Input() rowData: any;
+
+  @Output() killEmitter: EventEmitter<any> = new EventEmitter();
+  @Output() retryEmitter: EventEmitter<any> = new EventEmitter();
+
+  killIconStatus: string = 'basic';
+  retryIconStatus: string = 'basic';
+
+  ngOnInit(): void {
+    this.getIconStatus();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.value.previousValue !== changes.value.currentValue) {
+      this.getIconStatus();
+    }
+  }
+
+  private getIconStatus(): void {
+    const status = this.rowData['status'].toLowerCase();
+    if (status === 'running' || status === 'pending')
+      this.killIconStatus = 'warning';
+    if (status === 'failed' || status === 'killed')
+      this.retryIconStatus = 'success';
+  }
+
+  onKillReport(e) {
+    this.killEmitter.emit(this.rowData['name']);
+  }
+
+  onRetryReport(e) {
+    this.retryEmitter.emit(this.rowData['name']);
+  }
+}
