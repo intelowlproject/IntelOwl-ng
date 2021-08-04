@@ -287,6 +287,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
         `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
         'success'
       );
+      // poll for job and set interval
+      this.jobService.pollForJob(this.jobId);
+      this.startJobPollingWithInterval();
     } else {
       this.toastr.showToast(
         'Could not be "killed". Reason: "Insufficient Permission".',
@@ -312,7 +315,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
         `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
         'success'
       );
-      this.ngOnInit();
+      // poll for job and set interval
+      this.jobService.pollForJob(this.jobId);
+      this.startJobPollingWithInterval();
     } else {
       this.toastr.showToast(
         'Could not be send "retry" request. Reason: "Insufficient Permission".',
