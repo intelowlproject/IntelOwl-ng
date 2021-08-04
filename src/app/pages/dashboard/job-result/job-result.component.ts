@@ -41,9 +41,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   // base ng2-smart-table settings for analyzer and connector reports
   private baseTableSettings = {
-    attr: {
-      class: 'cursor-pointer',
-    },
     actions: {
       add: false,
       edit: false,
@@ -83,6 +80,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
         filter: false,
         valuePrepareFunction: (c, r) => new Date(r.start_time).toLocaleString(),
       },
+    },
+    rowClassFunction: (row) => {
+      return 'cursor-pointer';
     },
   };
 
@@ -175,16 +175,17 @@ export class JobResultComponent implements OnInit, OnDestroy {
       .catch(() => (this.isError = true));
   }
 
-  private startJobPollingWithInterval(interval: number = 5000): void {
+  private startJobPollingWithInterval(): void {
+    const interval = this.connectorsRunningBool ? 15000 : 5000;
     this.pollInterval = setInterval(
       () => this.jobService.pollForJob(this.jobId),
       interval
     );
   }
 
-  private async initData(): Promise<void> {
+  private initData(): void {
     // poll for changes to job result if status=running or connectors are running
-    await this.checkConnectorsRunning(this.jobObj);
+    this.connectorsRunningBool = this.checkConnectorsRunning(this.jobObj);
     if (this.jobObj.status === 'running' || this.connectorsRunningBool) {
       this.startJobPollingWithInterval();
     }
@@ -201,7 +202,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
     );
   }
 
-  private async updateJobData(res: Job): Promise<void> {
+  private updateJobData(res: Job): void {
     // load data into the analysis table data source
     this.analyzerTableDataSource.load(res.analyzer_reports);
     // load data into connectors table data source
@@ -209,7 +210,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
     // toggle animation
     this.toggleAnimation();
     // check if connectors are running
-    await this.checkConnectorsRunning(res);
+    this.connectorsRunningBool = this.checkConnectorsRunning(res);
     if (res.status !== 'running' && !this.connectorsRunningBool) {
       // stop polling
       clearInterval(this.pollInterval);
@@ -237,7 +238,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
           break;
         }
       }
-    this.connectorsRunningBool = connectorsRunning;
+    return connectorsRunning;
   }
 
   generateAlertMsgForConnectorReports() {
@@ -278,6 +279,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
       pluginType,
       plugin
     );
+    pluginType =
+      pluginType[0].toUpperCase() + pluginType.substring(1).toLowerCase();
     if (success) {
       this.toastr.showToast(
         '"killed" successfully.',
@@ -301,6 +304,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
       pluginType,
       plugin
     );
+    pluginType =
+      pluginType[0].toUpperCase() + pluginType.substring(1).toLowerCase();
     if (success) {
       this.toastr.showToast(
         '"retry" request sent successfully.',

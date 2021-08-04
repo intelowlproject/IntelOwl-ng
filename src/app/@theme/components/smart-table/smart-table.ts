@@ -186,18 +186,18 @@ export class JSONRenderComponent implements ViewCell {
 
 // Plugin Actions (kill/retry)
 @Component({
-  // selector: 'intelowl-job-status-icon',
   template: `
     <div class="d-flex justify-content-around">
       <nb-icon
-        class="mr-2 cursor-pointer"
+        class="mr-2"
+        [ngStyle]="{ cursor: killIconStatus === 'basic' ? 'auto' : 'pointer' }"
         nbTooltip="kill"
         icon="slash"
         [status]="killIconStatus"
         (click)="onKillReport($event); $event.stopPropagation()"
       ></nb-icon>
       <nb-icon
-        class="cursor-pointer"
+        [ngStyle]="{ cursor: retryIconStatus === 'basic' ? 'auto' : 'pointer' }"
         nbTooltip="retry"
         icon="refresh-outline"
         [status]="retryIconStatus"
@@ -214,8 +214,8 @@ export class PluginActionsRenderComponent
   @Output() killEmitter: EventEmitter<any> = new EventEmitter();
   @Output() retryEmitter: EventEmitter<any> = new EventEmitter();
 
-  killIconStatus: string = 'basic';
-  retryIconStatus: string = 'basic';
+  killIconStatus: string = 'basic'; // disabled
+  retryIconStatus: string = 'basic'; // disabled
 
   ngOnInit(): void {
     this.getIconStatus();
@@ -236,10 +236,14 @@ export class PluginActionsRenderComponent
   }
 
   onKillReport(e) {
-    this.killEmitter.emit(this.rowData['name']);
+    if (this.killIconStatus !== 'basic')
+      // validates if kill is allowed
+      this.killEmitter.emit(this.rowData['name']);
   }
 
   onRetryReport(e) {
-    this.retryEmitter.emit(this.rowData['name']);
+    if (this.retryIconStatus !== 'basic')
+      // validates if retry is allowed
+      this.retryEmitter.emit(this.rowData['name']);
   }
 }
