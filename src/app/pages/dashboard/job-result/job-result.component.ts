@@ -177,6 +177,10 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   private startJobPollingWithInterval(): void {
     const interval = this.connectorsRunningBool ? 15000 : 5000;
+    // avoid re-polling
+    if (this.pollInterval)
+      // poll interval is non-zero numeric
+      clearInterval(this.pollInterval);
     this.pollInterval = setInterval(
       () => this.jobService.pollForJob(this.jobId),
       interval
