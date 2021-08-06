@@ -176,20 +176,18 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   private startJobPollingWithInterval(): void {
+    // avoid multiple pollings
+    clearInterval(this.pollInterval);
     const interval = this.connectorsRunningBool ? 15000 : 5000;
-    // avoid re-polling
-    if (this.pollInterval)
-      // poll interval is non-zero numeric
-      clearInterval(this.pollInterval);
-    this.pollInterval = setInterval(
-      () => this.jobService.pollForJob(this.jobId),
-      interval
-    );
+    this.pollInterval = setInterval(() => {
+      const jobFields = this.connectorsRunningBool ? ['connector_reports'] : []; // [] means all
+      this.jobService.pollForJob(this.jobId, jobFields);
+    }, interval);
   }
 
   private initData(): void {
     // poll for changes to job result if status=running or connectors are running
-    this.connectorsRunningBool = this.checkConnectorsRunning(this.jobObj);
+    this.connectorsRunningBool = this.checkConnectorsRunning();
     if (this.jobObj.status === 'running' || this.connectorsRunningBool) {
       this.startJobPollingWithInterval();
     }
@@ -207,35 +205,35 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   private updateJobData(res: Job): void {
+    // update job object (with partial update)
+    this.jobObj = { ...this.jobObj, ...res };
     // load data into the analysis table data source
-    this.analyzerTableDataSource.load(res.analyzer_reports);
+    this.analyzerTableDataSource.load(this.jobObj.analyzer_reports);
     // load data into connectors table data source
-    this.connectorTableDataSource.load(res.connector_reports);
+    this.connectorTableDataSource.load(this.jobObj.connector_reports);
     // toggle animation
     this.toggleAnimation();
     // check if connectors are running
-    this.connectorsRunningBool = this.checkConnectorsRunning(res);
-    if (res.status !== 'running' && !this.connectorsRunningBool) {
+    this.connectorsRunningBool = this.checkConnectorsRunning();
+    if (this.jobObj.status !== 'running' && !this.connectorsRunningBool) {
       // stop polling
       clearInterval(this.pollInterval);
       // converting date time to locale string
-      const date1 = new Date(res.received_request_time);
-      const date2 = new Date(res.finished_analysis_time);
-      res.received_request_time = date1.toString();
-      res.finished_analysis_time = date2.toString();
+      const date1 = new Date(this.jobObj.received_request_time);
+      const date2 = new Date(this.jobObj.finished_analysis_time);
+      this.jobObj.received_request_time = date1.toString();
+      this.jobObj.finished_analysis_time = date2.toString();
       // calculate job process time
-      res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
+      this.jobObj.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
     }
-    // finally assign it to our class' member variable
-    this.jobObj = res;
   }
 
-  private checkConnectorsRunning(res: Job) {
+  private checkConnectorsRunning() {
     let connectorsRunning = false,
       status;
-    if (res.status === 'reported_without_fails')
+    if (this.jobObj.status === 'reported_without_fails')
       // connectors run only after this status is set
-      for (const conn_report of res.connector_reports) {
+      for (const conn_report of this.jobObj.connector_reports) {
         status = conn_report.status.toLowerCase();
         if (status === 'running' || status === 'pending') {
           connectorsRunning = true;
@@ -291,9 +289,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
         `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
         'success'
       );
-      // poll for job and set interval
-      this.jobService.pollForJob(this.jobId);
-      this.startJobPollingWithInterval();
+      // since plugin was running/pending, job polling already exists and will take care of updation
     } else {
       this.toastr.showToast(
         'Could not be "killed". Reason: "Insufficient Permission".',
@@ -319,8 +315,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
         `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
         'success'
       );
-      // poll for job and set interval
-      this.jobService.pollForJob(this.jobId);
+      // instant polling for an update and then at intervals
+      const jobFields = pluginType === 'connector' ? ['connector_reports'] : []; // [] means all
+      this.jobService.pollForJob(this.jobId, jobFields);
       this.startJobPollingWithInterval();
     } else {
       this.toastr.showToast(

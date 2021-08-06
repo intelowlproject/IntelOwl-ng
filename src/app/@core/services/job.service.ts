@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpService } from './http.service';
+import { HttpService, IRestQuery } from './http.service';
 import { Job } from '../models/models';
 
 @Injectable({
@@ -49,9 +49,18 @@ export class JobService extends HttpService<any> {
     }
   }
 
-  async pollForJob(id: number): Promise<void> {
-    console.info(`Polling for Job with id: ${id}`);
-    return this.get(id, {}, 'jobs')
+  async pollForJob(id: number, fields: string[] = []): Promise<void> {
+    console.info(
+      `Polling for Job with id: ${id} ${
+        fields.length ? `, fields: ${fields}` : ``
+      }`
+    );
+    const query: IRestQuery = {};
+    if (fields.length) {
+      query.params = new HttpParams();
+      query.params.set('fields', fields.join(','));
+    }
+    return this.get(id, query, 'jobs')
       .then((res: Job) => this._jobResult$.next(res))
       .catch(() => Promise.reject());
   }
