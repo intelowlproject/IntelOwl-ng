@@ -57,8 +57,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
         type: 'custom',
         filter: false,
         width: '3%',
-        // sort: false,
-        // compareFunction: (direction, a, b) => (a === b ? 1 : -1 * direction),
         compareFunction: this.compareReportStatus,
         renderComponent: JobStatusIconRenderComponent,
       },
