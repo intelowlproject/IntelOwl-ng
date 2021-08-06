@@ -315,6 +315,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
       json['screenshot'].length
     )
       this.imageResult = json.screenshot;
+    else this.imageResult = '';
   }
 
   async killPluginHandler(pluginType: string, plugin: string): Promise<void> {
