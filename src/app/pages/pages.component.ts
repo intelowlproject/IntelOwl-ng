@@ -36,6 +36,15 @@ export class PagesComponent {
       link: '/pages/analyzers/tree',
     },
     {
+      title: 'Connectors Management',
+      group: true,
+    },
+    {
+      title: 'Table View',
+      icon: 'list-outline',
+      link: '/pages/connectors',
+    },
+    {
       title: 'Scans Management',
       group: true,
     },
@@ -48,15 +57,6 @@ export class PagesComponent {
       title: 'Scan a File',
       icon: 'file-add-outline',
       link: '/pages/scan/file',
-    },
-    {
-      title: 'Connectors Management',
-      group: true,
-    },
-    {
-      title: 'Connectors',
-      icon: 'question-mark-circle-outline',
-      link: '/pages/connectors',
     },
   ];
 }

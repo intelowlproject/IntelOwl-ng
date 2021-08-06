@@ -57,7 +57,7 @@ export class JobResultComponent implements OnInit, OnDestroy {
         type: 'custom',
         filter: false,
         width: '3%',
-        compareFunction: (direction, a, b) => (a === b ? 1 : -1 * direction),
+        compareFunction: this.compareReportStatus,
         renderComponent: JobStatusIconRenderComponent,
       },
       process_time: {
@@ -104,6 +104,14 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // set sorting for data sources
+    const sortingConf = [
+      { field: 'name', direction: 'asc' }, // secondary sort
+      { field: 'status', direction: 'asc', compare: this.compareReportStatus }, // primary sort
+    ];
+    this.analyzerTableDataSource.setSort(sortingConf);
+    this.connectorTableDataSource.setSort(sortingConf);
+
     // subscribe to jobResult
     this.jobService
       .pollForJob(this.jobId)
@@ -140,6 +148,20 @@ export class JobResultComponent implements OnInit, OnDestroy {
     );
   }
 
+  private compareReportStatus(direction: number, a: string, b: string) {
+    a = a.toLowerCase();
+    b = b.toLowerCase();
+    const priority = {
+      success: 0,
+      failed: 1,
+      killed: 2,
+      running: 3,
+      pending: 4,
+    };
+
+    return priority[a] < priority[b] ? -1 * direction : direction;
+  }
+
   private updateJobData(res: Job): void {
     // load data into the analysis table data source
     this.analyzerTableDataSource.load(res.analyzer_reports);
@@ -169,6 +191,28 @@ export class JobResultComponent implements OnInit, OnDestroy {
       return 'Connectors will be triggered when job analysis finishes without fails.';
     else if (['failed', 'reported_with_fails', 'killed'].includes(jobStatus))
       return 'No connectors were triggered because job analysis failed or was killed';
+  }
+
+  generateReportTableMetrics(pluginType: string) {
+    let pluginReports: any[],
+      numpluginsToExecute: number,
+      running = 0,
+      completed = 0;
+    if (pluginType === 'analyzer') {
+      pluginReports = this.jobObj.analyzer_reports;
+      numpluginsToExecute = this.jobObj.analyzers_to_execute.length;
+    } else {
+      pluginReports = this.jobObj.connector_reports;
+      numpluginsToExecute = this.jobObj.connectors_to_execute.length;
+    }
+    for (const report of pluginReports) {
+      const status = report.status.toLowerCase();
+      if (status === 'running') running++;
+      else if (status !== 'pending') completed++;
+    }
+    return `Started: ${pluginReports.length}/${numpluginsToExecute}, ${
+      running > 0 ? `Running: ${running}/${numpluginsToExecute},` : ``
+    } Completed: ${completed}/${numpluginsToExecute}`;
   }
 
   // event emitted when user clicks on a row in table
