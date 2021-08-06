@@ -28,11 +28,7 @@
                 class="d-flex justify-content-between"
               >
                 <span>Analyzer Reports</span>
-                <span
-                  >completed: {{ jobObj?.analyzer_reports.length }}/{{
-                    jobObj?.analyzers_to_execute.length
-                  }}</span
-                >
+                <span>{{ generateReportTableMetrics('analyzer') }}</span>
               </nb-card-header>
               <nb-card-body>
                 <ng2-smart-table
@@ -60,11 +56,7 @@
                 class="d-flex justify-content-between"
               >
                 <span>Connector Reports</span>
-                <span
-                  >completed: {{ jobObj?.connector_reports.length }}/{{
-                    jobObj?.connectors_to_execute.length
-                  }}</span
-                >
+                <span>{{ generateReportTableMetrics('connector') }}</span>
               </nb-card-header>
               <nb-card-body>
                 <ng2-smart-table
