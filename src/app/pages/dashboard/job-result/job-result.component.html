@@ -34,7 +34,7 @@
                 <ng2-smart-table
                   nbTooltip="Click on a row to view it's result!"
                   (userRowSelect)="onRowSelect($event)"
-                  [settings]="tableSettings"
+                  [settings]="analyzerTableSettings"
                   [source]="analyzerTableDataSource"
                 >
                 </ng2-smart-table>
@@ -50,6 +50,14 @@
               <span><nb-icon icon="info-outline"></nb-icon></span>
               <span>{{ generateAlertMsgForConnectorReports() }}</span>
             </nb-alert>
+            <!-- Connectors Running Alert -->
+            <nb-alert *ngIf="connectorsRunningBool" status="info">
+              <span><nb-icon icon="info-outline"></nb-icon></span>
+              <span
+                >The connectors are still running. The result is synced with the
+                server every 15 seconds.</span
+              >
+            </nb-alert>
             <nb-card>
               <nb-card-header
                 id="connector-reports-table"
@@ -62,7 +70,7 @@
                 <ng2-smart-table
                   nbTooltip="Click on a row to view it's result!"
                   (userRowSelect)="onRowSelect($event)"
-                  [settings]="tableSettings"
+                  [settings]="connectorTableSettings"
                   [source]="connectorTableDataSource"
                 >
                 </ng2-smart-table>

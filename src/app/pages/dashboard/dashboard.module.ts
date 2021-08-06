@@ -12,6 +12,7 @@ import {
   ViewResultButtonComponent,
   JobStatusIconRenderComponent,
   TagsRenderComponent,
+  PluginActionsRenderComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { JobService } from '../../@core/services/job.service';
 import { JobResultComponent } from './job-result/job-result.component';
@@ -47,6 +48,7 @@ import { JobInfoListComponent } from './job-result/job-info-list/job-info-list.c
     EchartsPieComponent,
     DebounceClickDirective,
     JobInfoListComponent,
+    PluginActionsRenderComponent,
   ],
   providers: [JobService],
 })

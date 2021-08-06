@@ -183,3 +183,67 @@ export class JSONRenderComponent implements ViewCell {
   @Input() value: any; // some object
   @Input() rowData: any;
 }
+
+// Plugin Actions (kill/retry)
+@Component({
+  template: `
+    <div class="d-flex justify-content-around">
+      <nb-icon
+        class="mr-2"
+        [ngStyle]="{ cursor: killIconStatus === 'basic' ? 'auto' : 'pointer' }"
+        nbTooltip="kill"
+        icon="slash"
+        [status]="killIconStatus"
+        (click)="onKillReport($event); $event.stopPropagation()"
+      ></nb-icon>
+      <nb-icon
+        [ngStyle]="{ cursor: retryIconStatus === 'basic' ? 'auto' : 'pointer' }"
+        nbTooltip="retry"
+        icon="refresh-outline"
+        [status]="retryIconStatus"
+        (click)="onRetryReport($event); $event.stopPropagation()"
+      ></nb-icon>
+    </div>
+  `,
+})
+export class PluginActionsRenderComponent
+  implements ViewCell, OnInit, OnChanges {
+  @Input() value: any;
+  @Input() rowData: any;
+
+  @Output() killEmitter: EventEmitter<any> = new EventEmitter();
+  @Output() retryEmitter: EventEmitter<any> = new EventEmitter();
+
+  killIconStatus: string = 'basic'; // disabled
+  retryIconStatus: string = 'basic'; // disabled
+
+  ngOnInit(): void {
+    this.getIconStatus();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.value.previousValue !== changes.value.currentValue) {
+      this.getIconStatus();
+    }
+  }
+
+  private getIconStatus(): void {
+    const status = this.rowData['status'].toLowerCase();
+    if (status === 'running' || status === 'pending')
+      this.killIconStatus = 'warning';
+    if (status === 'failed' || status === 'killed')
+      this.retryIconStatus = 'success';
+  }
+
+  onKillReport(e) {
+    if (this.killIconStatus !== 'basic')
+      // validates if kill is allowed
+      this.killEmitter.emit(this.rowData['name']);
+  }
+
+  onRetryReport(e) {
+    if (this.retryIconStatus !== 'basic')
+      // validates if retry is allowed
+      this.retryEmitter.emit(this.rowData['name']);
+  }
+}

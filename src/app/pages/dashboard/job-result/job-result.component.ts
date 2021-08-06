@@ -1,13 +1,18 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../@core/services/job.service';
-import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
+import {
+  JobStatusIconRenderComponent,
+  PluginActionsRenderComponent,
+} from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { flash } from 'ng-animate';
+import { PluginService } from 'src/app/@core/services/plugin.service';
+import { ToastService } from 'src/app/@core/services/toast.service';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -34,11 +39,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
   // image viewer var
   public imageResult: string = '';
 
-  // ng2-smart-table settings
-  public tableSettings = {
-    attr: {
-      class: 'cursor-pointer',
-    },
+  // base ng2-smart-table settings for analyzer and connector reports
+  private baseTableSettings = {
     actions: {
       add: false,
       edit: false,
@@ -49,6 +51,14 @@ export class JobResultComponent implements OnInit, OnDestroy {
       perPage: 7,
     },
     columns: {
+      pluginActions: {
+        title: 'Actions',
+        width: '15%',
+        filter: false,
+        sort: false,
+        type: 'custom',
+        renderComponent: PluginActionsRenderComponent,
+      },
       name: {
         title: 'Name',
       },
@@ -71,6 +81,47 @@ export class JobResultComponent implements OnInit, OnDestroy {
         valuePrepareFunction: (c, r) => new Date(r.start_time).toLocaleString(),
       },
     },
+    rowClassFunction: (row) => {
+      return 'cursor-pointer';
+    },
+  };
+
+  // ng2-smart-table settings for analyzer reports
+  public analyzerTableSettings = {
+    ...this.baseTableSettings,
+    columns: {
+      ...this.baseTableSettings.columns,
+      pluginActions: {
+        ...this.baseTableSettings.columns.pluginActions,
+        onComponentInitFunction: (instance: any) => {
+          instance.killEmitter.subscribe((plugin) =>
+            this.killPluginHandler('analyzer', plugin)
+          );
+          instance.retryEmitter.subscribe((plugin) =>
+            this.retryPluginHandler('analyzer', plugin)
+          );
+        },
+      },
+    },
+  };
+
+  // ng2-smart-table settings for connector reports
+  public connectorTableSettings = {
+    ...this.baseTableSettings,
+    columns: {
+      ...this.baseTableSettings.columns,
+      pluginActions: {
+        ...this.baseTableSettings.columns.pluginActions,
+        onComponentInitFunction: (instance: any) => {
+          instance.killEmitter.subscribe((plugin) =>
+            this.killPluginHandler('connector', plugin)
+          );
+          instance.retryEmitter.subscribe((plugin) =>
+            this.retryPluginHandler('connector', plugin)
+          );
+        },
+      },
+    },
   };
 
   // ng2-smart-table data source
@@ -86,6 +137,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
   // row whose report/error is currently being shown
   public selectedRowName: string;
 
+  // boolean to track if connectors are running
+  public connectorsRunningBool: boolean;
+
   // JSON Editor
   public editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false })
@@ -93,7 +147,9 @@ export class JobResultComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly activateRoute: ActivatedRoute,
-    private readonly jobService: JobService
+    private readonly jobService: JobService,
+    private readonly toastr: ToastService,
+    private readonly pluginService: PluginService
   ) {
     this.sub = this.activateRoute.params.subscribe(
       (res) => (this.jobId = res.jobId)
@@ -127,13 +183,21 @@ export class JobResultComponent implements OnInit, OnDestroy {
       .catch(() => (this.isError = true));
   }
 
+  private startJobPollingWithInterval(): void {
+    // avoid multiple pollings
+    clearInterval(this.pollInterval);
+    const interval = this.connectorsRunningBool ? 15000 : 5000;
+    this.pollInterval = setInterval(() => {
+      const jobFields = this.connectorsRunningBool ? ['connector_reports'] : []; // [] means all
+      this.jobService.pollForJob(this.jobId, jobFields);
+    }, interval);
+  }
+
   private initData(): void {
-    // poll for changes to job result if status=running
-    if (this.jobObj.status === 'running') {
-      this.pollInterval = setInterval(
-        () => this.jobService.pollForJob(this.jobId),
-        5000
-      );
+    // poll for changes to job result if status=running or connectors are running
+    this.connectorsRunningBool = this.checkConnectorsRunning();
+    if (this.jobObj.status === 'running' || this.connectorsRunningBool) {
+      this.startJobPollingWithInterval();
     }
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
@@ -163,25 +227,42 @@ export class JobResultComponent implements OnInit, OnDestroy {
   }
 
   private updateJobData(res: Job): void {
+    // update job object (with partial update)
+    this.jobObj = { ...this.jobObj, ...res };
     // load data into the analysis table data source
-    this.analyzerTableDataSource.load(res.analyzer_reports);
+    this.analyzerTableDataSource.load(this.jobObj.analyzer_reports);
     // load data into connectors table data source
-    this.connectorTableDataSource.load(res.connector_reports);
+    this.connectorTableDataSource.load(this.jobObj.connector_reports);
     // toggle animation
     this.toggleAnimation();
-    if (res.status !== 'running') {
+    // check if connectors are running
+    this.connectorsRunningBool = this.checkConnectorsRunning();
+    if (this.jobObj.status !== 'running' && !this.connectorsRunningBool) {
       // stop polling
       clearInterval(this.pollInterval);
       // converting date time to locale string
-      const date1 = new Date(res.received_request_time);
-      const date2 = new Date(res.finished_analysis_time);
-      res.received_request_time = date1.toString();
-      res.finished_analysis_time = date2.toString();
+      const date1 = new Date(this.jobObj.received_request_time);
+      const date2 = new Date(this.jobObj.finished_analysis_time);
+      this.jobObj.received_request_time = date1.toString();
+      this.jobObj.finished_analysis_time = date2.toString();
       // calculate job process time
-      res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
+      this.jobObj.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
     }
-    // finally assign it to our class' member variable
-    this.jobObj = res;
+  }
+
+  private checkConnectorsRunning() {
+    let connectorsRunning = false,
+      status;
+    if (this.jobObj.status === 'reported_without_fails')
+      // connectors run only after this status is set
+      for (const conn_report of this.jobObj.connector_reports) {
+        status = conn_report.status.toLowerCase();
+        if (status === 'running' || status === 'pending') {
+          connectorsRunning = true;
+          break;
+        }
+      }
+    return connectorsRunning;
   }
 
   generateAlertMsgForConnectorReports() {
@@ -234,6 +315,61 @@ export class JobResultComponent implements OnInit, OnDestroy {
       json['screenshot'].length
     )
       this.imageResult = json.screenshot;
+  }
+
+  async killPluginHandler(pluginType: string, plugin: string): Promise<void> {
+    const sure = confirm('Are you sure?');
+    if (!sure) return;
+    const success = await this.pluginService.killPlugin(
+      +this.jobObj.id,
+      pluginType,
+      plugin
+    );
+    pluginType =
+      pluginType[0].toUpperCase() + pluginType.substring(1).toLowerCase();
+    if (success) {
+      this.toastr.showToast(
+        '"killed" successfully.',
+        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
+        'success'
+      );
+      // since plugin was running/pending, job polling already exists and will take care of updation
+    } else {
+      this.toastr.showToast(
+        'Could not be "killed". Reason: "Insufficient Permission".',
+        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
+        'error'
+      );
+    }
+  }
+
+  async retryPluginHandler(pluginType: string, plugin: string): Promise<void> {
+    const sure = confirm('Are you sure?');
+    if (!sure) return;
+    const success = await this.pluginService.retryPlugin(
+      +this.jobObj.id,
+      pluginType,
+      plugin
+    );
+    pluginType =
+      pluginType[0].toUpperCase() + pluginType.substring(1).toLowerCase();
+    if (success) {
+      this.toastr.showToast(
+        '"retry" request sent successfully.',
+        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
+        'success'
+      );
+      // instant polling for an update and then at intervals
+      const jobFields = pluginType === 'connector' ? ['connector_reports'] : []; // [] means all
+      this.jobService.pollForJob(this.jobId, jobFields);
+      this.startJobPollingWithInterval();
+    } else {
+      this.toastr.showToast(
+        'Could not be send "retry" request. Reason: "Insufficient Permission".',
+        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
+        'error'
+      );
+    }
   }
 
   goToTop(): void {
