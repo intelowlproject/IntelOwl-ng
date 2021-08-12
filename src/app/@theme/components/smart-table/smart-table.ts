@@ -250,9 +250,9 @@ export class PluginActionsRenderComponent
 
 // Plugin Health Check Button Renderer
 @Component({
-  template: ` <div style="display: inline-grid;">
+  template: ` <div *ngIf="!disabled" style="display: inline-grid;">
     <span style="color: {{ statusColor }}; text-align: center;">{{
-      status
+      statusText
     }}</span>
     <button
       (click)="onClick($event)"
@@ -272,8 +272,9 @@ export class PluginHealthCheckButtonRenderComponent
 
   @Output() emitter: EventEmitter<any> = new EventEmitter();
 
-  status: string;
+  statusText: string;
   statusColor: string;
+  disabled: boolean;
 
   ngOnInit(): void {
     this.getIconStatus();
@@ -286,14 +287,15 @@ export class PluginHealthCheckButtonRenderComponent
   }
 
   private getIconStatus(): void {
-    if (this.value === true) {
-      this.status = 'healthy';
+    this.disabled = this.value.disabled;
+    if (this.value.status === true) {
+      this.statusText = 'healthy';
       this.statusColor = '#29D68F';
-    } else if (this.value === false) {
-      this.status = 'failing';
+    } else if (this.value.status === false) {
+      this.statusText = 'failing';
       this.statusColor = '#FC3D71';
-    } else if (this.value === null) {
-      this.status = 'unknown';
+    } else if (this.value.status === null) {
+      this.statusText = 'unknown';
       this.statusColor = 'grey';
     }
   }

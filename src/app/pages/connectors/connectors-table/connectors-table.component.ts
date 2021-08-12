@@ -77,6 +77,7 @@ export class ConnectorsTableComponent implements OnInit {
         sort: false,
         type: 'custom',
         renderComponent: PluginHealthCheckButtonRenderComponent,
+        valuePrepareFunction: (c, r) => ({ status: c, disabled: false }),
         onComponentInitFunction: (instance: any) => {
           instance.emitter.subscribe(async (rowData) => {
             const status = await this.checkConnectorHealth(rowData['name']);
