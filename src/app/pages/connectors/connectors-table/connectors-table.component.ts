@@ -3,8 +3,11 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { first } from 'rxjs/operators';
 import { IRawConnectorConfig } from 'src/app/@core/models/models';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
+import { PluginService } from 'src/app/@core/services/plugin.service';
+import { ToastService } from 'src/app/@core/services/toast.service';
 import {
   JSONRenderComponent,
+  PluginHealthCheckButtonRenderComponent,
   TickCrossExtraRenderComponent,
   TickCrossRenderComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
@@ -67,10 +70,31 @@ export class ConnectorsTableComponent implements OnInit {
         }),
         renderComponent: TickCrossExtraRenderComponent,
       },
+      healthCheck: {
+        title: 'Health Check',
+        width: '5%',
+        filter: false,
+        sort: false,
+        type: 'custom',
+        renderComponent: PluginHealthCheckButtonRenderComponent,
+        onComponentInitFunction: (instance: any) => {
+          instance.emitter.subscribe(async (rowData) => {
+            const status = await this.checkConnectorHealth(rowData['name']);
+            this.tableSource.update(rowData, {
+              ...rowData,
+              healthCheck: status,
+            });
+          });
+        },
+      },
     },
   };
 
-  constructor(private readonly connectorService: ConnectorConfigService) {}
+  constructor(
+    private readonly connectorService: ConnectorConfigService,
+    private readonly pluginService: PluginService,
+    private readonly toastr: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
@@ -91,5 +115,25 @@ export class ConnectorsTableComponent implements OnInit {
     // default alphabetically sort.
     this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
     return Promise.resolve();
+  }
+
+  private async checkConnectorHealth(
+    connectorName: string
+  ): Promise<boolean | null> {
+    const result = await this.pluginService.checkPluginHealth(
+      'connector',
+      connectorName
+    );
+
+    if (result === null) {
+      this.toastr.showToast(
+        'Health Check Request Failed',
+        `Connector: ${connectorName}`,
+        'error'
+      );
+      return null;
+    } else {
+      return result.status;
+    }
   }
 }

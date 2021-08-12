@@ -247,3 +247,58 @@ export class PluginActionsRenderComponent
       this.retryEmitter.emit(this.rowData['name']);
   }
 }
+
+// Plugin Health Check Button Renderer
+@Component({
+  template: ` <div style="display: inline-grid;">
+    <span style="color: {{ statusColor }}; text-align: center;">{{
+      status
+    }}</span>
+    <button
+      (click)="onClick($event)"
+      class="mt-2"
+      nbButton
+      size="tiny"
+      status="primary"
+    >
+      Check
+    </button>
+  </div>`,
+})
+export class PluginHealthCheckButtonRenderComponent
+  implements ViewCell, OnInit, OnChanges {
+  @Input() value: any;
+  @Input() rowData: any;
+
+  @Output() emitter: EventEmitter<any> = new EventEmitter();
+
+  status: string;
+  statusColor: string;
+
+  ngOnInit(): void {
+    this.getIconStatus();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.value.previousValue !== changes.value.currentValue) {
+      this.getIconStatus();
+    }
+  }
+
+  private getIconStatus(): void {
+    if (this.value === true) {
+      this.status = 'healthy';
+      this.statusColor = '#29D68F';
+    } else if (this.value === false) {
+      this.status = 'failing';
+      this.statusColor = '#FC3D71';
+    } else if (this.value === null) {
+      this.status = 'unknown';
+      this.statusColor = 'grey';
+    }
+  }
+
+  onClick(e) {
+    this.emitter.emit(this.rowData);
+  }
+}
