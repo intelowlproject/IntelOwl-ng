@@ -5,8 +5,11 @@ import {
   TickCrossRenderComponent,
   TickCrossExtraRenderComponent,
   JSONRenderComponent,
+  PluginHealthCheckButtonRenderComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
 import { first } from 'rxjs/operators';
+import { PluginService } from 'src/app/@core/services/plugin.service';
+import { ToastService } from 'src/app/@core/services/toast.service';
 
 @Component({
   template: `
@@ -98,6 +101,27 @@ export class AnalyzersTableComponent implements OnInit {
         },
         renderComponent: TickCrossRenderComponent,
       },
+      healthCheck: {
+        title: 'Health Check',
+        width: '5%',
+        filter: false,
+        // sort: false,
+        type: 'custom',
+        renderComponent: PluginHealthCheckButtonRenderComponent,
+        valuePrepareFunction: (c, r) => ({
+          status: c,
+          disabled: !r.docker_based,
+        }),
+        onComponentInitFunction: (instance: any) => {
+          instance.emitter.subscribe(async (rowData) => {
+            const status = await this.checkAnalyzerrHealth(rowData['name']);
+            this.tableSource.update(rowData, {
+              ...rowData,
+              healthCheck: status,
+            });
+          });
+        },
+      },
       config: {
         title: 'Configuration Parameters',
         type: 'custom',
@@ -136,7 +160,11 @@ export class AnalyzersTableComponent implements OnInit {
     },
   };
 
-  constructor(private readonly analyzerService: AnalyzerConfigService) {}
+  constructor(
+    private readonly analyzerService: AnalyzerConfigService,
+    private readonly pluginService: PluginService,
+    private readonly toastr: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
@@ -155,5 +183,25 @@ export class AnalyzersTableComponent implements OnInit {
     // default alphabetically sort.
     this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
     return Promise.resolve();
+  }
+
+  private async checkAnalyzerrHealth(
+    analyzerName: string
+  ): Promise<boolean | null> {
+    const result = await this.pluginService.checkPluginHealth(
+      'analyzer',
+      analyzerName
+    );
+
+    if (result === null) {
+      this.toastr.showToast(
+        'Health Check Request Failed',
+        `Analyzer: ${analyzerName}`,
+        'error'
+      );
+      return null;
+    } else {
+      return result.status;
+    }
   }
 }

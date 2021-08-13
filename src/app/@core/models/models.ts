@@ -109,3 +109,7 @@ export interface ILoginPayload {
   username?: string;
   user?: { username?: string };
 }
+
+export interface HealthCheckStatus {
+  status?: boolean | null;
+}

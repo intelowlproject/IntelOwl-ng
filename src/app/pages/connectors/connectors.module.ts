@@ -4,22 +4,31 @@ import { ConnectorsTableComponent } from './connectors-table/connectors-table.co
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import {
   NbAlertModule,
+  NbButtonModule,
   NbIconModule,
   NbSpinnerModule,
   NbTooltipModule,
 } from '@nebular/theme';
 import { ThemeModule } from 'src/app/@theme/theme.module';
-import { TickCrossExtraRenderComponent } from 'src/app/@theme/components/smart-table/smart-table';
+import {
+  PluginHealthCheckButtonRenderComponent,
+  TickCrossExtraRenderComponent,
+} from 'src/app/@theme/components/smart-table/smart-table';
 
 @NgModule({
   imports: [
     ThemeModule,
     Ng2SmartTableModule,
     NbAlertModule,
+    NbButtonModule,
     NbIconModule,
     NbSpinnerModule,
     NbTooltipModule,
   ],
-  declarations: [ConnectorsTableComponent, TickCrossExtraRenderComponent],
+  declarations: [
+    ConnectorsTableComponent,
+    TickCrossExtraRenderComponent,
+    PluginHealthCheckButtonRenderComponent,
+  ],
 })
 export class ConnectorsModule {}

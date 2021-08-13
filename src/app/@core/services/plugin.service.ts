@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HealthCheckStatus } from '../models/models';
 import { HttpService } from './http.service';
 
 @Injectable({
@@ -33,6 +34,20 @@ export class PluginService extends HttpService<any> {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  async checkPluginHealth(
+    pluginType: string,
+    plugin: string
+  ): Promise<HealthCheckStatus | null> {
+    try {
+      const result: HealthCheckStatus = await this.get(
+        `${pluginType}/${plugin}/healthcheck`
+      );
+      return result;
+    } catch (e) {
+      return null;
     }
   }
 }
