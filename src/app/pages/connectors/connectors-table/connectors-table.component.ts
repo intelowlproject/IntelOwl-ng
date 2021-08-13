@@ -40,24 +40,16 @@ export class ConnectorsTableComponent implements OnInit {
         title: 'Description',
         filter: false,
       },
-      disabled: {
-        title: 'Active',
-        filter: false,
-        type: 'custom',
-        valuePrepareFunction: (c, r) => !c, // disabled = !active
-        renderComponent: TickCrossRenderComponent,
-      },
       config: {
         title: 'Configurations Added',
-        filter: false,
         type: 'custom',
+        filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
-      missing_secrets: {
-        title: 'Missing Secrets',
-        filter: false,
+      secrets: {
+        title: 'Secrets',
         type: 'custom',
-        valuePrepareFunction: (c, r) => r.verification.missing_secrets,
+        filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
       configured: {
@@ -70,9 +62,15 @@ export class ConnectorsTableComponent implements OnInit {
         }),
         renderComponent: TickCrossExtraRenderComponent,
       },
+      disabled: {
+        title: 'Active',
+        filter: false,
+        type: 'custom',
+        valuePrepareFunction: (c, r) => !c, // disabled = !active
+        renderComponent: TickCrossRenderComponent,
+      },
       healthCheck: {
         title: 'Health Check',
-        width: '5%',
         filter: false,
         sort: false,
         type: 'custom',

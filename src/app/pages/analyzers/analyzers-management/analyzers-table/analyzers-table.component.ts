@@ -103,9 +103,9 @@ export class AnalyzersTableComponent implements OnInit {
       },
       healthCheck: {
         title: 'Health Check',
-        width: '5%',
+        width: '3%',
         filter: false,
-        // sort: false,
+        sort: false,
         type: 'custom',
         renderComponent: PluginHealthCheckButtonRenderComponent,
         valuePrepareFunction: (c, r) => ({
@@ -122,30 +122,6 @@ export class AnalyzersTableComponent implements OnInit {
           });
         },
       },
-      config: {
-        title: 'Configuration Parameters',
-        type: 'custom',
-        filterFunction: (cell?: any, search?: string): boolean => {
-          let ans: boolean = false;
-          search = search.toLowerCase();
-          Object.entries(cell).forEach(([k, v]: [string, string]) => {
-            k = k.toString().toLowerCase();
-            v = v.toString().toLowerCase();
-            if (k.indexOf(search) !== -1 || v.indexOf(search) !== -1) {
-              ans = true;
-              return;
-            }
-          });
-          return ans;
-        },
-        renderComponent: JSONRenderComponent,
-      },
-      secrets: {
-        title: 'Secrets',
-        type: 'custom',
-        width: '5%',
-        renderComponent: JSONRenderComponent,
-      },
       configured: {
         title: 'Configured',
         type: 'custom',
@@ -156,6 +132,18 @@ export class AnalyzersTableComponent implements OnInit {
           tooltip: r.verification.error_message,
         }),
         renderComponent: TickCrossExtraRenderComponent,
+      },
+      config: {
+        title: 'Configuration Parameters',
+        type: 'custom',
+        filterFunction: JSONRenderComponent.filterFunction,
+        renderComponent: JSONRenderComponent,
+      },
+      secrets: {
+        title: 'Secrets',
+        type: 'custom',
+        filterFunction: JSONRenderComponent.filterFunction,
+        renderComponent: JSONRenderComponent,
       },
     },
   };

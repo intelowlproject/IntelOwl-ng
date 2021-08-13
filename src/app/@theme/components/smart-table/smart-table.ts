@@ -182,6 +182,20 @@ export class TagsRenderComponent implements ViewCell {
 export class JSONRenderComponent implements ViewCell {
   @Input() value: any; // some object
   @Input() rowData: any;
+
+  static filterFunction(cell?: any, search?: string): boolean {
+    let ans: boolean = false;
+    search = search.toLowerCase();
+    Object.entries(cell).forEach(([k, v]: [string, string]) => {
+      k = k.toString().toLowerCase();
+      v = v.toString().toLowerCase();
+      if (k.indexOf(search) !== -1 || v.indexOf(search) !== -1) {
+        ans = true;
+        return;
+      }
+    });
+    return ans;
+  }
 }
 
 // Plugin Actions (kill/retry)

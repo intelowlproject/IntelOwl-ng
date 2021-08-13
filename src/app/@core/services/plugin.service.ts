@@ -42,7 +42,8 @@ export class PluginService extends HttpService<any> {
     plugin: string
   ): Promise<HealthCheckStatus | null> {
     try {
-      const result: HealthCheckStatus = await this.get(
+      const result: HealthCheckStatus = await this.query(
+        {},
         `${pluginType}/${plugin}/healthcheck`
       );
       return result;
