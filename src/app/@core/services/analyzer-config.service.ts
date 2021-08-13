@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from './http.service';
 import { ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { IAnalyzersList, IRawAnalyzerConfig } from '../models/models';
+import { PluginService } from './plugin.service';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AnalyzerConfigService extends HttpService<any> {
+export class AnalyzerConfigService extends PluginService {
   public rawAnalyzerConfig: IRawAnalyzerConfig = {};
   private _analyzersList$: ReplaySubject<IAnalyzersList> = new ReplaySubject(1);
 
-  constructor(private _httpClient: HttpClient) {
-    super(_httpClient);
+  constructor(_httpClient: HttpClient, toastr: ToastService) {
+    super(_httpClient, toastr);
+    this.pluginType = 'analyzer';
     this.init().then();
   }
 
@@ -27,6 +29,18 @@ export class AnalyzerConfigService extends HttpService<any> {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  async checkAnalyzerHealth(analyzer_name: string): Promise<boolean | null> {
+    return this.checkPluginHealth(analyzer_name);
+  }
+
+  async killAnalyzer(job_id: number, analyzer_name: string): Promise<boolean> {
+    return this.killPlugin(job_id, analyzer_name);
+  }
+
+  async retryAnalyzer(job_id: number, analyzer_name: string): Promise<boolean> {
+    return this.retryPlugin(job_id, analyzer_name);
   }
 
   private async makeAnalyzersList(): Promise<void> {

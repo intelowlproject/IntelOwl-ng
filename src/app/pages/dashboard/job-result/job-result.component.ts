@@ -11,8 +11,9 @@ import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { flash } from 'ng-animate';
-import { PluginService } from 'src/app/@core/services/plugin.service';
 import { ToastService } from 'src/app/@core/services/toast.service';
+import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
+import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 
 @Component({
   selector: 'intelowl-job-result',
@@ -94,12 +95,20 @@ export class JobResultComponent implements OnInit, OnDestroy {
       pluginActions: {
         ...this.baseTableSettings.columns.pluginActions,
         onComponentInitFunction: (instance: any) => {
-          instance.killEmitter.subscribe((plugin) =>
-            this.killPluginHandler('analyzer', plugin)
+          instance.killEmitter.subscribe((analyzerName) =>
+            this.analyzerService.killAnalyzer(this.jobId, analyzerName)
           );
-          instance.retryEmitter.subscribe((plugin) =>
-            this.retryPluginHandler('analyzer', plugin)
-          );
+          instance.retryEmitter.subscribe(async (analyzerName) => {
+            const success = await this.analyzerService.retryAnalyzer(
+              this.jobId,
+              analyzerName
+            );
+            if (success) {
+              // instant polling for an update and then at intervals
+              this.jobService.pollForJob(this.jobId);
+              this.startJobPollingWithInterval();
+            }
+          });
         },
       },
     },
@@ -113,12 +122,20 @@ export class JobResultComponent implements OnInit, OnDestroy {
       pluginActions: {
         ...this.baseTableSettings.columns.pluginActions,
         onComponentInitFunction: (instance: any) => {
-          instance.killEmitter.subscribe((plugin) =>
-            this.killPluginHandler('connector', plugin)
+          instance.killEmitter.subscribe((connectorName) =>
+            this.connectorService.killConnector(this.jobId, connectorName)
           );
-          instance.retryEmitter.subscribe((plugin) =>
-            this.retryPluginHandler('connector', plugin)
-          );
+          instance.retryEmitter.subscribe(async (connectorName) => {
+            const success = await this.connectorService.retryConnector(
+              this.jobId,
+              connectorName
+            );
+            if (success) {
+              // instant polling for an update and then at intervals
+              this.jobService.pollForJob(this.jobId, ['connector_reports']);
+              this.startJobPollingWithInterval();
+            }
+          });
         },
       },
     },
@@ -149,7 +166,8 @@ export class JobResultComponent implements OnInit, OnDestroy {
     private readonly activateRoute: ActivatedRoute,
     private readonly jobService: JobService,
     private readonly toastr: ToastService,
-    private readonly pluginService: PluginService
+    private readonly analyzerService: AnalyzerConfigService,
+    private readonly connectorService: ConnectorConfigService
   ) {
     this.sub = this.activateRoute.params.subscribe(
       (res) => (this.jobId = res.jobId)
@@ -316,61 +334,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
     )
       this.imageResult = json.screenshot;
     else this.imageResult = '';
-  }
-
-  async killPluginHandler(pluginType: string, plugin: string): Promise<void> {
-    const sure = confirm('Are you sure?');
-    if (!sure) return;
-    const success = await this.pluginService.killPlugin(
-      +this.jobObj.id,
-      pluginType,
-      plugin
-    );
-    pluginType =
-      pluginType[0].toUpperCase() + pluginType.substring(1).toLowerCase();
-    if (success) {
-      this.toastr.showToast(
-        '"killed" successfully.',
-        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
-        'success'
-      );
-      // since plugin was running/pending, job polling already exists and will take care of updation
-    } else {
-      this.toastr.showToast(
-        'Could not be "killed". Reason: "Insufficient Permission".',
-        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
-        'error'
-      );
-    }
-  }
-
-  async retryPluginHandler(pluginType: string, plugin: string): Promise<void> {
-    const sure = confirm('Are you sure?');
-    if (!sure) return;
-    const success = await this.pluginService.retryPlugin(
-      +this.jobObj.id,
-      pluginType,
-      plugin
-    );
-    pluginType =
-      pluginType[0].toUpperCase() + pluginType.substring(1).toLowerCase();
-    if (success) {
-      this.toastr.showToast(
-        '"retry" request sent successfully.',
-        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
-        'success'
-      );
-      // instant polling for an update and then at intervals
-      const jobFields = pluginType === 'connector' ? ['connector_reports'] : []; // [] means all
-      this.jobService.pollForJob(this.jobId, jobFields);
-      this.startJobPollingWithInterval();
-    } else {
-      this.toastr.showToast(
-        'Could not be send "retry" request. Reason: "Insufficient Permission".',
-        `Job #${this.jobObj.id} ${pluginType}: ${plugin}`,
-        'error'
-      );
-    }
   }
 
   goToTop(): void {

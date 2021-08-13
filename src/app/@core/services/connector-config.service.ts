@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from './http.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
 import { IRawConnectorConfig } from '../models/models';
+import { PluginService } from './plugin.service';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ConnectorConfigService extends HttpService<any> {
+export class ConnectorConfigService extends PluginService {
   private _rawConnectorConfig$: ReplaySubject<
     IRawConnectorConfig
   > = new ReplaySubject(1);
 
-  constructor(private _httpClient: HttpClient) {
-    super(_httpClient);
+  constructor(_httpClient: HttpClient, toastr: ToastService) {
+    super(_httpClient, toastr);
+    this.pluginType = 'connector';
     this.init().then();
   }
 
@@ -31,5 +33,20 @@ export class ConnectorConfigService extends HttpService<any> {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  async checkConnectorHealth(connectorName: string): Promise<boolean | null> {
+    return this.checkPluginHealth(connectorName);
+  }
+
+  async killConnector(job_id: number, connectorName: string): Promise<boolean> {
+    return this.killPlugin(job_id, connectorName);
+  }
+
+  async retryConnector(
+    job_id: number,
+    connectorName: string
+  ): Promise<boolean> {
+    return this.retryPlugin(job_id, connectorName);
   }
 }

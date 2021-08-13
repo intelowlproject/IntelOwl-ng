@@ -8,8 +8,6 @@ import {
   PluginHealthCheckButtonRenderComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
 import { first } from 'rxjs/operators';
-import { PluginService } from 'src/app/@core/services/plugin.service';
-import { ToastService } from 'src/app/@core/services/toast.service';
 
 @Component({
   template: `
@@ -114,7 +112,9 @@ export class AnalyzersTableComponent implements OnInit {
         }),
         onComponentInitFunction: (instance: any) => {
           instance.emitter.subscribe(async (rowData) => {
-            const status = await this.checkAnalyzerrHealth(rowData['name']);
+            const status = await this.analyzerService.checkAnalyzerHealth(
+              rowData['name']
+            );
             this.tableSource.update(rowData, {
               ...rowData,
               healthCheck: status,
@@ -148,11 +148,7 @@ export class AnalyzersTableComponent implements OnInit {
     },
   };
 
-  constructor(
-    private readonly analyzerService: AnalyzerConfigService,
-    private readonly pluginService: PluginService,
-    private readonly toastr: ToastService
-  ) {}
+  constructor(private readonly analyzerService: AnalyzerConfigService) {}
 
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
@@ -171,25 +167,5 @@ export class AnalyzersTableComponent implements OnInit {
     // default alphabetically sort.
     this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
     return Promise.resolve();
-  }
-
-  private async checkAnalyzerrHealth(
-    analyzerName: string
-  ): Promise<boolean | null> {
-    const result = await this.pluginService.checkPluginHealth(
-      'analyzer',
-      analyzerName
-    );
-
-    if (result === null) {
-      this.toastr.showToast(
-        'Health Check Request Failed',
-        `Analyzer: ${analyzerName}`,
-        'error'
-      );
-      return null;
-    } else {
-      return result.status;
-    }
   }
 }
