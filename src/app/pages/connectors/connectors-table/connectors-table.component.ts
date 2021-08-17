@@ -3,8 +3,6 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { first } from 'rxjs/operators';
 import { IRawConnectorConfig } from 'src/app/@core/models/models';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
-import { PluginService } from 'src/app/@core/services/plugin.service';
-import { ToastService } from 'src/app/@core/services/toast.service';
 import {
   JSONRenderComponent,
   PluginHealthCheckButtonRenderComponent,
@@ -78,7 +76,9 @@ export class ConnectorsTableComponent implements OnInit {
         valuePrepareFunction: (c, r) => ({ status: c, disabled: false }),
         onComponentInitFunction: (instance: any) => {
           instance.emitter.subscribe(async (rowData) => {
-            const status = await this.checkConnectorHealth(rowData['name']);
+            const status = await this.connectorService.checkConnectorHealth(
+              rowData['name']
+            );
             this.tableSource.update(rowData, {
               ...rowData,
               healthCheck: status,
@@ -89,11 +89,7 @@ export class ConnectorsTableComponent implements OnInit {
     },
   };
 
-  constructor(
-    private readonly connectorService: ConnectorConfigService,
-    private readonly pluginService: PluginService,
-    private readonly toastr: ToastService
-  ) {}
+  constructor(private readonly connectorService: ConnectorConfigService) {}
 
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
@@ -114,25 +110,5 @@ export class ConnectorsTableComponent implements OnInit {
     // default alphabetically sort.
     this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
     return Promise.resolve();
-  }
-
-  private async checkConnectorHealth(
-    connectorName: string
-  ): Promise<boolean | null> {
-    const result = await this.pluginService.checkPluginHealth(
-      'connector',
-      connectorName
-    );
-
-    if (result === null) {
-      this.toastr.showToast(
-        'Health Check Request Failed',
-        `Connector: ${connectorName}`,
-        'error'
-      );
-      return null;
-    } else {
-      return result.status;
-    }
   }
 }
