@@ -11,6 +11,15 @@ import { Component } from '@angular/core';
         any.</span
       >
     </nb-alert>
+    <p>
+      This is the latest
+      <a
+        target="_blank"
+        href="https://github.com/intelowlproject/IntelOwl/blob/develop/configuration/analyzer_config.json"
+        >analyzer_config.json</a
+      >
+      from <code>develop</code> branch.
+    </p>
     <nb-card>
       <nb-route-tabset
         fullWidth
