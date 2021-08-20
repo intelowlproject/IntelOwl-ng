@@ -1,16 +1,42 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ReplaySubject } from 'rxjs';
-import { IAnalyzersList, IRawAnalyzerConfig } from '../models/models';
-import { saved_analyzer_config_json } from 'src/assets/analyzers_list';
+import {
+  IAnalyzersList,
+  IAnalyzerConfig,
+  IRawAnalyzerConfig,
+} from '../models/models';
+import { PluginService } from './plugin.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AnalyzerConfigService {
+export class AnalyzerConfigService extends PluginService {
   public rawAnalyzerConfig: IRawAnalyzerConfig = {};
   private _analyzersList$: ReplaySubject<IAnalyzersList> = new ReplaySubject(1);
 
-  constructor() {
+  // for the demo
+  private _verificationChoices = [
+    {
+      configured: true,
+      error_message: null,
+      missing_secrets: [],
+    },
+    {
+      configured: false,
+      error_message: '(api_key_name, api_key_url) not set, 2/4 secrets missing',
+      missing_secrets: ['api_key_name', 'api_key_url'],
+    },
+    {
+      configured: true,
+      error_message: null,
+      missing_secrets: [],
+    },
+  ];
+
+  constructor(private _http: HttpClient) {
+    super();
+    this.pluginType = 'analyzer';
     this.init().then();
   }
 
@@ -20,14 +46,19 @@ export class AnalyzerConfigService {
 
   private async init(): Promise<void> {
     try {
-      this.rawAnalyzerConfig = saved_analyzer_config_json;
+      this.rawAnalyzerConfig = (await this._http
+        .get(
+          'https://raw.githubusercontent.com/intelowlproject/IntelOwl/develop/configuration/analyzer_config.json',
+          { responseType: 'json' }
+        )
+        .toPromise()) as IRawAnalyzerConfig;
       this.makeAnalyzersList();
     } catch (e) {
       console.error(e);
     }
   }
 
-  private async makeAnalyzersList(): Promise<void> {
+  private makeAnalyzersList(): void {
     const analyzers: IAnalyzersList = {
       ip: [],
       hash: [],
@@ -40,16 +71,19 @@ export class AnalyzerConfigService {
     const obsToCheck: string[] = ['ip', 'url', 'domain', 'hash', 'generic'];
 
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
-      // exlude `disabled:true`
-      if (obj.disabled) return;
+      const acObj = {
+        name: key,
+        verification: this._verificationChoices[Math.floor(Math.random() * 3)], // for the demo
+        ...obj,
+      };
       // filter on basis of type
       if (obj.type === 'file') {
-        analyzers.file.push(key);
-        if (obj.run_hash) analyzers.hash.push(key);
+        analyzers.file.push(acObj);
+        if (obj.run_hash) analyzers.hash.push(acObj);
       } else {
         obsToCheck.forEach((clsfn: string) => {
           if (obj.observable_supported.includes(clsfn))
-            analyzers[clsfn].push(key);
+            analyzers[clsfn].push(acObj);
         });
       }
     });
@@ -66,9 +100,6 @@ export class AnalyzerConfigService {
       }
       if (!obj.hasOwnProperty('external_service')) {
         obj['external_service'] = false;
-      }
-      if (!obj.hasOwnProperty('requires_configuration')) {
-        obj['requires_configuration'] = false;
       }
       if (!obj.hasOwnProperty('leaks_info')) {
         obj['leaks_info'] = false;

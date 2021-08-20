@@ -41,7 +41,7 @@ export class JobStatusIconRenderComponent
   }
 
   private getIconNameStatus(): void {
-    const value = this.value.toString();
+    const value = this.value.toString().toLowerCase();
     if (
       value === 'true' ||
       value === 'success' ||
@@ -91,6 +91,44 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
   }
 }
 
+// Tick/Cross Extra Render Component
+@Component({
+  template: `
+    <nb-icon
+      *ngIf="iconName"
+      [icon]="iconName"
+      [status]="iconStatus"
+      [nbTooltip]="tooltip"
+      [nbTooltipStatus]="tooltipStatus"
+    ></nb-icon>
+    <span *ngIf="!iconName">{{ value }}</span>
+  `,
+})
+export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
+  iconName: string;
+  iconStatus: string;
+  tooltip: string;
+  tooltipStatus: string;
+
+  @Input() value: any; // some object
+  @Input() rowData: any;
+
+  ngOnInit() {
+    const tick = this.value.tick;
+
+    if (tick === true) {
+      this.tooltip = 'Ready to use!';
+      this.iconName = 'checkmark-circle-2-outline';
+      this.iconStatus = 'success';
+    } else {
+      this.tooltip = this.value.tooltip;
+      this.tooltipStatus = 'danger';
+      this.iconName = 'close-circle-outline';
+      this.iconStatus = 'danger';
+    }
+  }
+}
+
 // View Result Button Component
 @Component({
   template: `
@@ -102,6 +140,7 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
   `,
 })
 export class ViewResultButtonComponent implements ViewCell {
+  navUri: string = `/pages/scan/result`;
   @Input() value: number;
   @Input() rowData: any;
 
@@ -109,7 +148,7 @@ export class ViewResultButtonComponent implements ViewCell {
 
   async onRowSelect(id) {
     try {
-      this.router.navigate([`/pages/scan/result/${id}/`]).then();
+      this.router.navigate([`${this.navUri}/${id}/`]).then();
     } catch (e) {
       console.error(e);
     }
@@ -143,4 +182,146 @@ export class TagsRenderComponent implements ViewCell {
 export class JSONRenderComponent implements ViewCell {
   @Input() value: any; // some object
   @Input() rowData: any;
+
+  static filterFunction(cell?: any, search?: string): boolean {
+    let ans: boolean = false;
+    search = search.toLowerCase();
+    Object.entries(cell).forEach(([k, v]: [string, string]) => {
+      k = k.toString().toLowerCase();
+      v = v.toString().toLowerCase();
+      if (k.indexOf(search) !== -1 || v.indexOf(search) !== -1) {
+        ans = true;
+        return;
+      }
+    });
+    return ans;
+  }
+}
+
+// Plugin Actions (kill/retry)
+@Component({
+  template: `
+    <div class="d-flex justify-content-around">
+      <nb-icon
+        class="mr-2"
+        [ngStyle]="{ cursor: killIconStatus === 'basic' ? 'auto' : 'pointer' }"
+        nbTooltip="kill"
+        icon="slash"
+        [status]="killIconStatus"
+        disabled="true"
+      ></nb-icon>
+      <nb-icon
+        [ngStyle]="{ cursor: retryIconStatus === 'basic' ? 'auto' : 'pointer' }"
+        nbTooltip="retry"
+        icon="refresh-outline"
+        [status]="retryIconStatus"
+        disabled="true"
+      ></nb-icon>
+    </div>
+  `,
+})
+export class PluginActionsRenderComponent
+  implements ViewCell, OnInit, OnChanges {
+  @Input() value: any;
+  @Input() rowData: any;
+
+  killIconStatus: string = 'basic'; // disabled
+  retryIconStatus: string = 'basic'; // disabled
+
+  ngOnInit(): void {
+    this.getIconStatus();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.value.previousValue !== changes.value.currentValue) {
+      this.getIconStatus();
+    }
+  }
+
+  private getIconStatus(): void {
+    const status = this.rowData['status'].toLowerCase();
+    if (status === 'running' || status === 'pending')
+      this.killIconStatus = 'warning';
+    if (status === 'failed' || status === 'killed')
+      this.retryIconStatus = 'success';
+  }
+}
+
+// Plugin Health Check Button Renderer
+@Component({
+  template: ` <div *ngIf="!disabled" style="display: inline-grid;">
+    <span style="color: {{ statusColor }}; text-align: center;">{{
+      statusText
+    }}</span>
+    <button
+      (click)="onClick($event)"
+      class="mt-2"
+      [disabled]="true"
+      nbButton
+      size="tiny"
+      status="primary"
+    >
+      Check
+    </button>
+  </div>`,
+})
+export class PluginHealthCheckButtonRenderComponent
+  implements ViewCell, OnInit, OnChanges {
+  @Input() value: any;
+  @Input() rowData: any;
+
+  @Output() emitter: EventEmitter<any> = new EventEmitter();
+
+  statusText: string;
+  statusColor: string;
+  disabled: boolean;
+
+  ngOnInit(): void {
+    this.getIconStatus();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.value.previousValue !== changes.value.currentValue) {
+      this.getIconStatus();
+    }
+  }
+
+  private getIconStatus(): void {
+    this.disabled = this.value.disabled;
+    if (this.value.status === true) {
+      this.statusText = 'healthy';
+      this.statusColor = '#29D68F';
+    } else if (this.value.status === false) {
+      this.statusText = 'failing';
+      this.statusColor = '#FC3D71';
+    } else if (this.value.status === null) {
+      this.statusText = 'unknown';
+      this.statusColor = 'grey';
+    }
+  }
+
+  onClick(e) {
+    this.emitter.emit(this.rowData);
+  }
+}
+
+// TLP Render Component
+export const tlpColors = {
+  WHITE: '#FFFFFF',
+  GREEN: '#33FF00',
+  AMBER: '#FFC000',
+  RED: '#FF0033',
+};
+@Component({
+  template: `
+    <span style="color: {{ tlpColors[value] }}; text-align: center;">{{
+      value
+    }}</span>
+  `,
+})
+export class TLPRenderComponent implements ViewCell {
+  @Input() value: number;
+  @Input() rowData: any;
+
+  tlpColors = tlpColors;
 }

@@ -3,12 +3,19 @@ import { AnalyzerConfigService } from '../../../../@core/services/analyzer-confi
 import { LocalDataSource } from 'ng2-smart-table';
 import {
   TickCrossRenderComponent,
+  TickCrossExtraRenderComponent,
   JSONRenderComponent,
+  PluginHealthCheckButtonRenderComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
+import { first } from 'rxjs/operators';
 
 @Component({
   template: `
-    <nb-card>
+    <nb-card
+      [nbSpinner]="showSpinnerBool"
+      nbSpinnerStatus="primary"
+      nbSpinnerSize="large"
+    >
       <nb-card-body>
         <ng2-smart-table [settings]="tableSettings" [source]="tableSource">
         </ng2-smart-table>
@@ -19,6 +26,7 @@ import {
 export class AnalyzersTableComponent implements OnInit {
   // ng2-smart-table data source
   tableSource: LocalDataSource = new LocalDataSource();
+  showSpinnerBool: boolean = false;
 
   // ng2-smart-table settings
   tableSettings = {
@@ -91,37 +99,39 @@ export class AnalyzersTableComponent implements OnInit {
         },
         renderComponent: TickCrossRenderComponent,
       },
-      requires_configuration: {
-        title: 'Requires Configuration',
+      healthCheck: {
+        title: 'Health Check',
+        width: '3%',
+        filter: false,
+        sort: false,
         type: 'custom',
-        width: '5%',
-        filter: {
-          type: 'list',
-          config: {
-            list: [
-              { value: true, title: 'Yes' },
-              { value: false, title: 'No' },
-            ],
-          },
-        },
-        renderComponent: TickCrossRenderComponent,
+        renderComponent: PluginHealthCheckButtonRenderComponent,
+        valuePrepareFunction: (c, r) => ({
+          status: c,
+          disabled: !r.docker_based,
+        }),
       },
-      additional_config_params: {
-        title: 'Additional config',
+      configured: {
+        title: 'Configured',
         type: 'custom',
-        filterFunction: (cell?: any, search?: string): boolean => {
-          let ans: boolean = false;
-          search = search.toLowerCase();
-          Object.entries(cell).forEach(([k, v]: [string, string]) => {
-            k = k.toString().toLowerCase();
-            v = v.toString().toLowerCase();
-            if (k.indexOf(search) !== -1 || v.indexOf(search) !== -1) {
-              ans = true;
-              return;
-            }
-          });
-          return ans;
-        },
+        width: '3%',
+        filter: false,
+        valuePrepareFunction: (c, r) => ({
+          tick: r.verification.configured,
+          tooltip: r.verification.error_message,
+        }),
+        renderComponent: TickCrossExtraRenderComponent,
+      },
+      config: {
+        title: 'Configuration Parameters',
+        type: 'custom',
+        filterFunction: JSONRenderComponent.filterFunction,
+        renderComponent: JSONRenderComponent,
+      },
+      secrets: {
+        title: 'Secrets',
+        type: 'custom',
+        filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
     },
@@ -130,15 +140,21 @@ export class AnalyzersTableComponent implements OnInit {
   constructor(private readonly analyzerService: AnalyzerConfigService) {}
 
   ngOnInit(): void {
-    setTimeout(() => this.init(), 500);
+    this.showSpinnerBool = true; // spinner on
+    // rxjs/first() -> take first and complete observable
+    // analyzerList available => rawAnalyzerConfig initialized
+    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) =>
+      this.init().then(
+        () => (this.showSpinnerBool = false) // spinner off
+      )
+    );
   }
 
-  private init(): void {
-    if (this.analyzerService.rawAnalyzerConfig) {
-      const data: any[] = this.analyzerService.constructTableData();
-      this.tableSource.load(data);
-      // default alphabetically sort.
-      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-    }
+  private init(): Promise<void> {
+    const data: any[] = this.analyzerService.constructTableData();
+    this.tableSource.load(data);
+    // default alphabetically sort.
+    this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+    return Promise.resolve();
   }
 }

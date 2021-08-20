@@ -1,0 +1,32 @@
+<!-- Download Sample btn -->
+<nb-icon
+  *ngIf="job.is_sample"
+  class="dl-btn"
+  nbTooltip="Download File"
+  icon="download-outline"
+  disabled="true"
+></nb-icon>
+<!-- Raw JSON -->
+<nb-icon
+  class="dl-btn"
+  nbTooltip="View raw JSON"
+  icon="code-outline"
+  disabled="true"
+></nb-icon>
+<!-- Kill Job Button -->
+<nb-icon
+  *ngIf="job.status === 'running'"
+  class="dl-btn"
+  status="warning"
+  nbTooltip="kill running analyzers and mark as 'killed'"
+  icon="slash"
+  disabled="true"
+></nb-icon>
+<!-- Delete Job Button -->
+<nb-icon
+  status="danger"
+  class="del-btn"
+  nbTooltip="Delete Job"
+  icon="trash-2-outline"
+  disabled="true"
+></nb-icon>

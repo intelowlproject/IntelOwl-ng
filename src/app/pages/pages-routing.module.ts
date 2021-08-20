@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { JobResultComponent } from './dashboard/job-result/job-result.component';
+import { ConnectorsTableComponent } from './connectors/connectors-table/connectors-table.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
         path: 'analyzers',
         loadChildren: () =>
           import('./analyzers/analyzers.module').then((m) => m.AnalyzersModule),
+      },
+      {
+        path: 'connectors',
+        component: ConnectorsTableComponent,
       },
       {
         path: 'scan',

@@ -12,9 +12,11 @@ import {
   ViewResultButtonComponent,
   JobStatusIconRenderComponent,
   TagsRenderComponent,
+  PluginActionsRenderComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { JobService } from '../../@core/services/job.service';
 import { JobResultComponent } from './job-result/job-result.component';
+import { JobActionsMenuComponent } from './job-result/job-actions-menu/job-actions-menu.component';
 import { DashboardComponent } from './dashboard.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
@@ -22,6 +24,7 @@ import { DebounceClickDirective } from 'src/app/@theme/directives/app-debounce-c
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 
 import * as echarts from 'echarts';
+import { JobInfoListComponent } from './job-result/job-info-list/job-info-list.component';
 
 @NgModule({
   imports: [
@@ -38,11 +41,14 @@ import * as echarts from 'echarts';
   declarations: [
     DashboardComponent,
     JobResultComponent,
+    JobActionsMenuComponent,
     ViewResultButtonComponent,
     JobStatusIconRenderComponent,
     TagsRenderComponent,
     EchartsPieComponent,
     DebounceClickDirective,
+    JobInfoListComponent,
+    PluginActionsRenderComponent,
   ],
   providers: [JobService],
 })

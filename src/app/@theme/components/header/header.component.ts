@@ -13,18 +13,21 @@ import { filter, map, take } from 'rxjs/operators';
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements OnInit {
+  isDarkTheme: boolean;
+
   userMenu: NbMenuItem[] = [
     { title: 'Django Admin Interface' },
     { title: 'Log out' },
   ];
-  isDarkTheme: boolean;
 
   constructor(
     private sidebarService: NbSidebarService,
     private nbMenuService: NbMenuService,
-    private themeService: NbThemeService
+    private nbThemeService: NbThemeService
   ) {
-    this.isDarkTheme = HeaderComponent.getThemeName() === 'dark' ? true : false;
+    this.nbThemeService.onThemeChange().subscribe((themeName) => {
+      this.isDarkTheme = themeName?.name === 'dark' ? true : false;
+    });
   }
 
   ngOnInit(): void {
@@ -44,13 +47,6 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  changeTheme(toggleFlag: boolean): void {
-    let themeName: string;
-    toggleFlag ? (themeName = 'dark') : (themeName = 'default');
-    localStorage.setItem('themeName', themeName);
-    this.themeService.changeTheme(themeName);
-  }
-
   toggleSidebar(): boolean {
     this.sidebarService.toggle(true, 'menu-sidebar');
     return false;
@@ -59,9 +55,5 @@ export class HeaderComponent implements OnInit {
   navigateHome(): boolean {
     this.nbMenuService.navigateHome();
     return false;
-  }
-
-  static getThemeName(): string {
-    return localStorage.getItem('themeName') || 'dark';
   }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Tag } from '../models/models';
 import { ToastService } from './toast.service';
-import { Subject } from 'rxjs/internal/Subject';
 import { saved_tags_for_demo } from 'src/assets/tags_data';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

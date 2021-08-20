@@ -6,12 +6,12 @@ import {
   IAnalyzersList,
   IAnalyzerConfig,
 } from 'src/app/@core/models/models';
-import { Md5 } from 'ts-md5';
 import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
 import { first } from 'rxjs/operators';
 import { JsonEditorOptions } from 'ang-jsoneditor';
 import { NbDialogService } from '@nebular/theme';
 import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
+import { tlpColors } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
   selector: 'intelowl-base-scan',
@@ -34,12 +34,15 @@ export class BaseScanFormComponent implements OnInit {
   showSpinnerBool: boolean = false;
   formDebugBool: boolean = false;
   showDescriptionBool: boolean = true;
+
+  tlpColors = tlpColors;
+
   // JSON Editor
   private editorOptions: JsonEditorOptions;
 
   constructor(
     private readonly scanService: ScanService,
-    public readonly analyzerService: AnalyzerConfigService,
+    private readonly analyzerService: AnalyzerConfigService,
     private dialogService: NbDialogService
   ) {
     this.editorOptions = new JsonEditorOptions();
@@ -104,9 +107,7 @@ export class BaseScanFormComponent implements OnInit {
     const config: any = {};
     this.formData.analyzers_requested.forEach((name: string) => {
       const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
-      if (ac?.additional_config_params) {
-        config[name] = ac.additional_config_params;
-      }
+      config[name] = { ...ac?.config, ...ac?.secrets };
     });
     return config;
   }

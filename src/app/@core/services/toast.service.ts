@@ -39,8 +39,7 @@ export class ToastService {
   ) {
     this.toastrService.show(message, title, {
       duration: 0,
-      icon: iconName,
-      iconPack: 'eva',
+      icon: { icon: iconName, pack: 'eva' },
     });
   }
 }

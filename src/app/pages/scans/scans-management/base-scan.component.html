@@ -23,6 +23,15 @@
             <!-- Analyzers select field -->
             <div class="form-group">
               <label class="label form-control-label">Select Analyzers</label>
+              <div class="form-group">
+                <nb-checkbox
+                  class="col-md-6 px-0"
+                  [(ngModel)]="formData.run_all_available_analyzers"
+                  name="run_all_available_analyzers"
+                >
+                  run all available analyzers
+                </nb-checkbox>
+              </div>
               <nb-select
                 *ngIf="analyzersList && formData.classification"
                 fullWidth
@@ -37,21 +46,27 @@
                 }}</nb-select-label>
                 <!-- Options Loop -->
                 <nb-option
-                  *ngFor="
-                    let analyzer of analyzersList[formData.classification]
-                  "
-                  [value]="analyzer"
+                  *ngFor="let ac of analyzersList[formData.classification]"
+                  [value]="ac.name"
+                  [disabled]="ac.disabled || !ac.verification.configured"
                 >
-                  <span>{{ analyzer }}</span>
-                  &nbsp;
-                  <span [hidden]="!showDescriptionBool"
-                    ><small
-                      >({{
-                        analyzerService.rawAnalyzerConfig[analyzer]
-                          ?.description
-                      }})</small
-                    ></span
-                  >
+                  <div>
+                    <div>
+                      <span>{{ ac?.name }}</span>
+                      &nbsp;
+                      <span [hidden]="!showDescriptionBool"
+                        ><small>({{ ac.description }})</small></span
+                      >
+                    </div>
+                    <div
+                      class="text-danger small"
+                      *ngIf="ac.disabled || !ac.verification.configured"
+                    >
+                      {{
+                        ac.disabled ? 'disabled' : ac.verification.error_message
+                      }}
+                    </div>
+                  </div>
                 </nb-option>
               </nb-select>
               <ng-container *ngIf="!isNotError816()">
@@ -80,11 +95,11 @@
             <div class="form-group">
               <nb-radio-group
                 [(ngModel)]="formData.check_existing_or_force"
-                class="d-flex justify-content-around"
+                class="d-flex justify-content-between"
                 name="check-existing-or-force-new"
               >
                 <nb-radio
-                  nbTooltip="analysis won't be repeated if already exists as running or failed"
+                  nbTooltip="analysis won't be repeated if already exists as running or reported without fails"
                   value="check_all"
                   >check existing analysis</nb-radio
                 >
@@ -99,37 +114,49 @@
               </nb-radio-group>
             </div>
 
+            <label class="label form-control-label">TLP configuration</label>
             <div class="form-group">
-              <nb-checkbox
-                class="col-md-6"
-                [(ngModel)]="formData.force_privacy"
-                name="force_privacy"
-                >disable analyzers that could impact privacy
-              </nb-checkbox>
-              <nb-checkbox
-                class="col-md-6"
-                [(ngModel)]="formData.disable_external_analyzers"
-                name="disable_external_analyzers"
-                >disable analyzers that use external services
-              </nb-checkbox>
+              <nb-radio-group
+                [(ngModel)]="formData.tlp"
+                class="d-flex justify-content-around"
+                name="tlp"
+              >
+                <nb-radio
+                  class="col-md-3"
+                  nbTooltip="use all analyzers"
+                  value="WHITE"
+                  [ngStyle]="{ color: tlpColors.WHITE }"
+                  ><span [ngStyle]="{ color: tlpColors.WHITE }"
+                    >TLP:WHITE</span
+                  ></nb-radio
+                >
+                <nb-radio
+                  class="col-md-3"
+                  nbTooltip="disable analyzers that could impact privacy"
+                  value="GREEN"
+                  ><span [ngStyle]="{ color: tlpColors.GREEN }"
+                    >TLP:GREEN</span
+                  ></nb-radio
+                >
+                <nb-radio
+                  class="col-md-3"
+                  nbTooltip="disable analyzers that could impact privacy and limit view permissions to my group"
+                  value="AMBER"
+                  ><span [ngStyle]="{ color: tlpColors.AMBER }"
+                    >TLP:AMBER</span
+                  ></nb-radio
+                >
+                <nb-radio
+                  class="col-md-3"
+                  nbTooltip="disable analyzers that could impact privacy, limit view permissions to my group and do not use any external service"
+                  value="RED"
+                  ><span [ngStyle]="{ color: tlpColors.RED }"
+                    >TLP:RED</span
+                  ></nb-radio
+                >
+              </nb-radio-group>
             </div>
 
-            <div class="form-group">
-              <nb-checkbox
-                class="col-md-6"
-                [(ngModel)]="formData.private"
-                name="private"
-              >
-                limit view permissions to my groups
-              </nb-checkbox>
-              <nb-checkbox
-                class="col-md-6"
-                [(ngModel)]="formData.run_all_available_analyzers"
-                name="run_all_available_analyzers"
-              >
-                run all available analyzers
-              </nb-checkbox>
-            </div>
             <!-- /Additional Fields -->
 
             <!-- ngx-tagger/ Tag Selection Popover -->

@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JobService } from '../../../@core/services/job.service';
-import { JobStatusIconRenderComponent } from '../../../@theme/components/smart-table/smart-table';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import {
+  JobStatusIconRenderComponent,
+  PluginActionsRenderComponent,
+} from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Subscription } from 'rxjs';
 import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { trigger, transition, useAnimation } from '@angular/animations';
-import { flash } from 'ngx-animate';
-import { ToastService } from 'src/app/@core/services/toast.service';
+import { flash } from 'ng-animate';
 import { saved_jobs_for_demo } from 'src/assets/job_data';
 
 @Component({
@@ -29,11 +30,14 @@ export class JobResultComponent implements OnDestroy {
   // RxJS Subscription
   private sub: Subscription;
 
-  // ng2-smart-table settings
-  public tableSettings = {
-    attr: {
-      class: 'cursor-pointer',
-    },
+  // interval var
+  private pollInterval: any;
+
+  // image viewer var
+  public imageResult: string = '';
+
+  // base ng2-smart-table settings for analyzer and connector reports
+  private baseTableSettings = {
     actions: {
       add: false,
       edit: false,
@@ -44,154 +48,188 @@ export class JobResultComponent implements OnDestroy {
       perPage: 7,
     },
     columns: {
+      pluginActions: {
+        title: 'Actions',
+        width: '15%',
+        filter: false,
+        sort: false,
+        type: 'custom',
+        renderComponent: PluginActionsRenderComponent,
+      },
       name: {
         title: 'Name',
       },
-      success: {
-        title: 'Success',
+      status: {
+        title: 'Status',
         type: 'custom',
         filter: false,
         width: '3%',
+        compareFunction: this.compareReportStatus,
         renderComponent: JobStatusIconRenderComponent,
       },
       process_time: {
         title: 'Process Time (s)',
         filter: false,
-        valuePrepareFunction: (c) => c.toFixed(2),
+        valuePrepareFunction: (c) => parseFloat(c).toFixed(2),
       },
-      started_time_str: {
+      start_time: {
         title: 'Start Time',
         filter: false,
-        valuePrepareFunction: (c) => new Date(c).toLocaleString(),
+        valuePrepareFunction: (c, r) => new Date(r.start_time).toLocaleString(),
+      },
+    },
+    rowClassFunction: (row) => {
+      return 'cursor-pointer';
+    },
+  };
+
+  // ng2-smart-table settings for analyzer reports
+  public analyzerTableSettings = {
+    ...this.baseTableSettings,
+    columns: {
+      ...this.baseTableSettings.columns,
+      pluginActions: {
+        ...this.baseTableSettings.columns.pluginActions,
+      },
+    },
+  };
+
+  // ng2-smart-table settings for connector reports
+  public connectorTableSettings = {
+    ...this.baseTableSettings,
+    columns: {
+      ...this.baseTableSettings.columns,
+      pluginActions: {
+        ...this.baseTableSettings.columns.pluginActions,
       },
     },
   };
 
   // ng2-smart-table data source
-  public tableDataSource: LocalDataSource = new LocalDataSource();
+  public analyzerTableDataSource: LocalDataSource = new LocalDataSource();
+  public connectorTableDataSource: LocalDataSource = new LocalDataSource();
 
   // Job ID whose result is being displayed
   public jobId: number;
 
   // Job Data for current jobId
-  public jobTableData: Job;
+  public jobObj: Job;
 
   // row whose report/error is currently being shown
   public selectedRowName: string;
+
+  // boolean to track if connectors are running
+  public connectorsRunningBool: boolean;
 
   // JSON Editor
   public editorOptions: JsonEditorOptions;
   @ViewChild(JsonEditorComponent, { static: false })
   editor: JsonEditorComponent;
 
-  constructor(
-    private readonly activateRoute: ActivatedRoute,
-    private readonly jobService: JobService,
-    private readonly router: Router,
-    private readonly toastr: ToastService
-  ) {
+  constructor(private readonly activateRoute: ActivatedRoute) {
     this.sub = this.activateRoute.params.subscribe((res) =>
-      // tslint:disable-next-line: radix
-      this.init(parseInt(res.jobId))
+      this.initData(parseInt(res.jobId))
     );
     this.editorOptions = new JsonEditorOptions();
     this.editorOptions.modes = ['text', 'tree'];
     this.editorOptions.onEditable = () => false;
   }
 
-  init(jobId: number): void {
+  private initData(jobId: number): void {
     this.jobId = jobId;
-    const job = saved_jobs_for_demo.find((o: Job) => o.id === this.jobId);
-    this.updateJobData(job);
+    this.jobObj = saved_jobs_for_demo.find((o: Job) => o.id === this.jobId);
+    this.updateJobData(this.jobObj);
     // in case `run_all_available_analyzers` was true,..
     // ...then `Job.analyzers_requested is []`..
     // ...so we show `all available analyzers` so user does not gets confused.
-    this.jobTableData.analyzers_requested = this.jobTableData
-      .analyzers_requested.length
-      ? this.jobTableData.analyzers_requested
+    this.jobObj.analyzers_requested = this.jobObj.analyzers_requested.length
+      ? this.jobObj.analyzers_requested
       : 'all available analyzers';
-    // just a little helper message for the user
-    this.selectedRowName = "Click on a row in the table to view it's result!";
+    // simulate click event to select the first row of the table as the default one on
+    setTimeout(
+      () => this.onRowSelect({ data: this.jobObj.analysis_reports[0] }, false),
+      500
+    );
+  }
+
+  private compareReportStatus(direction: number, a: string, b: string) {
+    a = a.toLowerCase();
+    b = b.toLowerCase();
+    const priority = {
+      success: 0,
+      failed: 1,
+      killed: 2,
+      running: 3,
+      pending: 4,
+    };
+
+    return priority[a] < priority[b] ? -1 * direction : direction;
   }
 
   private updateJobData(res: Job): void {
-    // load data into the table data source
-    this.tableDataSource.load(res.analysis_reports);
-    // converting date time to locale string
-    const date1 = new Date(res.received_request_time);
-    const date2 = new Date(res.finished_analysis_time);
-    res.received_request_time = date1.toString();
-    res.finished_analysis_time = date2.toString();
-    // calculate job process time
-    res.job_process_time = (date2.getTime() - date1.getTime()) / 1000;
-    // finally assign it to our class' member variable
-    this.jobTableData = res;
+    // update job object (with partial update)
+    this.jobObj = { ...this.jobObj, ...res };
+    // load data into the analysis table data source
+    this.analyzerTableDataSource.load(this.jobObj.analyzer_reports);
+    // load data into connectors table data source
+    this.connectorTableDataSource.load(this.jobObj.connector_reports);
   }
 
-  async getJobSample(): Promise<void> {
-    alert('not present in demo');
+  generateAlertMsgForConnectorReports() {
+    // call only if job status != reported_without_fails
+    const jobStatus = this.jobObj.status;
+    if (jobStatus === 'running' || jobStatus === 'pending')
+      return 'Connectors will be triggered when job analysis finishes without fails.';
+    else if (['failed', 'reported_with_fails', 'killed'].includes(jobStatus))
+      return 'No connectors were triggered because job analysis failed or was killed';
   }
 
-  async getJobRawJson(): Promise<void> {
-    alert('not present in demo');
-  }
-
-  async deleteJob(): Promise<void> {
-    const sure = confirm('Are you sure?');
-    if (!sure) return;
-    const success = await this.jobService.deleteJobById(this.jobId);
-    if (success) {
-      this.ngOnDestroy();
-      this.toastr.showToast(
-        'Deleted successfully.',
-        `Job #${this.jobId}`,
-        'success'
-      );
-      setTimeout(() => this.router.navigate(['/']), 1000);
+  generateReportTableMetrics(pluginType: string) {
+    let pluginReports: any[],
+      numpluginsToExecute: number,
+      running = 0,
+      completed = 0;
+    if (pluginType === 'analyzer') {
+      pluginReports = this.jobObj.analyzer_reports;
+      numpluginsToExecute = this.jobObj.analyzers_to_execute.length;
     } else {
-      this.toastr.showToast(
-        'Could not be deleted. Reason: "Insufficient Permission".',
-        `Job #${this.jobId}`,
-        'error'
-      );
+      pluginReports = this.jobObj.connector_reports;
+      numpluginsToExecute = this.jobObj.connectors_to_execute.length;
     }
-  }
-
-  async killJob(): Promise<void> {
-    const sure = confirm('Are you sure?');
-    if (!sure) return;
-    const success = await this.jobService.killJobById(this.jobId);
-    if (success) {
-      this.toastr.showToast(
-        'Marked as "killed" successfully.',
-        `Job #${this.jobId}`,
-        'success'
-      );
-    } else {
-      this.toastr.showToast(
-        'Could not be "killed". Reason: "Insufficient Permission".',
-        `Job #${this.jobId}`,
-        'error'
-      );
+    for (const report of pluginReports) {
+      const status = report.status.toLowerCase();
+      if (status === 'running') running++;
+      else if (status !== 'pending') completed++;
     }
+    return `Started: ${pluginReports.length}/${numpluginsToExecute}, ${
+      running > 0 ? `Running: ${running}/${numpluginsToExecute},` : ``
+    } Completed: ${completed}/${numpluginsToExecute}`;
   }
 
   // event emitted when user clicks on a row in table
-  async onRowSelect(event): Promise<void> {
+  onRowSelect(event, shouldScroll: boolean = true): void {
     this.selectedRowName = event.data.name;
-    this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+    if (shouldScroll)
+      this.editor.jsonEditorContainer.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     // if `report` exists shows report, otherwise the `errors`
     const json = Object.entries(event.data.report).length
       ? event.data.report
       : event.data.errors;
     this.editor.update(json);
+
+    if (
+      Object.prototype.hasOwnProperty.call(json, 'screenshot') &&
+      json['screenshot'].length
+    )
+      this.imageResult = json.screenshot;
+    else this.imageResult = '';
   }
 
   goToTop(): void {
-    document.getElementById('analysis-reports-table').scrollIntoView({
+    document.getElementsByClassName('layout-container')[0].scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });

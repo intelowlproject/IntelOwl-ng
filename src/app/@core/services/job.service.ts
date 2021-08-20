@@ -40,30 +40,6 @@ export class JobService {
     }
   }
 
-  async deleteJobById(jobId: number): Promise<boolean> {
-    try {
-      const filteredJobs = this._jobs$.getValue().filter((j) => j.id != jobId);
-      this._jobs$.next(filteredJobs);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  async killJobById(jobId: number): Promise<boolean> {
-    try {
-      // update jobs list
-      const filteredJobs = this._jobs$.getValue().map((j) => {
-        if (j.id == jobId) j.status = 'killed';
-        return j;
-      });
-      this._jobs$.next(filteredJobs);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   /* deprecated atm
    * See Issue: https://github.com/intelowlproject/IntelOwl-ng/issues/16
    */

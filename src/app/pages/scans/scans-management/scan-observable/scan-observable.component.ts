@@ -14,10 +14,8 @@ export class ScanObservableComponent {
       classification: 'ip',
       observable_name: null,
       analyzers_requested: [],
-      force_privacy: false,
-      disable_external_analyzers: false,
+      tlp: 'WHITE',
       check_existing_or_force: 'check_all',
-      private: false,
       run_all_available_analyzers: false,
       tags_id: [],
       runtime_configuration: {},
@@ -25,6 +23,9 @@ export class ScanObservableComponent {
   }
 
   onObsClassificationChange(): void {
+    // Clear selected analyzers on classification change
+    this.formData.analyzers_requested = [];
+
     switch (this.formData.classification) {
       case 'ip':
         this.obsPlaceholder = '8.8.8.8';

@@ -9,7 +9,7 @@ import { JobService } from '../../@core/services/job.service';
 import { Job, Tag } from '../../@core/models/models';
 import { Subscription } from 'rxjs';
 import { ToastService } from 'src/app/@core/services/toast.service';
-import { flash } from 'ngx-animate';
+import { flash } from 'ng-animate';
 import { trigger, transition, useAnimation } from '@angular/animations';
 
 @Component({
@@ -99,6 +99,11 @@ export class DashboardComponent implements OnDestroy {
         width: '5%',
         filter: false,
         renderComponent: JobStatusIconRenderComponent,
+      },
+      no_of_connectors_executed: {
+        title: 'Connectors Triggered',
+        width: '10%',
+        filter: false,
       },
     },
   };

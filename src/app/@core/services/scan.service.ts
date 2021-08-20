@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { IScanForm } from '../models/models';
 import { ToastService } from './toast.service';
 
 @Injectable({
