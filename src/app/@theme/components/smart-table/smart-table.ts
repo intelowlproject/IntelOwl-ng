@@ -318,3 +318,24 @@ export class PluginHealthCheckButtonRenderComponent
     this.emitter.emit(this.rowData);
   }
 }
+
+// TLP Render Component
+export const tlpColors = {
+  WHITE: '#FFFFFF',
+  GREEN: '#33FF00',
+  AMBER: '#FFC000',
+  RED: '#FF0033',
+};
+@Component({
+  template: `
+    <span style="color: {{ tlpColors[value] }}; text-align: center;">{{
+      value
+    }}</span>
+  `,
+})
+export class TLPRenderComponent implements ViewCell {
+  @Input() value: number;
+  @Input() rowData: any;
+
+  tlpColors = tlpColors;
+}
