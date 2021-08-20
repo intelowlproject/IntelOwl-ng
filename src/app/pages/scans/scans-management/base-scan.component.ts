@@ -34,6 +34,14 @@ export class BaseScanFormComponent implements OnInit {
   showSpinnerBool: boolean = false;
   formDebugBool: boolean = false;
   showDescriptionBool: boolean = true;
+
+  tlpColors = {
+    WHITE: '#FFFFFF',
+    GREEN: '#33FF00',
+    AMBER: '#FFC000',
+    RED: '#FF0033',
+  };
+
   // JSON Editor
   private editorOptions: JsonEditorOptions;
 

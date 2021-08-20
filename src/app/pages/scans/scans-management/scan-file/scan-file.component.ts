@@ -13,7 +13,7 @@ export class ScanFileComponent {
       file: null,
       file_name: null,
       analyzers_requested: [],
-      force_privacy: false,
+      tlp: 'WHITE',
       disable_external_analyzers: false,
       check_existing_or_force: 'check_all',
       private: false,

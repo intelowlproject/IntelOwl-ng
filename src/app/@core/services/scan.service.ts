@@ -73,9 +73,7 @@ export class ScanService extends HttpService<any> {
       md5: data.md5,
       analyzers_requested: data.analyzers_requested,
       run_all_available_analyzers: data.run_all_available_analyzers,
-      force_privacy: data.force_privacy,
-      private: data.private,
-      disable_external_analyzers: data.disable_external_analyzers,
+      tlp: data.tlp,
       tags_id: data.tags_id || [],
     };
     if (type === 'observable') {

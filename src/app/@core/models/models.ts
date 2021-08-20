@@ -2,11 +2,9 @@ export interface IScanForm {
   // required default ones
   md5?: string | Int32Array;
   analyzers_requested?: string[];
-  force_privacy: boolean;
-  disable_external_analyzers: boolean;
+  tlp?: 'WHITE' | 'GREEN' | 'AMBER' | 'RED';
   check_existing_or_force?: string;
   run_all_available_analyzers?: boolean;
-  private?: boolean;
   // extra config
   tags_id: number[];
   classification: 'ip' | 'domain' | 'hash' | 'url' | 'generic' | 'file';
@@ -44,8 +42,6 @@ export interface Job {
   received_request_time: string | Date;
   finished_analysis_time?: string | Date;
   job_process_time?: number;
-  force_privacy: boolean | string;
-  disable_external_analyzers: boolean | string;
   errors?: any;
   file?: any;
   [key: string]: any;
