@@ -12,6 +12,7 @@ import { first } from 'rxjs/operators';
 import { JsonEditorOptions } from 'ang-jsoneditor';
 import { NbDialogService } from '@nebular/theme';
 import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
+import { tlpColors } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
   selector: 'intelowl-base-scan',
@@ -34,6 +35,9 @@ export class BaseScanFormComponent implements OnInit {
   showSpinnerBool: boolean = false;
   formDebugBool: boolean = false;
   showDescriptionBool: boolean = true;
+
+  tlpColors = tlpColors;
+
   // JSON Editor
   private editorOptions: JsonEditorOptions;
 

@@ -8,6 +8,7 @@ import {
   PluginHealthCheckButtonRenderComponent,
   TickCrossExtraRenderComponent,
   TickCrossRenderComponent,
+  TLPRenderComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
@@ -32,23 +33,9 @@ export class ConnectorsTableComponent implements OnInit {
     columns: {
       name: {
         title: 'Name',
-        filter: false,
       },
       description: {
         title: 'Description',
-        filter: false,
-      },
-      config: {
-        title: 'Configurations Added',
-        type: 'custom',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
-      },
-      secrets: {
-        title: 'Secrets',
-        type: 'custom',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
       },
       configured: {
         title: 'Configured',
@@ -85,6 +72,23 @@ export class ConnectorsTableComponent implements OnInit {
             });
           });
         },
+      },
+      maximum_tlp: {
+        title: 'Maximum TLP',
+        type: 'custom',
+        renderComponent: TLPRenderComponent,
+      },
+      config: {
+        title: 'Configurations Added',
+        type: 'custom',
+        filterFunction: JSONRenderComponent.filterFunction,
+        renderComponent: JSONRenderComponent,
+      },
+      secrets: {
+        title: 'Secrets',
+        type: 'custom',
+        filterFunction: JSONRenderComponent.filterFunction,
+        renderComponent: JSONRenderComponent,
       },
     },
   };
