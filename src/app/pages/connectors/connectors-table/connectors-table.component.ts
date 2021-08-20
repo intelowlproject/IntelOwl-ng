@@ -97,6 +97,9 @@ export class ConnectorsTableComponent implements OnInit {
   private init(res: IRawConnectorConfig): Promise<void> {
     const data: any[] = Object.entries(res).map(([key, obj]) => {
       obj.name = key;
+      obj.verification = this.connectorService._verificationChoices[
+        Math.floor(Math.random() * 3)
+      ]; // for the demo
       return obj;
     });
     this.tableSource.load(data);

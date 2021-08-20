@@ -15,25 +15,6 @@ export class AnalyzerConfigService extends PluginService {
   public rawAnalyzerConfig: IRawAnalyzerConfig = {};
   private _analyzersList$: ReplaySubject<IAnalyzersList> = new ReplaySubject(1);
 
-  // for the demo
-  private _verificationChoices = [
-    {
-      configured: true,
-      error_message: null,
-      missing_secrets: [],
-    },
-    {
-      configured: false,
-      error_message: '(api_key_name, api_key_url) not set, 2/4 secrets missing',
-      missing_secrets: ['api_key_name', 'api_key_url'],
-    },
-    {
-      configured: true,
-      error_message: null,
-      missing_secrets: [],
-    },
-  ];
-
   constructor(private _http: HttpClient) {
     super();
     this.pluginType = 'analyzer';
