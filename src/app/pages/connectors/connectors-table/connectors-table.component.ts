@@ -73,8 +73,8 @@ export class ConnectorsTableComponent implements OnInit {
           });
         },
       },
-      minimum_tlp: {
-        title: 'Minimum TLP',
+      maximum_tlp: {
+        title: 'Maximum TLP',
         type: 'custom',
         renderComponent: TLPRenderComponent,
       },
