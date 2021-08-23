@@ -25,7 +25,7 @@ export class AnalyzerConfigService extends PluginService {
   private async init(): Promise<void> {
     try {
       this.rawAnalyzerConfig = await this.query({}, 'get_analyzer_configs');
-      await this.makeAnalyzersList();
+      this.makeAnalyzersList();
     } catch (e) {
       console.error(e);
     }
@@ -43,7 +43,7 @@ export class AnalyzerConfigService extends PluginService {
     return this.retryPlugin(job_id, analyzer_name);
   }
 
-  private async makeAnalyzersList(): Promise<void> {
+  private makeAnalyzersList(): void {
     const analyzers: IAnalyzersList = {
       ip: [],
       hash: [],
@@ -53,8 +53,6 @@ export class AnalyzerConfigService extends PluginService {
       file: [],
     };
 
-    const obsToCheck: string[] = ['ip', 'url', 'domain', 'hash', 'generic'];
-
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
       const acObj = {
         name: key,
@@ -63,11 +61,9 @@ export class AnalyzerConfigService extends PluginService {
       // filter on basis of type
       if (obj.type === 'file') {
         analyzers.file.push(acObj);
-        if (obj.run_hash) analyzers.hash.push(acObj);
       } else {
-        obsToCheck.forEach((clsfn: string) => {
-          if (obj.observable_supported.includes(clsfn))
-            analyzers[clsfn].push(acObj);
+        obj.observable_supported.forEach((clsfn: string) => {
+          analyzers[clsfn].push(acObj);
         });
       }
     });
