@@ -42,17 +42,17 @@ export class ScanService extends HttpService<any> {
   }
 
   private async _checkInExistingScans(data: IScanForm): Promise<boolean> {
-    const query = {
+    const obj = {
       md5: data.md5,
-      analyzers_needed: data.analyzers_requested,
+      analyzers: data.analyzers_requested,
     };
     if (data.run_all_available_analyzers) {
-      query['run_all_available_analyzers'] = 'True';
+      obj['run_all_available_analyzers'] = 'True';
     }
     if (data.check_existing_or_force === 'running_only') {
-      query['running_only'] = 'True';
+      obj['running_only'] = 'True';
     }
-    const answer = await this.query(query, 'ask_analysis_availability');
+    const answer = await this.create(obj, {}, 'ask_analysis_availability');
     if (answer.status === 'not_available') {
       return false;
     } else {
