@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
+import { NbMenuModule } from '@nebular/theme';
 
 import { ThemeModule } from '../@theme/theme.module';
 import { PagesComponent } from './pages.component';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { PagesRoutingModule } from './pages-routing.module';
 import { ScansModule } from './scans/scans.module';
-import { NbMenuModule } from '@nebular/theme';
-import { AnalyzersModule } from './analyzers/analyzers.module';
-import { ConnectorsModule } from './connectors/connectors.module';
+import { PluginsModule } from './plugins/plugins.module';
+
+import { PagesRoutingModule } from './pages-routing.module';
 
 @NgModule({
   imports: [
@@ -15,8 +15,7 @@ import { ConnectorsModule } from './connectors/connectors.module';
     PagesRoutingModule,
     ThemeModule,
     DashboardModule,
-    AnalyzersModule,
-    ConnectorsModule,
+    PluginsModule,
     ScansModule,
   ],
   declarations: [PagesComponent],

@@ -6,6 +6,7 @@ import {
   TickCrossExtraRenderComponent,
   JSONRenderComponent,
   PluginHealthCheckButtonRenderComponent,
+  SecretsDictCellComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
 import { first } from 'rxjs/operators';
 
@@ -136,14 +137,16 @@ export class AnalyzersTableComponent implements OnInit {
       config: {
         title: 'Configuration Parameters',
         type: 'custom',
+        width: '20%',
         filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
       secrets: {
         title: 'Secrets',
         type: 'custom',
+        width: '20%',
         filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
+        renderComponent: SecretsDictCellComponent,
       },
     },
   };

@@ -177,7 +177,7 @@ export class TagsRenderComponent implements ViewCell {
 
 // JSON Object Renderer
 @Component({
-  template: ` <pre class="text-json">{{ value | json }}</pre> `,
+  template: `<pre class="text-json">{{ value | json }}</pre>`,
 })
 export class JSONRenderComponent implements ViewCell {
   @Input() value: any; // some object
@@ -328,14 +328,59 @@ export const tlpColors = {
 };
 @Component({
   template: `
-    <span style="color: {{ tlpColors[value] }}; text-align: center;">{{
-      value
-    }}</span>
+    <nb-tag
+      size="tiny"
+      status="basic"
+      appearance="outline"
+      [text]="value"
+      [ngStyle]="{ color: tlpColors[value] }"
+    ></nb-tag>
   `,
 })
 export class TLPRenderComponent implements ViewCell {
-  @Input() value: number;
+  @Input() value: string;
   @Input() rowData: any;
 
   tlpColors = tlpColors;
+}
+
+// Hover over text Component
+@Component({
+  template: `
+    <nb-icon
+      class="d-flex mx-auto w-25"
+      size="small"
+      icon="question-mark-circle-outline"
+      [nbTooltip]="value"
+      [ngStyle]="{ cursor: 'help' }"
+    >
+    </nb-icon>
+  `,
+})
+export class HoverTextCellComponent implements ViewCell {
+  @Input() value: string;
+  @Input() rowData: any;
+}
+
+// Hover over text Component
+@Component({
+  template: `<ul>
+    <li
+      *ngFor="let secret of value | keyvalue; trackBy: trackByFn"
+      [nbTooltip]="secret.value.description"
+    >
+      {{ secret.key }}
+      &nbsp;
+      <small class="text-muted"
+        >({{ secret.value.env_var_key }}: <em>{{ secret.value.type }}</em
+        >)</small
+      >
+    </li>
+  </ul>`,
+})
+export class SecretsDictCellComponent implements ViewCell {
+  @Input() value: string;
+  @Input() rowData: any;
+
+  public trackByFn = (_index, item) => item.key;
 }

@@ -9,6 +9,7 @@ import {
   TickCrossExtraRenderComponent,
   TickCrossRenderComponent,
   TLPRenderComponent,
+  SecretsDictCellComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
@@ -35,7 +36,10 @@ export class ConnectorsTableComponent implements OnInit {
         title: 'Name',
       },
       description: {
+        type: 'html',
         title: 'Description',
+        width: '25%',
+        valuePrepareFunction: (c, r) => `<small>${c}</small>`,
       },
       configured: {
         title: 'Configured',
@@ -81,14 +85,16 @@ export class ConnectorsTableComponent implements OnInit {
       config: {
         title: 'Configurations Added',
         type: 'custom',
+        width: '20%',
         filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
       secrets: {
         title: 'Secrets',
         type: 'custom',
+        width: '20%',
         filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
+        renderComponent: SecretsDictCellComponent,
       },
     },
   };
