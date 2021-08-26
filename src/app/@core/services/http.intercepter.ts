@@ -68,6 +68,7 @@ export class TokenInterceptor implements HttpInterceptor {
       this.authService.logout();
     const errMsg: string = (
       err?.error?.error ||
+      err?.error?.detail ||
       err?.error?.non_field_errors ||
       err?.detail ||
       err?.message ||

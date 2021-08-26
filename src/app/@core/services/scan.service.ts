@@ -27,17 +27,24 @@ export class ScanService extends HttpService<any> {
 
   // only this function is callable from the components
   public async requestScan(rqstData: IScanForm, type: string): Promise<void> {
+    let res;
     try {
       if (rqstData.check_existing_or_force === 'force_new') {
-        await this._newScan(rqstData, type);
+        res = await this._newScan(rqstData, type);
       } else {
         const exists: boolean = await this._checkInExistingScans(rqstData);
         if (!exists) {
-          await this._newScan(rqstData, type);
+          res = await this._newScan(rqstData, type);
         }
       }
+      // handle response/error
+      if (res['status'] === 'accepted' || res['status'] === 'running') {
+        this.onSuccess(res);
+      } else {
+        this.onError(res);
+      }
     } catch (e) {
-      this.toastr.onError(e);
+      this.onError(e);
     }
   }
 
@@ -68,7 +75,7 @@ export class ScanService extends HttpService<any> {
     }
   }
 
-  private async _newScan(data: IScanForm, type: string): Promise<void> {
+  private async _newScan(data: IScanForm, type: string): Promise<any> {
     const obj: any = {
       md5: data.md5,
       analyzers_requested: data.analyzers_requested,
@@ -81,22 +88,17 @@ export class ScanService extends HttpService<any> {
       obj.observable_name = data.observable_name;
       obj.observable_classification = data.classification;
       obj.runtime_configuration = data.runtime_configuration;
-      await this._createObservableScan(obj);
+      return this._createObservableScan(obj);
     } else {
       obj.is_sample = true;
       obj.file_name = data.file_name;
-      await this._createFileScan(obj, data.file, data.runtime_configuration);
+      return this._createFileScan(obj, data.file, data.runtime_configuration);
     }
   }
 
   // should never be called without context
-  private async _createObservableScan(obj: any): Promise<void> {
-    const res = await this.create(obj, {}, 'analyze_observable');
-    if (res['status'] === 'accepted' || res['status'] === 'running') {
-      this.onSuccess(res);
-    } else {
-      this.toastr.onError(res);
-    }
+  private async _createObservableScan(obj: any): Promise<any> {
+    return this.create(obj, {}, 'analyze_observable');
   }
 
   // should never be called without context
@@ -104,7 +106,7 @@ export class ScanService extends HttpService<any> {
     obj: any,
     file: File,
     runtimeCfg: any
-  ): Promise<void> {
+  ): Promise<any> {
     const postFormData: FormData = new FormData();
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
@@ -119,15 +121,10 @@ export class ScanService extends HttpService<any> {
       postFormData.append('runtime_configuration', JSON.stringify(runtimeCfg));
     }
     postFormData.append('file', file, obj.file_name);
-    const res = await this.create(postFormData, {}, 'analyze_file');
-    if (res['status'] === 'accepted' || res['status'] === 'running') {
-      this.onSuccess(res);
-    } else {
-      this.toastr.onError(res);
-    }
+    return this.create(postFormData, {}, 'analyze_file');
   }
 
-  private onSuccess(res): void {
+  private onSuccess(res: any): void {
     // refresh the job list asynchronously
     setTimeout(() => this.jobService.initOrRefresh(), 0);
     // show success toast
@@ -142,5 +139,15 @@ export class ScanService extends HttpService<any> {
       jobId: res.job_id,
       status: 'success',
     } as IRecentScan);
+  }
+
+  private onError(e: any): void {
+    const msg: string = e?.message || e.toString();
+    // show error/danger toast
+    this.toastr.showToast(
+      `${msg} (${e.status}: ${e.statusText})`,
+      'Scan Request Failed!',
+      'error'
+    );
   }
 }
