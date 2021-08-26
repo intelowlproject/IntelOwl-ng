@@ -20,8 +20,9 @@ import {
   JSONRenderComponent,
   TLPRenderComponent,
   PluginHealthCheckButtonRenderComponent,
-  HoverTextCellComponent,
   SecretsDictCellComponent,
+  ListCellComponent,
+  DescriptionRenderComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
 import { PluginsRoutingModule } from './plugins-routing.module';
@@ -50,8 +51,9 @@ import { PluginsRoutingModule } from './plugins-routing.module';
     JSONRenderComponent,
     TLPRenderComponent,
     PluginHealthCheckButtonRenderComponent,
-    HoverTextCellComponent,
     SecretsDictCellComponent,
+    ListCellComponent,
+    DescriptionRenderComponent,
   ],
 })
 export class PluginsModule {}

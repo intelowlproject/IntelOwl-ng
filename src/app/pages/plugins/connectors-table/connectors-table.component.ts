@@ -10,6 +10,7 @@ import {
   TickCrossRenderComponent,
   TLPRenderComponent,
   SecretsDictCellComponent,
+  DescriptionRenderComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
@@ -36,10 +37,10 @@ export class ConnectorsTableComponent implements OnInit {
         title: 'Name',
       },
       description: {
-        type: 'html',
         title: 'Description',
+        type: 'custom',
         width: '25%',
-        valuePrepareFunction: (c, r) => `<small>${c}</small>`,
+        renderComponent: DescriptionRenderComponent,
       },
       configured: {
         title: 'Configured',

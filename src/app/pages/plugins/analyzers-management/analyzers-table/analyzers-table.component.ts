@@ -7,6 +7,8 @@ import {
   JSONRenderComponent,
   PluginHealthCheckButtonRenderComponent,
   SecretsDictCellComponent,
+  DescriptionRenderComponent,
+  ListCellComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
 import { first } from 'rxjs/operators';
 
@@ -42,7 +44,7 @@ export class AnalyzersTableComponent implements OnInit {
     },
     columns: {
       name: {
-        title: 'Analyzer Name',
+        title: 'Name',
       },
       type: {
         title: 'Type',
@@ -59,16 +61,16 @@ export class AnalyzersTableComponent implements OnInit {
         },
       },
       description: {
-        type: 'html',
         title: 'Description',
-        width: '25%',
-        valuePrepareFunction: (c, r) => `<small>${c}</small>`,
+        type: 'custom',
+        width: '30%',
+        renderComponent: DescriptionRenderComponent,
       },
       supports: {
         title: 'Supported types',
         type: 'custom',
         width: '10%',
-        renderComponent: JSONRenderComponent,
+        renderComponent: ListCellComponent,
       },
       external_service: {
         title: 'External Service',
@@ -137,14 +139,14 @@ export class AnalyzersTableComponent implements OnInit {
       config: {
         title: 'Configuration Parameters',
         type: 'custom',
-        width: '20%',
+        width: '10%',
         filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
       secrets: {
         title: 'Secrets',
         type: 'custom',
-        width: '20%',
+        width: '5%',
         filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: SecretsDictCellComponent,
       },

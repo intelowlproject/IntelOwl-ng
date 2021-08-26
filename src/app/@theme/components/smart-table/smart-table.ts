@@ -344,27 +344,9 @@ export class TLPRenderComponent implements ViewCell {
   tlpColors = tlpColors;
 }
 
-// Hover over text Component
+// Component to render the `secrets` dict
 @Component({
-  template: `
-    <nb-icon
-      class="d-flex mx-auto w-25"
-      size="small"
-      icon="question-mark-circle-outline"
-      [nbTooltip]="value"
-      [ngStyle]="{ cursor: 'help' }"
-    >
-    </nb-icon>
-  `,
-})
-export class HoverTextCellComponent implements ViewCell {
-  @Input() value: string;
-  @Input() rowData: any;
-}
-
-// Hover over text Component
-@Component({
-  template: `<ul>
+  template: `<ul class="p-1">
     <li
       *ngFor="let secret of value | keyvalue; trackBy: trackByFn"
       [nbTooltip]="secret.value.description"
@@ -383,4 +365,35 @@ export class SecretsDictCellComponent implements ViewCell {
   @Input() rowData: any;
 
   public trackByFn = (_index, item) => item.key;
+}
+
+// Component to render a list
+@Component({
+  template: `<ul class="p-1">
+    <li *ngFor="let secret of value">
+      {{ secret }}
+    </li>
+  </ul>`,
+})
+export class ListCellComponent implements ViewCell {
+  @Input() value: string;
+  @Input() rowData: any;
+}
+
+// Component to render the `description` dict
+@Component({
+  template: `<div>
+    <small [innerHTML]="urlifiedDescription"></small>
+  </div>`,
+})
+export class DescriptionRenderComponent implements ViewCell {
+  @Input() value: string;
+  @Input() rowData: any;
+
+  get urlifiedDescription(): string {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return this.value.replace(urlRegex, function (url) {
+      return '<a target="_blank"  href="' + url + '">' + url + '</a>';
+    });
+  }
 }
