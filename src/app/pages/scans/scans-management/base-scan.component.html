@@ -132,6 +132,12 @@
                   </div>
                 </nb-option>
               </nb-select>
+              <ng-container *ngIf="!formData.connectors_requested.length">
+                <p class="caption status-info">
+                  unless specified, all configured connectors are triggered by
+                  default
+                </p>
+              </ng-container>
             </div>
             <!-- /Connectors select field -->
 
