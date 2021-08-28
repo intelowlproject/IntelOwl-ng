@@ -90,6 +90,51 @@
               </button>
             </div>
 
+            <!-- Connectors select field -->
+            <div class="form-group">
+              <label class="label form-control-label"
+                >Select Specific Connectors (Optional)</label
+              >
+              <nb-select
+                *ngIf="connectorsList"
+                fullWidth
+                multiple
+                [(selected)]="formData.connectors_requested"
+                name="connectors"
+                placeholder="Connectors To Request"
+              >
+                <!-- Custom Label -->
+                <nb-select-label>{{
+                  formData.connectors_requested
+                }}</nb-select-label>
+                <!-- Options Loop -->
+                <nb-option
+                  *ngFor="let cc of connectorsList"
+                  [value]="cc.name"
+                  [disabled]="cc.disabled || !cc.verification.configured"
+                >
+                  <div>
+                    <div>
+                      <span>{{ cc?.name }}</span>
+                      &nbsp;
+                      <span [hidden]="!showDescriptionBool"
+                        ><small>({{ cc.description }})</small></span
+                      >
+                    </div>
+                    <div
+                      class="text-danger small"
+                      *ngIf="cc.disabled || !cc.verification.configured"
+                    >
+                      {{
+                        cc.disabled ? 'disabled' : cc.verification.error_message
+                      }}
+                    </div>
+                  </div>
+                </nb-option>
+              </nb-select>
+            </div>
+            <!-- /Connectors select field -->
+
             <!-- Additional Fields -->
             <label class="label form-control-label">Extra configuration</label>
             <div class="form-group">
