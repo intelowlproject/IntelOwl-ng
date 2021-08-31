@@ -14,9 +14,9 @@ export class ScanObservableComponent {
       classification: 'ip',
       observable_name: null,
       analyzers_requested: [],
+      connectors_requested: [],
       tlp: 'WHITE',
       check_existing_or_force: 'check_all',
-      run_all_available_analyzers: false,
       tags_id: [],
       runtime_configuration: {},
     } as IScanForm;

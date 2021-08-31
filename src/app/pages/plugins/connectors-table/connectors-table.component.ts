@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { first } from 'rxjs/operators';
-import { IRawConnectorConfig } from 'src/app/@core/models/models';
+import { IConnectorConfig } from 'src/app/@core/models/models';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 import {
   JSONRenderComponent,
@@ -9,6 +9,8 @@ import {
   TickCrossExtraRenderComponent,
   TickCrossRenderComponent,
   TLPRenderComponent,
+  SecretsDictCellComponent,
+  DescriptionRenderComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
 
 @Component({
@@ -36,6 +38,9 @@ export class ConnectorsTableComponent implements OnInit {
       },
       description: {
         title: 'Description',
+        type: 'custom',
+        width: '25%',
+        renderComponent: DescriptionRenderComponent,
       },
       configured: {
         title: 'Configured',
@@ -70,14 +75,16 @@ export class ConnectorsTableComponent implements OnInit {
       config: {
         title: 'Configurations Added',
         type: 'custom',
+        width: '20%',
         filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
       secrets: {
         title: 'Secrets',
         type: 'custom',
+        width: '20%',
         filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
+        renderComponent: SecretsDictCellComponent,
       },
     },
   };
@@ -87,24 +94,13 @@ export class ConnectorsTableComponent implements OnInit {
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
     // rxjs/first() -> take first and complete observable
-    this.connectorService.rawConnectorConfig$.pipe(first()).subscribe((res) =>
-      this.init(res).then(
-        () => (this.showSpinnerBool = false) // spinner off
-      )
-    );
-  }
-
-  private init(res: IRawConnectorConfig): Promise<void> {
-    const data: any[] = Object.entries(res).map(([key, obj]) => {
-      obj.name = key;
-      obj.verification = this.connectorService._verificationChoices[
-        Math.floor(Math.random() * 3)
-      ]; // for the demo
-      return obj;
-    });
-    this.tableSource.load(data);
-    // default alphabetically sort.
-    this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-    return Promise.resolve();
+    this.connectorService.connectorsList$
+      .pipe(first())
+      .subscribe((res: IConnectorConfig[]) => {
+        this.tableSource.load(res);
+        // default alphabetically sort.
+        this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+        this.showSpinnerBool = false; // spinner off
+      });
   }
 }

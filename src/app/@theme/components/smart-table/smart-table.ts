@@ -177,7 +177,7 @@ export class TagsRenderComponent implements ViewCell {
 
 // JSON Object Renderer
 @Component({
-  template: ` <pre class="text-json">{{ value | json }}</pre> `,
+  template: `<pre class="text-json">{{ value | json }}</pre>`,
 })
 export class JSONRenderComponent implements ViewCell {
   @Input() value: any; // some object
@@ -314,14 +314,72 @@ export const tlpColors = {
 };
 @Component({
   template: `
-    <span style="color: {{ tlpColors[value] }}; text-align: center;">{{
-      value
-    }}</span>
+    <nb-tag
+      size="tiny"
+      status="basic"
+      appearance="outline"
+      [text]="value"
+      [ngStyle]="{ color: tlpColors[value] }"
+    ></nb-tag>
   `,
 })
 export class TLPRenderComponent implements ViewCell {
-  @Input() value: number;
+  @Input() value: string;
   @Input() rowData: any;
 
   tlpColors = tlpColors;
+}
+
+// Component to render the `secrets` dict
+@Component({
+  template: `<ul class="p-1">
+    <li
+      *ngFor="let secret of value | keyvalue; trackBy: trackByFn"
+      [nbTooltip]="secret.value.description"
+    >
+      {{ secret.key }}
+      &nbsp;
+      <small class="text-muted"
+        >({{ secret.value.env_var_key }}: <em>{{ secret.value.type }}</em
+        >)</small
+      >
+    </li>
+  </ul>`,
+})
+export class SecretsDictCellComponent implements ViewCell {
+  @Input() value: string;
+  @Input() rowData: any;
+
+  public trackByFn = (_index, item) => item.key;
+}
+
+// Component to render a list
+@Component({
+  template: `<ul class="p-1">
+    <li *ngFor="let secret of value">
+      {{ secret }}
+    </li>
+  </ul>`,
+})
+export class ListCellComponent implements ViewCell {
+  @Input() value: string;
+  @Input() rowData: any;
+}
+
+// Component to render the `description` dict
+@Component({
+  template: `<div>
+    <small [innerHTML]="urlifiedDescription"></small>
+  </div>`,
+})
+export class DescriptionRenderComponent implements ViewCell {
+  @Input() value: string;
+  @Input() rowData: any;
+
+  get urlifiedDescription(): string {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return this.value.replace(urlRegex, function (url) {
+      return '<a target="_blank"  href="' + url + '">' + url + '</a>';
+    });
+  }
 }

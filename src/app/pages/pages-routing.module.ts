@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { JobResultComponent } from './dashboard/job-result/job-result.component';
-import { ConnectorsTableComponent } from './connectors/connectors-table/connectors-table.component';
 
 const routes: Routes = [
   {
@@ -20,13 +19,9 @@ const routes: Routes = [
         component: DashboardComponent,
       },
       {
-        path: 'analyzers',
+        path: '',
         loadChildren: () =>
-          import('./analyzers/analyzers.module').then((m) => m.AnalyzersModule),
-      },
-      {
-        path: 'connectors',
-        component: ConnectorsTableComponent,
+          import('./plugins/plugins.module').then((m) => m.PluginsModule),
       },
       {
         path: 'scan',

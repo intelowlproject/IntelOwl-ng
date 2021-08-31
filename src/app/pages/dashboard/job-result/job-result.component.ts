@@ -139,12 +139,6 @@ export class JobResultComponent implements OnDestroy {
     this.jobId = jobId;
     this.jobObj = saved_jobs_for_demo.find((o: Job) => o.id === this.jobId);
     this.updateJobData(this.jobObj);
-    // in case `run_all_available_analyzers` was true,..
-    // ...then `Job.analyzers_requested is []`..
-    // ...so we show `all available analyzers` so user does not gets confused.
-    this.jobObj.analyzers_requested = this.jobObj.analyzers_requested.length
-      ? this.jobObj.analyzers_requested
-      : 'all available analyzers';
     // simulate click event to select the first row of the table as the default one on
     setTimeout(
       () => this.onRowSelect({ data: this.jobObj.analysis_reports[0] }, false),

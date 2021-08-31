@@ -6,6 +6,9 @@ import {
   TickCrossExtraRenderComponent,
   JSONRenderComponent,
   PluginHealthCheckButtonRenderComponent,
+  SecretsDictCellComponent,
+  DescriptionRenderComponent,
+  ListCellComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
 import { first } from 'rxjs/operators';
 
@@ -41,7 +44,7 @@ export class AnalyzersTableComponent implements OnInit {
     },
     columns: {
       name: {
-        title: 'Analyzer Name',
+        title: 'Name',
       },
       type: {
         title: 'Type',
@@ -58,16 +61,16 @@ export class AnalyzersTableComponent implements OnInit {
         },
       },
       description: {
-        type: 'html',
         title: 'Description',
-        width: '25%',
-        valuePrepareFunction: (c, r) => `<small>${c}</small>`,
+        type: 'custom',
+        width: '30%',
+        renderComponent: DescriptionRenderComponent,
       },
       supports: {
         title: 'Supported types',
         type: 'custom',
         width: '10%',
-        renderComponent: JSONRenderComponent,
+        renderComponent: ListCellComponent,
       },
       external_service: {
         title: 'External Service',
@@ -125,14 +128,16 @@ export class AnalyzersTableComponent implements OnInit {
       config: {
         title: 'Configuration Parameters',
         type: 'custom',
+        width: '10%',
         filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: JSONRenderComponent,
       },
       secrets: {
         title: 'Secrets',
         type: 'custom',
+        width: '5%',
         filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
+        renderComponent: SecretsDictCellComponent,
       },
     },
   };
@@ -143,18 +148,12 @@ export class AnalyzersTableComponent implements OnInit {
     this.showSpinnerBool = true; // spinner on
     // rxjs/first() -> take first and complete observable
     // analyzerList available => rawAnalyzerConfig initialized
-    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) =>
-      this.init().then(
-        () => (this.showSpinnerBool = false) // spinner off
-      )
-    );
-  }
-
-  private init(): Promise<void> {
-    const data: any[] = this.analyzerService.constructTableData();
-    this.tableSource.load(data);
-    // default alphabetically sort.
-    this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-    return Promise.resolve();
+    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) => {
+      const data: any[] = this.analyzerService.constructTableData();
+      this.tableSource.load(data);
+      // default alphabetically sort.
+      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+      this.showSpinnerBool = false; // spinner off
+    });
   }
 }

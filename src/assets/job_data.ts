@@ -23,7 +23,7 @@ export const saved_jobs_for_demo: Array<Job> = [
       'VirusTotal_v3_Get_File_And_Rescan_If_Old',
       'VirusTotal_v2_Scan_File',
     ],
-    run_all_available_analyzers: false,
+    connectors_requested: [],
     analyzers_to_execute: [
       'VirusTotal_v3_Scan_File',
       'VirusTotal_v3_Get_File_And_Rescan_If_Old',
@@ -6944,8 +6944,8 @@ export const saved_jobs_for_demo: Array<Job> = [
     file_mimetype: '',
     status: 'reported_without_fails',
     analyzers_requested: ['XForceExchange', 'Classic_DNS'],
-    run_all_available_analyzers: false,
     analyzers_to_execute: ['XForceExchange', 'Classic_DNS'],
+    connectors_requested: ['YETI'],
     connectors_to_execute: ['YETI'],
     received_request_time: '2021-08-12T07:32:58.593710Z',
     finished_analysis_time: '2021-08-12T07:33:37Z',

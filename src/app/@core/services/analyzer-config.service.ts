@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject } from 'rxjs';
-import {
-  IAnalyzersList,
-  IAnalyzerConfig,
-  IRawAnalyzerConfig,
-} from '../models/models';
+import { IAnalyzersList, IRawAnalyzerConfig } from '../models/models';
 import { PluginService } from './plugin.service';
 
 @Injectable({
@@ -49,8 +45,6 @@ export class AnalyzerConfigService extends PluginService {
       file: [],
     };
 
-    const obsToCheck: string[] = ['ip', 'url', 'domain', 'hash', 'generic'];
-
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
       const acObj = {
         name: key,
@@ -60,11 +54,9 @@ export class AnalyzerConfigService extends PluginService {
       // filter on basis of type
       if (obj.type === 'file') {
         analyzers.file.push(acObj);
-        if (obj.run_hash) analyzers.hash.push(acObj);
       } else {
-        obsToCheck.forEach((clsfn: string) => {
-          if (obj.observable_supported.includes(clsfn))
-            analyzers[clsfn].push(acObj);
+        obj.observable_supported.forEach((clsfn: string) => {
+          analyzers[clsfn].push(acObj);
         });
       }
     });

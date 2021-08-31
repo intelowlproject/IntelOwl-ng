@@ -1,6 +1,6 @@
 <ng-container>
-  <div class="row d-flex justify-content-center p-2">
-    <nb-card style="max-width: 775px;">
+  <div class="row d-flex justify-content-center py-3">
+    <nb-card class="col-sm-12 col-md-10 col-lg-6">
       <nb-card-header class="d-flex align-items-start">
         <nb-toggle labelPosition="start" [(checked)]="formDebugBool"
           >Debug Form</nb-toggle
@@ -9,7 +9,7 @@
           class="ml-3"
           labelPosition="start"
           [(checked)]="showDescriptionBool"
-          >Show Analyzers Descriptions</nb-toggle
+          >Show descriptions in dropdown</nb-toggle
         >
         <!-- Form -->
       </nb-card-header>
@@ -22,16 +22,9 @@
 
             <!-- Analyzers select field -->
             <div class="form-group">
-              <label class="label form-control-label">Select Analyzers</label>
-              <div class="form-group">
-                <nb-checkbox
-                  class="col-md-6 px-0"
-                  [(ngModel)]="formData.run_all_available_analyzers"
-                  name="run_all_available_analyzers"
-                >
-                  run all available analyzers
-                </nb-checkbox>
-              </div>
+              <label class="label form-control-label"
+                >Select Analyzers (Optional)</label
+              >
               <nb-select
                 *ngIf="analyzersList && formData.classification"
                 fullWidth
@@ -69,10 +62,9 @@
                   </div>
                 </nb-option>
               </nb-select>
-              <ng-container *ngIf="!isNotError816()">
-                <p class="caption status-danger">
-                  either you specify a list of requested analyzers or the
-                  'run_all_available_analyzers' parameter, not both.
+              <ng-container *ngIf="!formData.analyzers_requested.length">
+                <p class="caption status-info">
+                  Default: all configured analyzers are triggered.
                 </p>
               </ng-container>
             </div>
@@ -81,7 +73,7 @@
             <div class="form-group">
               <button
                 nbButton
-                [disabled]="formData.run_all_available_analyzers"
+                [disabled]="!formData.analyzers_requested.length"
                 (click)="editConfigParams()"
                 size="tiny"
                 status="primary"
@@ -89,6 +81,56 @@
                 Custom Analyzers Configuration
               </button>
             </div>
+
+            <!-- Connectors select field -->
+            <div class="form-group">
+              <label class="label form-control-label"
+                >Select Connectors (Optional)</label
+              >
+              <nb-select
+                *ngIf="connectorsList"
+                fullWidth
+                multiple
+                [(selected)]="formData.connectors_requested"
+                name="connectors"
+                placeholder="Connectors To Request"
+              >
+                <!-- Custom Label -->
+                <nb-select-label>{{
+                  formData.connectors_requested
+                }}</nb-select-label>
+                <!-- Options Loop -->
+                <nb-option
+                  *ngFor="let cc of connectorsList"
+                  [value]="cc.name"
+                  [disabled]="cc.disabled || !cc.verification.configured"
+                >
+                  <div>
+                    <div>
+                      <span>{{ cc?.name }}</span>
+                      &nbsp;
+                      <span [hidden]="!showDescriptionBool"
+                        ><small>({{ cc.description }})</small></span
+                      >
+                    </div>
+                    <div
+                      class="text-danger small"
+                      *ngIf="cc.disabled || !cc.verification.configured"
+                    >
+                      {{
+                        cc.disabled ? 'disabled' : cc.verification.error_message
+                      }}
+                    </div>
+                  </div>
+                </nb-option>
+              </nb-select>
+              <ng-container *ngIf="!formData.connectors_requested.length">
+                <p class="caption status-info">
+                  Default: all configured analyzers are triggered.
+                </p>
+              </ng-container>
+            </div>
+            <!-- /Connectors select field -->
 
             <!-- Additional Fields -->
             <label class="label form-control-label">Extra configuration</label>
