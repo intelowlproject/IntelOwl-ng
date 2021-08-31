@@ -19,9 +19,9 @@ const routes: Routes = [
         component: DashboardComponent,
       },
       {
-        path: 'analyzers',
+        path: '',
         loadChildren: () =>
-          import('./analyzers/analyzers.module').then((m) => m.AnalyzersModule),
+          import('./plugins/plugins.module').then((m) => m.PluginsModule),
       },
       {
         path: 'scan',

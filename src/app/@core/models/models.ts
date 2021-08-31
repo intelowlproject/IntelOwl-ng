@@ -1,12 +1,10 @@
 export interface IScanForm {
   // required default ones
   md5?: string | Int32Array;
-  analyzers_requested?: string[];
-  force_privacy: boolean;
-  disable_external_analyzers: boolean;
+  analyzers_requested: string[];
+  connectors_requested: string[];
+  tlp?: 'WHITE' | 'GREEN' | 'AMBER' | 'RED';
   check_existing_or_force?: string;
-  run_all_available_analyzers?: boolean;
-  private?: boolean;
   // extra config
   tags_id: number[];
   classification: 'ip' | 'domain' | 'hash' | 'url' | 'generic' | 'file';
@@ -37,12 +35,14 @@ export interface Job {
   file_mimetype?: string;
   status: string;
   analyzers_requested: string[] | string;
+  connectors_requested: string[] | string;
   analyzers_to_execute: string[];
-  analysis_reports?: any[];
+  connectors_to_execute: string[];
+  analyzer_reports?: any[];
+  connector_reports?: any[];
   received_request_time: string | Date;
   finished_analysis_time?: string | Date;
-  force_privacy: boolean | string;
-  disable_external_analyzers: boolean | string;
+  job_process_time?: number;
   errors?: any;
   file?: any;
   [key: string]: any;
@@ -53,38 +53,60 @@ export interface IRecentScan {
   status: string;
 }
 
-export interface IAnalyzersList {
-  ip: string[];
-  hash: string[];
-  domain: string[];
-  url: string[];
-  generic: string[];
-  file: string[];
-}
-
 export interface IRawAnalyzerConfig {
   [name: string]: IAnalyzerConfig;
 }
 
-export interface IAnalyzerConfig {
+export interface IRawConnectorConfig {
+  [name: string]: IConnectorConfig;
+}
+
+export interface IAbstractConfig {
+  // Abstract for common fields in IAnalyzerConfig and IConnectorConfig
   name?: string;
-  // common fields
-  type: string;
   python_module: string;
-  external_service?: boolean;
-  requires_configuration?: boolean;
-  leaks_info?: boolean;
-  disabled?: boolean;
-  run_hash?: boolean;
-  additional_config_params?: any;
   description?: string;
+  config: any;
+  secrets?: any;
+  verification?: {
+    configured?: boolean;
+    error_message?: string;
+    missing_secrets?: string[];
+  };
+}
+
+export interface IAnalyzerConfig extends IAbstractConfig {
+  disabled?: boolean;
+  type: string;
+  external_service?: boolean;
+  leaks_info?: boolean;
+  run_hash?: boolean;
+  run_hash_type?: string;
   // one of supported_filetypes or observable_supported
   supported_filetypes?: string[];
+  not_supported_filetypes?: string[];
   observable_supported?: string[];
+}
+
+export interface IConnectorConfig extends IAbstractConfig {
+  disabled?: boolean;
+}
+
+export interface IAnalyzersList {
+  ip: IAnalyzerConfig[];
+  hash: IAnalyzerConfig[];
+  domain: IAnalyzerConfig[];
+  url: IAnalyzerConfig[];
+  generic: IAnalyzerConfig[];
+  file: IAnalyzerConfig[];
 }
 
 export interface ILoginPayload {
   token?: string;
   username?: string;
   user?: { username?: string };
+}
+
+export interface HealthCheckStatus {
+  status?: boolean | null;
 }

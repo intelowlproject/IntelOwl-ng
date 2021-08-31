@@ -7,149 +7,77 @@
     <div [@refreshAnimation]="flashAnimBool" class="col-md-12 row">
       <!-- Job Information List -->
       <div class="col-md-5">
-        <nb-card>
-          <nb-card-header>
-            <h5 class="d-flex">
-              <div
-                *ngIf="jobObj.is_sample"
-                [nbTooltip]="jobObj?.file_name"
-                class="text-truncate w-75"
-              >
-                <nb-icon icon="file-outline"></nb-icon>
-                {{ jobObj?.file_name }}
-              </div>
-              <div
-                *ngIf="!jobObj.is_sample"
-                [nbTooltip]="jobObj?.observable_name"
-                class="text-truncate w-75"
-              >
-                <nb-icon icon="globe-outline"></nb-icon>
-                {{ jobObj?.observable_name }}
-              </div>
-              <div class="ml-auto">
-                <!-- Job Status Icon -->
-                <intelowl-job-status-icon
-                  [value]="jobObj?.status"
-                  rowData=""
-                ></intelowl-job-status-icon>
-                <!-- Divider -->
-                <p class="vr mx-2"></p>
-                <job-actions-menu [job]="jobObj"></job-actions-menu>
-              </div>
-            </h5>
-            <intelowl-job-tags
-              [value]="jobObj?.tags"
-              rowData=""
-            ></intelowl-job-tags>
-          </nb-card-header>
-          <nb-card-body class="pt-0">
-            <nb-list>
-              <!-- Job ID -->
-              <nb-list-item>
-                Job ID
-                <strong>{{ jobObj?.id }}</strong>
-              </nb-list-item>
-              <!-- Source -->
-              <nb-list-item>
-                Source
-                <strong>{{ jobObj?.source }}</strong>
-              </nb-list-item>
-              <!-- Status -->
-              <nb-list-item>
-                Status
-                <strong>{{ jobObj?.status }}</strong>
-              </nb-list-item>
-              <!-- MD5 hash -->
-              <nb-list-item>
-                md5
-                <pre class="text-json">{{ jobObj?.md5 | json }}</pre>
-              </nb-list-item>
-              <!-- Observable or File ? -->
-              <nb-list-item *ngIf="!jobObj.is_sample">
-                Classification
-                <strong>{{ jobObj?.observable_classification }}</strong>
-              </nb-list-item>
-              <nb-list-item *ngIf="jobObj.is_sample">
-                File Mimetype
-                <strong>{{ jobObj?.file_mimetype }}</strong>
-              </nb-list-item>
-              <!-- Requested Analyzers -->
-              <nb-list-item>
-                Requested Analyzers
-                <pre class="text-json">{{
-                  jobObj?.analyzers_requested | json
-                }}</pre>
-              </nb-list-item>
-              <!-- Received Request Time -->
-              <nb-list-item>
-                Received Request Time
-                <small
-                  ><strong>{{ jobObj?.received_request_time }}</strong></small
-                >
-              </nb-list-item>
-              <!-- Finished Analysis Time -->
-              <nb-list-item>
-                Finished Analysis Time
-                <small
-                  ><strong>{{ jobObj?.finished_analysis_time }}</strong></small
-                >
-              </nb-list-item>
-              <!-- Time taken to finish analysis -->
-              <nb-list-item>
-                Process Time
-                <strong>{{ jobObj?.job_process_time }} seconds</strong>
-              </nb-list-item>
-              <!-- Force Privacy -->
-              <nb-list-item>
-                Force Privacy
-                <strong>{{ jobObj?.force_privacy }}</strong>
-              </nb-list-item>
-              <!-- Disable External Analyzers -->
-              <nb-list-item>
-                Disable External Analyzers
-                <strong>{{ jobObj?.disable_external_analyzers }}</strong>
-              </nb-list-item>
-              <!-- Errors -->
-              <nb-list-item>
-                Errors
-                <pre class="text-json">{{ jobObj?.errors | json }}</pre>
-              </nb-list-item>
-            </nb-list>
-          </nb-card-body>
-        </nb-card>
+        <intelowl-job-info-list [jobObj]="jobObj"></intelowl-job-info-list>
       </div>
 
       <!-- Job Analysis Result Table -->
       <div class="col-md-7">
-        <nb-alert *ngIf="jobObj?.status === 'running'" status="info">
-          <span><nb-icon icon="info-outline"></nb-icon></span>
-          <span
-            >This analysis is still running. The result is synced with the
-            server every 5 seconds.</span
-          >
-        </nb-alert>
-        <nb-card>
-          <nb-card-header
-            id="analysis-reports-table"
-            class="d-flex justify-content-between"
-          >
-            <span>Analysis Reports</span>
-            <span
-              >completed: {{ tableDataSource.count() }}/{{
-                jobObj?.analyzers_to_execute.length
-              }}</span
+        <nb-tabset>
+          <nb-tab tabTitle="Analyzer Reports">
+            <!-- Job Running Alert -->
+            <nb-alert *ngIf="jobObj?.status === 'running'" status="info">
+              <span><nb-icon icon="info-outline"></nb-icon></span>
+              <span
+                >This analysis is still running. The result is synced with the
+                server every 5 seconds.</span
+              >
+            </nb-alert>
+            <nb-card>
+              <nb-card-header
+                id="analysis-reports-table"
+                class="d-flex justify-content-between"
+              >
+                <span>Analyzer Reports</span>
+                <span>{{ generateReportTableMetrics('analyzer') }}</span>
+              </nb-card-header>
+              <nb-card-body>
+                <ng2-smart-table
+                  nbTooltip="Click on a row to view it's result!"
+                  (userRowSelect)="onRowSelect($event)"
+                  [settings]="analyzerTableSettings"
+                  [source]="analyzerTableDataSource"
+                >
+                </ng2-smart-table>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Connector Reports">
+            <!-- Alerts for Connector Reports Table -->
+            <nb-alert
+              *ngIf="jobObj?.status !== 'reported_without_fails'"
+              status="info"
             >
-          </nb-card-header>
-          <nb-card-body>
-            <ng2-smart-table
-              nbTooltip="Click on a row to view it's result!"
-              (userRowSelect)="onRowSelect($event)"
-              [settings]="tableSettings"
-              [source]="tableDataSource"
-            >
-            </ng2-smart-table>
-          </nb-card-body>
-        </nb-card>
+              <span><nb-icon icon="info-outline"></nb-icon></span>
+              <span>{{ generateAlertMsgForConnectorReports() }}</span>
+            </nb-alert>
+            <!-- Connectors Running Alert -->
+            <nb-alert *ngIf="connectorsRunningBool" status="info">
+              <span><nb-icon icon="info-outline"></nb-icon></span>
+              <span
+                >The connectors are still running. The result is synced with the
+                server every 15 seconds.</span
+              >
+            </nb-alert>
+            <nb-card>
+              <nb-card-header
+                id="connector-reports-table"
+                class="d-flex justify-content-between"
+              >
+                <span>Connector Reports</span>
+                <span>{{ generateReportTableMetrics('connector') }}</span>
+              </nb-card-header>
+              <nb-card-body>
+                <ng2-smart-table
+                  nbTooltip="Click on a row to view it's result!"
+                  (userRowSelect)="onRowSelect($event)"
+                  [settings]="connectorTableSettings"
+                  [source]="connectorTableDataSource"
+                >
+                </ng2-smart-table>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+        </nb-tabset>
       </div>
     </div>
 

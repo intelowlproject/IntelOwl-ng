@@ -1,0 +1,113 @@
+<nb-card>
+  <nb-card-header>
+    <h5 class="d-flex">
+      <div
+        *ngIf="jobObj.is_sample"
+        [nbTooltip]="jobObj?.file_name"
+        class="text-truncate w-75"
+      >
+        <nb-icon icon="file-outline"></nb-icon>
+        {{ jobObj?.file_name }}
+      </div>
+      <div
+        *ngIf="!jobObj.is_sample"
+        [nbTooltip]="jobObj?.observable_name"
+        class="text-truncate w-75"
+      >
+        <nb-icon icon="globe-outline"></nb-icon>
+        {{ jobObj?.observable_name }}
+      </div>
+      <div class="ml-auto">
+        <!-- Job Status Icon -->
+        <intelowl-job-status-icon
+          [value]="jobObj?.status"
+          rowData=""
+        ></intelowl-job-status-icon>
+        <!-- Divider -->
+        <p class="vr mx-2"></p>
+        <job-actions-menu [job]="jobObj"></job-actions-menu>
+      </div>
+    </h5>
+    <intelowl-job-tags [value]="jobObj?.tags" rowData=""></intelowl-job-tags>
+  </nb-card-header>
+  <nb-card-body class="pt-0">
+    <nb-list>
+      <!-- Job ID -->
+      <nb-list-item>
+        Job ID
+        <strong>{{ jobObj?.id }}</strong>
+      </nb-list-item>
+      <!-- Source -->
+      <nb-list-item>
+        Source
+        <strong>{{ jobObj?.source }}</strong>
+      </nb-list-item>
+      <!-- Status -->
+      <nb-list-item>
+        Status
+        <strong>{{ jobObj?.status }}</strong>
+      </nb-list-item>
+      <!-- MD5 hash -->
+      <nb-list-item>
+        md5
+        <pre class="text-json">{{ jobObj?.md5 | json }}</pre>
+      </nb-list-item>
+      <!-- Observable or File ? -->
+      <nb-list-item *ngIf="!jobObj.is_sample">
+        Classification
+        <strong>{{ jobObj?.observable_classification }}</strong>
+      </nb-list-item>
+      <nb-list-item *ngIf="jobObj.is_sample">
+        File Mimetype
+        <strong>{{ jobObj?.file_mimetype }}</strong>
+      </nb-list-item>
+      <!-- Requested Analyzers -->
+      <nb-list-item>
+        Requested Analyzers
+        <pre class="text-json">{{
+          jobObj.analyzers_requested.length
+            ? (jobObj.analyzers_requested | json)
+            : 'all'
+        }}</pre>
+      </nb-list-item>
+      <!-- Requested Connectors -->
+      <nb-list-item>
+        Requested Connectors
+        <pre class="text-json">{{
+          jobObj.connectors_requested.length
+            ? (jobObj.connectors_requested | json)
+            : 'all'
+        }}</pre>
+      </nb-list-item>
+      <!-- Received Request Time -->
+      <nb-list-item>
+        Received Request Time
+        <small
+          ><strong>{{ jobObj?.received_request_time }}</strong></small
+        >
+      </nb-list-item>
+      <!-- Finished Analysis Time -->
+      <nb-list-item>
+        Finished Analysis Time
+        <small
+          ><strong>{{ jobObj?.finished_analysis_time }}</strong></small
+        >
+      </nb-list-item>
+      <!-- Time taken to finish analysis -->
+      <nb-list-item>
+        Process Time
+        <strong>{{ jobObj?.job_process_time }} seconds</strong>
+      </nb-list-item>
+      <!-- TLP -->
+      <nb-list-item>
+        TLP
+        <strong>{{ jobObj?.tlp }}</strong>
+      </nb-list-item>
+      <!-- Errors -->
+      <nb-list-item>
+        Errors
+        <pre class="text-json">{{ jobObj?.errors | json }}</pre>
+      </nb-list-item>
+    </nb-list>
+  </nb-card-body>
+</nb-card>

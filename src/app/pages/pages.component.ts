@@ -36,6 +36,15 @@ export class PagesComponent {
       link: '/pages/analyzers/tree',
     },
     {
+      title: 'Connectors Management',
+      group: true,
+    },
+    {
+      title: 'Table View',
+      icon: 'list-outline',
+      link: '/pages/connectors',
+    },
+    {
       title: 'Scans Management',
       group: true,
     },
