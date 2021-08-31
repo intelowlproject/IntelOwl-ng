@@ -53,9 +53,6 @@ export class ScanService extends HttpService<any> {
       md5: data.md5,
       analyzers: data.analyzers_requested,
     };
-    if (data.run_all_available_analyzers) {
-      obj['run_all_available_analyzers'] = 'True';
-    }
     if (data.check_existing_or_force === 'running_only') {
       obj['running_only'] = 'True';
     }
@@ -80,7 +77,6 @@ export class ScanService extends HttpService<any> {
       md5: data.md5,
       analyzers_requested: data.analyzers_requested,
       connectors_requested: data.connectors_requested,
-      run_all_available_analyzers: data.run_all_available_analyzers,
       tlp: data.tlp,
       tags_id: data.tags_id || [],
     };

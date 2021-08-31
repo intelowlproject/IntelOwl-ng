@@ -1,11 +1,10 @@
 export interface IScanForm {
   // required default ones
   md5?: string | Int32Array;
-  analyzers_requested?: string[];
-  connectors_requested?: string[];
+  analyzers_requested: string[];
+  connectors_requested: string[];
   tlp?: 'WHITE' | 'GREEN' | 'AMBER' | 'RED';
   check_existing_or_force?: string;
-  run_all_available_analyzers?: boolean;
   // extra config
   tags_id: number[];
   classification: 'ip' | 'domain' | 'hash' | 'url' | 'generic' | 'file';
@@ -36,6 +35,7 @@ export interface Job {
   file_mimetype?: string;
   status: string;
   analyzers_requested: string[] | string;
+  connectors_requested: string[] | string;
   analyzers_to_execute: string[];
   connectors_to_execute: string[];
   analyzer_reports?: any[];
@@ -66,7 +66,7 @@ export interface IAbstractConfig {
   name?: string;
   python_module: string;
   description?: string;
-  config?: any;
+  config: any;
   secrets?: any;
   verification?: {
     configured?: boolean;

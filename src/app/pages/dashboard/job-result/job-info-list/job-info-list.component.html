@@ -64,12 +64,20 @@
       <!-- Requested Analyzers -->
       <nb-list-item>
         Requested Analyzers
-        <pre class="text-json">{{ jobObj?.analyzers_requested | json }}</pre>
+        <pre class="text-json">{{
+          jobObj.analyzers_requested.length
+            ? (jobObj.analyzers_requested | json)
+            : 'all'
+        }}</pre>
       </nb-list-item>
       <!-- Requested Connectors -->
       <nb-list-item>
         Requested Connectors
-        <pre class="text-json">{{ jobObj?.connectors_requested | json }}</pre>
+        <pre class="text-json">{{
+          jobObj.connectors_requested.length
+            ? (jobObj.connectors_requested | json)
+            : 'all'
+        }}</pre>
       </nb-list-item>
       <!-- Received Request Time -->
       <nb-list-item>

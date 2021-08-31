@@ -65,18 +65,10 @@ export class BaseScanFormComponent implements OnInit {
       .subscribe((cList: IConnectorConfig[]) => (this.connectorsList = cList));
   }
 
-  isNotError816() {
-    return (
-      (this.formData.analyzers_requested.length ? 1 : 0) ^
-      (this.formData.run_all_available_analyzers ? 1 : 0)
-    );
-  }
-
-  isFormValid() {
+  isFormValid(): boolean {
     return (
       (this.scanForm.form.status === 'VALID' ||
         this.scanForm.form.status === 'DISABLED') &&
-      this.isNotError816() &&
       !this.isBtnDisabled
     );
   }
@@ -121,11 +113,10 @@ export class BaseScanFormComponent implements OnInit {
       });
   }
 
-  constructAdditionalConfigParam(): any {
-    const config: any = {};
+  constructAdditionalConfigParam(): { [name: string]: object } {
+    const config: { [name: string]: object } = {};
     this.formData.analyzers_requested.forEach((name: string) => {
-      const ac: IAnalyzerConfig = this.analyzerService.rawAnalyzerConfig[name];
-      config[name] = { ...ac?.config, ...ac?.secrets };
+      config[name] = this.analyzerService.rawAnalyzerConfig[name].config;
     });
     return config;
   }
