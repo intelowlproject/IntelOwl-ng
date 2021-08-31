@@ -4,7 +4,6 @@ import { NgForm } from '@angular/forms';
 import {
   IScanForm,
   IAnalyzersList,
-  IAnalyzerConfig,
   IConnectorConfig,
 } from 'src/app/@core/models/models';
 import { Md5 } from 'ts-md5';
