@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { IConnectorConfig, IRawConnectorConfig } from '../models/models';
 import { PluginService } from './plugin.service';
 import { ToastService } from './toast.service';
@@ -20,7 +20,7 @@ export class ConnectorConfigService extends PluginService {
     this.init().then();
   }
 
-  get connectorsList$() {
+  get connectorsList$(): Observable<IConnectorConfig[]> {
     return this._connectorsList$.asObservable();
   }
 
@@ -49,11 +49,9 @@ export class ConnectorConfigService extends PluginService {
   }
 
   private makeConnectorsList(): void {
-    const connectors: IConnectorConfig[] = Object.entries(
+    const connectors: IConnectorConfig[] = Object.values(
       this.rawConnectorConfig
-    ).map(([key, obj]) => {
-      return obj;
-    });
+    );
     this._connectorsList$.next(connectors);
   }
 }

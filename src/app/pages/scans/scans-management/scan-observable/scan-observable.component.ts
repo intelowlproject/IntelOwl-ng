@@ -26,7 +26,6 @@ export class ScanObservableComponent {
   onObsClassificationChange(): void {
     // Clear selected analyzers on classification change
     this.formData.analyzers_requested = [];
-    this.formData.connectors_requested = [];
 
     switch (this.formData.classification) {
       case 'ip':
