@@ -79,6 +79,7 @@ export class ScanService extends HttpService<any> {
     const obj: any = {
       md5: data.md5,
       analyzers_requested: data.analyzers_requested,
+      connectors_requested: data.connectors_requested,
       run_all_available_analyzers: data.run_all_available_analyzers,
       tlp: data.tlp,
       tags_id: data.tags_id || [],

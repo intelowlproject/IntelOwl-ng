@@ -101,7 +101,7 @@ export class DashboardComponent implements OnDestroy {
         renderComponent: JobStatusIconRenderComponent,
       },
       no_of_connectors_executed: {
-        title: 'Connectors Triggered',
+        title: 'Connectors Called',
         width: '10%',
         filter: false,
       },

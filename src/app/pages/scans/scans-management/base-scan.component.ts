@@ -5,6 +5,7 @@ import {
   IScanForm,
   IAnalyzersList,
   IAnalyzerConfig,
+  IConnectorConfig,
 } from 'src/app/@core/models/models';
 import { Md5 } from 'ts-md5';
 import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
@@ -13,6 +14,7 @@ import { JsonEditorOptions } from 'ang-jsoneditor';
 import { NbDialogService } from '@nebular/theme';
 import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
 import { tlpColors } from 'src/app/@theme/components/smart-table/smart-table';
+import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 
 @Component({
   selector: 'intelowl-base-scan',
@@ -31,6 +33,7 @@ export class BaseScanFormComponent implements OnInit {
   @Input() scanForm: NgForm;
   @Input() formData: IScanForm;
   analyzersList: IAnalyzersList;
+  connectorsList: IConnectorConfig[];
   isBtnDisabled: boolean = false;
   showSpinnerBool: boolean = false;
   formDebugBool: boolean = false;
@@ -44,6 +47,7 @@ export class BaseScanFormComponent implements OnInit {
   constructor(
     private readonly scanService: ScanService,
     private readonly analyzerService: AnalyzerConfigService,
+    private readonly connectorService: ConnectorConfigService,
     private dialogService: NbDialogService
   ) {
     this.editorOptions = new JsonEditorOptions();
@@ -56,6 +60,9 @@ export class BaseScanFormComponent implements OnInit {
     this.analyzerService.analyzersList$
       .pipe(first())
       .subscribe((aList: IAnalyzersList) => (this.analyzersList = aList));
+    this.connectorService.connectorsList$
+      .pipe(first())
+      .subscribe((cList: IConnectorConfig[]) => (this.connectorsList = cList));
   }
 
   isNotError816() {

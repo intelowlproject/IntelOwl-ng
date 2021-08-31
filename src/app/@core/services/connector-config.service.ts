@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
-import { IRawConnectorConfig } from '../models/models';
+import { IConnectorConfig, IRawConnectorConfig } from '../models/models';
 import { PluginService } from './plugin.service';
 import { ToastService } from './toast.service';
 
@@ -9,8 +9,9 @@ import { ToastService } from './toast.service';
   providedIn: 'root',
 })
 export class ConnectorConfigService extends PluginService {
-  private _rawConnectorConfig$: ReplaySubject<
-    IRawConnectorConfig
+  private rawConnectorConfig: IRawConnectorConfig = {};
+  private _connectorsList$: ReplaySubject<
+    IConnectorConfig[]
   > = new ReplaySubject(1);
 
   constructor(_httpClient: HttpClient, toastr: ToastService) {
@@ -19,17 +20,14 @@ export class ConnectorConfigService extends PluginService {
     this.init().then();
   }
 
-  get rawConnectorConfig$(): Observable<IRawConnectorConfig> {
-    return this._rawConnectorConfig$.asObservable();
+  get connectorsList$(): Observable<IConnectorConfig[]> {
+    return this._connectorsList$.asObservable();
   }
 
   private async init(): Promise<void> {
     try {
-      const resp: IRawConnectorConfig = await this.query(
-        {},
-        'get_connector_configs'
-      );
-      this._rawConnectorConfig$.next(resp);
+      this.rawConnectorConfig = await this.query({}, 'get_connector_configs');
+      this.makeConnectorsList();
     } catch (e) {
       console.error(e);
     }
@@ -48,5 +46,12 @@ export class ConnectorConfigService extends PluginService {
     connectorName: string
   ): Promise<boolean> {
     return this.retryPlugin(job_id, connectorName);
+  }
+
+  private makeConnectorsList(): void {
+    const connectors: IConnectorConfig[] = Object.values(
+      this.rawConnectorConfig
+    );
+    this._connectorsList$.next(connectors);
   }
 }

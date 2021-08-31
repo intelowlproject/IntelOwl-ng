@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { first } from 'rxjs/operators';
-import { IRawConnectorConfig } from 'src/app/@core/models/models';
+import { IConnectorConfig } from 'src/app/@core/models/models';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 import {
   JSONRenderComponent,
@@ -105,19 +105,15 @@ export class ConnectorsTableComponent implements OnInit {
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
     // rxjs/first() -> take first and complete observable
-    this.connectorService.rawConnectorConfig$.pipe(first()).subscribe((res) =>
+    this.connectorService.connectorsList$.pipe(first()).subscribe((res) =>
       this.init(res).then(
         () => (this.showSpinnerBool = false) // spinner off
       )
     );
   }
 
-  private init(res: IRawConnectorConfig): Promise<void> {
-    const data: any[] = Object.entries(res).map(([key, obj]) => {
-      obj.name = key;
-      return obj;
-    });
-    this.tableSource.load(data);
+  private init(res: IConnectorConfig[]): Promise<void> {
+    this.tableSource.load(res);
     // default alphabetically sort.
     this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
     return Promise.resolve();

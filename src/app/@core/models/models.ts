@@ -2,6 +2,7 @@ export interface IScanForm {
   // required default ones
   md5?: string | Int32Array;
   analyzers_requested?: string[];
+  connectors_requested?: string[];
   tlp?: 'WHITE' | 'GREEN' | 'AMBER' | 'RED';
   check_existing_or_force?: string;
   run_all_available_analyzers?: boolean;
