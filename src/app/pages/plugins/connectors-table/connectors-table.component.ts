@@ -42,6 +42,13 @@ export class ConnectorsTableComponent implements OnInit {
         width: '25%',
         renderComponent: DescriptionRenderComponent,
       },
+      disabled: {
+        title: 'Active',
+        filter: false,
+        type: 'custom',
+        valuePrepareFunction: (c, r) => !c, // disabled = !active
+        renderComponent: TickCrossRenderComponent,
+      },
       configured: {
         title: 'Configured',
         filter: false,
@@ -51,21 +58,6 @@ export class ConnectorsTableComponent implements OnInit {
           tooltip: r.verification.error_message,
         }),
         renderComponent: TickCrossExtraRenderComponent,
-      },
-      disabled: {
-        title: 'Active',
-        filter: false,
-        type: 'custom',
-        valuePrepareFunction: (c, r) => !c, // disabled = !active
-        renderComponent: TickCrossRenderComponent,
-      },
-      healthCheck: {
-        title: 'Health Check',
-        filter: false,
-        sort: false,
-        type: 'custom',
-        renderComponent: PluginHealthCheckButtonRenderComponent,
-        valuePrepareFunction: (c, r) => ({ status: c, disabled: false }),
       },
       maximum_tlp: {
         title: 'Maximum TLP',
@@ -85,6 +77,14 @@ export class ConnectorsTableComponent implements OnInit {
         width: '20%',
         filterFunction: JSONRenderComponent.filterFunction,
         renderComponent: SecretsDictCellComponent,
+      },
+      healthCheck: {
+        title: 'Health Check',
+        filter: false,
+        sort: false,
+        type: 'custom',
+        renderComponent: PluginHealthCheckButtonRenderComponent,
+        valuePrepareFunction: (c, r) => ({ status: c, disabled: false }),
       },
     },
   };

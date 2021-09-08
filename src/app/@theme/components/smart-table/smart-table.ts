@@ -67,6 +67,7 @@ export class JobStatusIconRenderComponent
 
 // Tick/Cross Render Component
 @Component({
+  selector: 'intelowl-tick-cross-render',
   template: `
     <nb-icon *ngIf="iconName" [icon]="iconName" [status]="iconStatus"></nb-icon>
     <span *ngIf="!iconName">{{ value }}</span>
@@ -177,6 +178,7 @@ export class TagsRenderComponent implements ViewCell {
 
 // JSON Object Renderer
 @Component({
+  selector: 'intelowl-json-render',
   template: `<pre class="text-json">{{ value | json }}</pre>`,
 })
 export class JSONRenderComponent implements ViewCell {
@@ -254,10 +256,10 @@ export class PluginActionsRenderComponent
       statusText
     }}</span>
     <button
+      nbButton
+      [disabled]="true"
       (click)="onClick($event)"
       class="mt-2"
-      [disabled]="true"
-      nbButton
       size="tiny"
       status="primary"
     >
@@ -332,25 +334,32 @@ export class TLPRenderComponent implements ViewCell {
 
 // Component to render the `secrets` dict
 @Component({
-  template: `<ul class="p-1">
-    <li
-      *ngFor="let secret of value | keyvalue; trackBy: trackByFn"
-      [nbTooltip]="secret.value.description"
-    >
-      {{ secret.key }}
-      &nbsp;
-      <small class="text-muted"
-        >({{ secret.value.env_var_key }}: <em>{{ secret.value.type }}</em
-        >)</small
-      >
-    </li>
-  </ul>`,
+  selector: 'intelowl-secrets-dict-render',
+  template: `
+    <div>
+      <ul class="p-1" *ngIf="isConfigValid()">
+        <li
+          *ngFor="let secret of value | keyvalue; trackBy: trackByFn"
+          [nbTooltip]="secret.value.description"
+        >
+          {{ secret.key }}
+          &nbsp;
+          <small class="text-muted"
+            >({{ secret.value.env_var_key }}: <em>{{ secret.value.type }}</em
+            >)</small
+          >
+        </li>
+      </ul>
+      <span *ngIf="!isConfigValid()" class="font-italic text-muted">null</span>
+    </div>
+  `,
 })
 export class SecretsDictCellComponent implements ViewCell {
-  @Input() value: string;
+  @Input() value: any;
   @Input() rowData: any;
 
-  public trackByFn = (_index, item) => item.key;
+  isConfigValid = () => Object.keys(this.value).length;
+  trackByFn = (_index, item) => item.key;
 }
 
 // Component to render a list
@@ -362,7 +371,7 @@ export class SecretsDictCellComponent implements ViewCell {
   </ul>`,
 })
 export class ListCellComponent implements ViewCell {
-  @Input() value: string;
+  @Input() value: any;
   @Input() rowData: any;
 }
 
@@ -378,8 +387,80 @@ export class DescriptionRenderComponent implements ViewCell {
 
   get urlifiedDescription(): string {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return this.value.replace(urlRegex, function (url) {
-      return '<a target="_blank"  href="' + url + '">' + url + '</a>';
-    });
+    return this.value.replace(
+      urlRegex,
+      (url) => `<a target="_blank"  href="${url}">${url}</a>`
+    );
+  }
+}
+
+// Component to render card with plugin info
+@Component({
+  template: `<div>
+    <nb-icon
+      nbPopoverTrigger="hover"
+      nbPopoverPlacement="top"
+      [nbPopover]="templateRef"
+      icon="info-outline"
+      status="primary"
+      class="d-flex justify-content-center mx-auto"
+    ></nb-icon>
+    <ng-template #templateRef>
+      <nb-card class="bg-dark mb-0">
+        <nb-card-header>
+          <span>{{ rowData?.name }} </span>
+          <code class="font-italic small">
+            ( {{ rowData?.python_module }} )
+          </code>
+        </nb-card-header>
+        <nb-card-body>
+          <div>
+            <h6>Description</h6>
+            <p [innerHTML]="urlifiedDescription"></p>
+          </div>
+          <div>
+            <h6>Configuration Parameters</h6>
+            <intelowl-json-render
+              [rowData]="rowData"
+              [value]="rowData?.config"
+            ></intelowl-json-render>
+          </div>
+          <div>
+            <h6>Secrets</h6>
+            <intelowl-secrets-dict-render
+              [rowData]="rowData"
+              [value]="rowData?.secrets"
+            ></intelowl-secrets-dict-render>
+          </div>
+          <div>
+            <h6>
+              Verification
+              <intelowl-tick-cross-render
+                [value]="rowData?.verification?.configured"
+                [rowData]="rowData"
+              ></intelowl-tick-cross-render>
+            </h6>
+            <div
+              *ngIf="rowData?.verification?.error_message"
+              class="text-danger"
+            >
+              {{ rowData?.verification?.error_message }}
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </ng-template>
+  </div>`,
+})
+export class TooltipOnCellHoverComponent implements ViewCell {
+  @Input() value: any;
+  @Input() rowData: any;
+
+  get urlifiedDescription(): string {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return this.rowData?.description.replace(
+      urlRegex,
+      (url) => `<a target="_blank" href="${url}">${url}</a>`
+    );
   }
 }
