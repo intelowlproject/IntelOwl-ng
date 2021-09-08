@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import {
   NbAlertModule,
   NbButtonModule,
+  NbPopoverModule,
   NbRouteTabsetModule,
   NbSpinnerModule,
   NbTagModule,
@@ -23,6 +24,7 @@ import {
   SecretsDictCellComponent,
   ListCellComponent,
   DescriptionRenderComponent,
+  TooltipOnCellHoverComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
 import { PluginsRoutingModule } from './plugins-routing.module';
@@ -37,6 +39,7 @@ import { PluginsRoutingModule } from './plugins-routing.module';
     NbRouteTabsetModule,
     NbSpinnerModule,
     Ng2SmartTableModule,
+    NbPopoverModule,
     NgxEchartsModule,
     NbTooltipModule,
   ],
@@ -54,6 +57,7 @@ import { PluginsRoutingModule } from './plugins-routing.module';
     SecretsDictCellComponent,
     ListCellComponent,
     DescriptionRenderComponent,
+    TooltipOnCellHoverComponent,
   ],
 })
 export class PluginsModule {}

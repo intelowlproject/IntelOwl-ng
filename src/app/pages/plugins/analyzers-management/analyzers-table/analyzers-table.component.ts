@@ -7,8 +7,8 @@ import {
   JSONRenderComponent,
   PluginHealthCheckButtonRenderComponent,
   SecretsDictCellComponent,
-  DescriptionRenderComponent,
   ListCellComponent,
+  TooltipOnCellHoverComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
 import { first } from 'rxjs/operators';
 
@@ -45,6 +45,33 @@ export class AnalyzersTableComponent implements OnInit {
     columns: {
       name: {
         title: 'Name',
+        width: '10%',
+      },
+      description: {
+        title: 'More Info',
+        type: 'custom',
+        width: '5%',
+        filter: false,
+        renderComponent: TooltipOnCellHoverComponent,
+      },
+      disabled: {
+        title: 'Active',
+        type: 'custom',
+        width: '3%',
+        filter: false,
+        valuePrepareFunction: (c, r) => !c, // disabled = !active
+        renderComponent: TickCrossRenderComponent,
+      },
+      configured: {
+        title: 'Configured',
+        type: 'custom',
+        width: '3%',
+        filter: false,
+        valuePrepareFunction: (c, r) => ({
+          tick: r.verification.configured,
+          tooltip: r.verification.error_message,
+        }),
+        renderComponent: TickCrossExtraRenderComponent,
       },
       type: {
         title: 'Type',
@@ -60,16 +87,10 @@ export class AnalyzersTableComponent implements OnInit {
           },
         },
       },
-      description: {
-        title: 'Description',
-        type: 'custom',
-        width: '30%',
-        renderComponent: DescriptionRenderComponent,
-      },
       supports: {
         title: 'Supported types',
         type: 'custom',
-        width: '10%',
+        width: '15%',
         renderComponent: ListCellComponent,
       },
       external_service: {
@@ -124,31 +145,6 @@ export class AnalyzersTableComponent implements OnInit {
             });
           });
         },
-      },
-      configured: {
-        title: 'Configured',
-        type: 'custom',
-        width: '3%',
-        filter: false,
-        valuePrepareFunction: (c, r) => ({
-          tick: r.verification.configured,
-          tooltip: r.verification.error_message,
-        }),
-        renderComponent: TickCrossExtraRenderComponent,
-      },
-      config: {
-        title: 'Configuration Parameters',
-        type: 'custom',
-        width: '10%',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
-      },
-      secrets: {
-        title: 'Secrets',
-        type: 'custom',
-        width: '5%',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: SecretsDictCellComponent,
       },
     },
   };

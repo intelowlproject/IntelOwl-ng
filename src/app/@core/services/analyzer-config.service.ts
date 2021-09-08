@@ -54,16 +54,12 @@ export class AnalyzerConfigService extends PluginService {
     };
 
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
-      const acObj = {
-        name: key,
-        ...obj,
-      };
       // filter on basis of type
       if (obj.type === 'file') {
-        analyzers.file.push(acObj);
+        analyzers.file.push(obj);
       } else {
         obj.observable_supported.forEach((clsfn: string) => {
-          analyzers[clsfn].push(acObj);
+          analyzers[clsfn].push(obj);
         });
       }
     });
@@ -71,18 +67,11 @@ export class AnalyzerConfigService extends PluginService {
   }
 
   constructTableData(): any[] {
-    return Object.entries(this.rawAnalyzerConfig).map(([key, obj]) => {
-      obj['name'] = key;
-      if (obj.hasOwnProperty('observable_supported')) {
+    return Object.values(this.rawAnalyzerConfig).map((obj) => {
+      if (obj.type === 'observable') {
         obj['supports'] = obj['observable_supported'];
       } else {
         obj['supports'] = obj['supported_filetypes'];
-      }
-      if (!obj.hasOwnProperty('external_service')) {
-        obj['external_service'] = false;
-      }
-      if (!obj.hasOwnProperty('leaks_info')) {
-        obj['leaks_info'] = false;
       }
       return obj;
     });
