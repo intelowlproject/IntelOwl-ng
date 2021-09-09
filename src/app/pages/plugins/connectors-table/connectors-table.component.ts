@@ -4,14 +4,16 @@ import { first } from 'rxjs/operators';
 import { IConnectorConfig } from 'src/app/@core/models/models';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 import {
-  JSONRenderComponent,
-  PluginHealthCheckButtonRenderComponent,
   TickCrossExtraRenderComponent,
   TickCrossRenderComponent,
   TLPRenderComponent,
-  SecretsDictCellComponent,
   DescriptionRenderComponent,
+  PopoverOnCellHoverComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
+import {
+  PluginHealthCheckButtonRenderComponent,
+  PluginInfoCardComponent,
+} from '../lib/components';
 
 @Component({
   templateUrl: './connectors-table.component.html',
@@ -39,8 +41,17 @@ export class ConnectorsTableComponent implements OnInit {
       description: {
         title: 'Description',
         type: 'custom',
-        width: '25%',
         renderComponent: DescriptionRenderComponent,
+      },
+      moreInfo: {
+        title: 'More Info',
+        type: 'custom',
+        filter: false,
+        valuePrepareFunction: (c, r) => ({
+          component: PluginInfoCardComponent,
+          context: { pluginInfo: r },
+        }),
+        renderComponent: PopoverOnCellHoverComponent,
       },
       disabled: {
         title: 'Active',
@@ -63,20 +74,6 @@ export class ConnectorsTableComponent implements OnInit {
         title: 'Maximum TLP',
         type: 'custom',
         renderComponent: TLPRenderComponent,
-      },
-      config: {
-        title: 'Configurations Added',
-        type: 'custom',
-        width: '20%',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
-      },
-      secrets: {
-        title: 'Secrets',
-        type: 'custom',
-        width: '20%',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: SecretsDictCellComponent,
       },
       healthCheck: {
         title: 'Health Check',
