@@ -23,15 +23,20 @@ import { NgxTaggerComponent } from '../../@theme/components/ngx-tagger/ngx-tagge
 import { NgJsonEditorModule } from 'ang-jsoneditor';
 import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
 import { BaseScanFormComponent } from './scans-management/base-scan.component';
+import { EditConfigParamsDialogComponent } from './lib/edit-config-params-dialog.component';
 
 @NgModule({
   declarations: [
+    // theme
+    NgxTaggerComponent,
+    AppJsonEditorComponent,
+    // lib
+    EditConfigParamsDialogComponent,
+    // components
     ScansManagementComponent,
     BaseScanFormComponent,
     ScanFileComponent,
     ScanObservableComponent,
-    NgxTaggerComponent,
-    AppJsonEditorComponent,
   ],
   imports: [
     ScansRoutingModule,
