@@ -11,17 +11,6 @@ import {
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EchartsTreeComponent } from '../../@theme/components/echarts-tree/echarts-tree.component';
-import { AnalyzersManagementComponent } from './analyzers-management/analyzers-management.component';
-import {
-  PluginHealthCheckButtonRenderComponent,
-  PluginSecretsDictRenderComponent,
-  PluginParamsDictRenderComponent,
-  PluginConfigDictRenderComponent,
-  PluginInfoCardComponent,
-} from './lib/components';
-import { AnalyzersTableComponent } from './analyzers-management/analyzers-table/analyzers-table.component';
-import { AnalyzersTreeComponent } from './analyzers-management/analyzers-tree/analyzers-tree.component';
-import { ConnectorsTableComponent } from './connectors-table/connectors-table.component';
 import {
   TickCrossRenderComponent,
   TickCrossExtraRenderComponent,
@@ -32,6 +21,26 @@ import {
   PopoverOnCellHoverComponent,
 } from '../../@theme/components/smart-table/smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
+
+import {
+  PluginHealthCheckButtonRenderComponent,
+  PluginSecretsDictRenderComponent,
+  PluginParamsDictRenderComponent,
+  PluginConfigDictRenderComponent,
+  PluginInfoCardComponent,
+} from './lib/components';
+import { AnalyzersManagementComponent } from './analyzers-management/analyzers-management.component';
+import {
+  AnalyzersTableComponent,
+  AnalyzersTreeComponent,
+  AnalyzersCardsComponent,
+} from './analyzers-management/tabs';
+import { ConnectorsManagementComponent } from './connectors-management/connectors-management';
+import {
+  ConnectorsTableComponent,
+  ConnectorsCardsComponent,
+} from './connectors-management/tabs';
+
 import { PluginsRoutingModule } from './plugins-routing.module';
 
 @NgModule({
@@ -50,17 +59,20 @@ import { PluginsRoutingModule } from './plugins-routing.module';
   ],
   declarations: [
     AnalyzersManagementComponent,
+    ConnectorsManagementComponent,
     AnalyzersTableComponent,
     AnalyzersTreeComponent,
+    AnalyzersCardsComponent,
     ConnectorsTableComponent,
-    EchartsTreeComponent,
+    ConnectorsCardsComponent,
     // lib
     PluginHealthCheckButtonRenderComponent,
     PluginSecretsDictRenderComponent,
     PluginParamsDictRenderComponent,
     PluginConfigDictRenderComponent,
     PluginInfoCardComponent,
-    // smart table components
+    // theme/ smart table components
+    EchartsTreeComponent,
     TickCrossRenderComponent,
     TickCrossExtraRenderComponent,
     JSONRenderComponent,
