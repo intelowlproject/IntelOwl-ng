@@ -264,63 +264,6 @@ export class PluginActionsRenderComponent
   }
 }
 
-// Plugin Health Check Button Renderer
-@Component({
-  template: ` <div *ngIf="!disabled" style="display: inline-grid;">
-    <span style="color: {{ statusColor }}; text-align: center;">{{
-      statusText
-    }}</span>
-    <button
-      nbButton
-      (click)="onClick($event)"
-      class="mt-2"
-      size="tiny"
-      status="primary"
-    >
-      Check
-    </button>
-  </div>`,
-})
-export class PluginHealthCheckButtonRenderComponent
-  implements ViewCell, OnInit, OnChanges {
-  @Input() value: any;
-  @Input() rowData: any;
-
-  @Output() emitter: EventEmitter<any> = new EventEmitter();
-
-  statusText: string;
-  statusColor: string;
-  disabled: boolean;
-
-  ngOnInit(): void {
-    this.getIconStatus();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.value.previousValue !== changes.value.currentValue) {
-      this.getIconStatus();
-    }
-  }
-
-  private getIconStatus(): void {
-    this.disabled = this.value.disabled;
-    if (this.value.status === true) {
-      this.statusText = 'healthy';
-      this.statusColor = '#29D68F';
-    } else if (this.value.status === false) {
-      this.statusText = 'failing';
-      this.statusColor = '#FC3D71';
-    } else if (this.value.status === null) {
-      this.statusText = 'unknown';
-      this.statusColor = 'grey';
-    }
-  }
-
-  onClick(e) {
-    this.emitter.emit(this.rowData);
-  }
-}
-
 // TLP Render Component
 export const tlpColors = {
   WHITE: '#FFFFFF',
@@ -330,13 +273,15 @@ export const tlpColors = {
 };
 @Component({
   template: `
-    <nb-tag
-      size="tiny"
-      status="basic"
-      appearance="outline"
-      [text]="value"
-      [ngStyle]="{ color: tlpColors[value] }"
-    ></nb-tag>
+    <div class="d-flex justify-content-center">
+      <nb-tag
+        size="tiny"
+        status="basic"
+        appearance="outline"
+        [text]="value"
+        [ngStyle]="{ color: tlpColors[value] }"
+      ></nb-tag>
+    </div>
   `,
 })
 export class TLPRenderComponent implements ViewCell {
@@ -344,36 +289,6 @@ export class TLPRenderComponent implements ViewCell {
   @Input() rowData: any;
 
   tlpColors = tlpColors;
-}
-
-// Component to render the `secrets` dict
-@Component({
-  selector: 'intelowl-secrets-dict-render',
-  template: `
-    <div>
-      <ul class="p-1" *ngIf="isConfigValid()">
-        <li
-          *ngFor="let secret of value | keyvalue; trackBy: trackByFn"
-          [nbTooltip]="secret.value.description"
-        >
-          {{ secret.key }}
-          &nbsp;
-          <small class="text-muted"
-            >({{ secret.value.env_var_key }}: <em>{{ secret.value.type }}</em
-            >)</small
-          >
-        </li>
-      </ul>
-      <span *ngIf="!isConfigValid()" class="font-italic text-muted">null</span>
-    </div>
-  `,
-})
-export class SecretsDictCellComponent implements ViewCell {
-  @Input() value: any;
-  @Input() rowData: any;
-
-  isConfigValid = () => Object.keys(this.value).length;
-  trackByFn = (_index, item) => item.key;
 }
 
 // Component to render a list
@@ -391,90 +306,35 @@ export class ListCellComponent implements ViewCell {
 
 // Component to render the `description` dict
 @Component({
-  template: `<div>
-    <small [innerHTML]="urlifiedDescription"></small>
-  </div>`,
+  template: ` <small [innerHTML]="value | markdown"></small>`,
 })
 export class DescriptionRenderComponent implements ViewCell {
   @Input() value: string;
   @Input() rowData: any;
-
-  get urlifiedDescription(): string {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return this.value.replace(
-      urlRegex,
-      (url) => `<a target="_blank"  href="${url}">${url}</a>`
-    );
-  }
 }
 
-// Component to render card with plugin info
+// Component to render a info icon that popovers a component on hover
 @Component({
   template: `<div>
     <nb-icon
       nbPopoverTrigger="hover"
-      nbPopoverPlacement="top"
-      [nbPopover]="templateRef"
+      [nbPopover]="popoverComponent"
+      [nbPopoverContext]="popoverContext"
       icon="info-outline"
       status="primary"
       class="d-flex justify-content-center mx-auto"
     ></nb-icon>
-    <ng-template #templateRef>
-      <nb-card class="bg-dark mb-0">
-        <nb-card-header>
-          <span>{{ rowData?.name }} </span>
-          <code class="font-italic small">
-            ( {{ rowData?.python_module }} )
-          </code>
-        </nb-card-header>
-        <nb-card-body>
-          <div>
-            <h6>Description</h6>
-            <p [innerHTML]="urlifiedDescription"></p>
-          </div>
-          <div>
-            <h6>Configuration Parameters</h6>
-            <intelowl-json-render
-              [rowData]="rowData"
-              [value]="rowData?.config"
-            ></intelowl-json-render>
-          </div>
-          <div>
-            <h6>Secrets</h6>
-            <intelowl-secrets-dict-render
-              [rowData]="rowData"
-              [value]="rowData?.secrets"
-            ></intelowl-secrets-dict-render>
-          </div>
-          <div>
-            <h6>
-              Verification
-              <intelowl-tick-cross-render
-                [value]="rowData?.verification?.configured"
-                [rowData]="rowData"
-              ></intelowl-tick-cross-render>
-            </h6>
-            <div
-              *ngIf="rowData?.verification?.error_message"
-              class="text-danger"
-            >
-              {{ rowData?.verification?.error_message }}
-            </div>
-          </div>
-        </nb-card-body>
-      </nb-card>
-    </ng-template>
   </div>`,
 })
-export class TooltipOnCellHoverComponent implements ViewCell {
-  @Input() value: any;
+export class PopoverOnCellHoverComponent implements ViewCell {
+  @Input() value: any; // is a component in this case
   @Input() rowData: any;
 
-  get urlifiedDescription(): string {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return this.rowData?.description.replace(
-      urlRegex,
-      (url) => `<a target="_blank" href="${url}">${url}</a>`
-    );
+  get popoverComponent(): Component {
+    return this.value?.component;
+  }
+
+  get popoverContext(): any {
+    return this.value?.context;
   }
 }
