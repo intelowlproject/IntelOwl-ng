@@ -9,11 +9,10 @@ import {
 import { Md5 } from 'ts-md5';
 import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
 import { first } from 'rxjs/operators';
-import { JsonEditorOptions } from 'ang-jsoneditor';
 import { NbDialogService } from '@nebular/theme';
-import { AppJsonEditorComponent } from 'src/app/@theme/components/app-json-editor/app-json-editor.component';
 import { tlpColors } from 'src/app/@theme/components/smart-table/smart-table';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
+import { EditConfigParamsDialogComponent } from '../lib/edit-config-params-dialog.component';
 
 @Component({
   selector: 'intelowl-base-scan',
@@ -40,19 +39,12 @@ export class BaseScanFormComponent implements OnInit {
 
   tlpColors = tlpColors;
 
-  // JSON Editor
-  private editorOptions: JsonEditorOptions;
-
   constructor(
     private readonly scanService: ScanService,
     private readonly analyzerService: AnalyzerConfigService,
     private readonly connectorService: ConnectorConfigService,
     private dialogService: NbDialogService
-  ) {
-    this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.modes = ['code'];
-    this.editorOptions.mode = 'code';
-  }
+  ) {}
 
   ngOnInit(): void {
     // rxjs/first() -> take first and complete observable
@@ -91,16 +83,24 @@ export class BaseScanFormComponent implements OnInit {
   }
 
   /* Additional Config Params */
-  editConfigParams(): void {
-    let config: any = this.constructAdditionalConfigParam();
+  editAnalyzerParams(): void {
+    let configParamsMap = this.formData.analyzers_requested.reduce(
+      (acc: any, name: string) => ({
+        ...acc,
+        [name]: this.analyzerService.rawAnalyzerConfig[name].params,
+      }),
+      {}
+    );
     if (this.formData?.runtime_configuration) {
-      config = { ...config, ...this.formData.runtime_configuration };
+      configParamsMap = {
+        ...configParamsMap,
+        ...this.formData.runtime_configuration,
+      };
     }
     this.dialogService
-      .open(AppJsonEditorComponent, {
+      .open(EditConfigParamsDialogComponent, {
         context: {
-          editorOptions: this.editorOptions,
-          data: config,
+          configParamsMap: configParamsMap,
         },
         closeOnEsc: false,
       })
@@ -110,13 +110,5 @@ export class BaseScanFormComponent implements OnInit {
           this.formData.runtime_configuration = newConfig;
         }
       });
-  }
-
-  constructAdditionalConfigParam(): { [name: string]: object } {
-    const config: { [name: string]: object } = {};
-    this.formData.analyzers_requested.forEach((name: string) => {
-      config[name] = this.analyzerService.rawAnalyzerConfig[name].config;
-    });
-    return config;
   }
 }
