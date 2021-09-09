@@ -1,15 +1,15 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { trigger, transition, useAnimation } from '@angular/animations';
+import { Subscription } from 'rxjs';
+import { LocalDataSource } from 'ng2-smart-table';
+import { flash } from 'ng-animate';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {
   JobStatusIconRenderComponent,
   PluginActionsRenderComponent,
 } from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
-import { LocalDataSource } from 'ng2-smart-table';
-import { Subscription } from 'rxjs';
-import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
-import { trigger, transition, useAnimation } from '@angular/animations';
-import { flash } from 'ng-animate';
 import { saved_jobs_for_demo } from 'src/assets/job_data';
 
 @Component({
@@ -29,9 +29,6 @@ export class JobResultComponent implements OnDestroy {
   public isError: boolean = false;
   // RxJS Subscription
   private sub: Subscription;
-
-  // interval var
-  private pollInterval: any;
 
   // image viewer var
   public imageResult: string = '';
@@ -130,9 +127,6 @@ export class JobResultComponent implements OnDestroy {
     this.sub = this.activateRoute.params.subscribe((res) =>
       this.initData(parseInt(res.jobId))
     );
-    this.editorOptions = new JsonEditorOptions();
-    this.editorOptions.modes = ['text', 'tree'];
-    this.editorOptions.onEditable = () => false;
   }
 
   private initData(jobId: number): void {
@@ -220,13 +214,6 @@ export class JobResultComponent implements OnDestroy {
     )
       this.imageResult = json.screenshot;
     else this.imageResult = '';
-  }
-
-  goToTop(): void {
-    document.getElementsByClassName('layout-container')[0].scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
   }
 
   ngOnDestroy(): void {

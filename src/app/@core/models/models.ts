@@ -61,17 +61,32 @@ export interface IRawConnectorConfig {
   [name: string]: IConnectorConfig;
 }
 
+interface Param {
+  value: any;
+  type: string;
+  description: string;
+}
+
+interface Secret {
+  env_var_key: string;
+  description: string;
+}
+
 export interface IAbstractConfig {
   // Abstract for common fields in IAnalyzerConfig and IConnectorConfig
-  name?: string;
+  name: string;
   python_module: string;
-  description?: string;
-  config: any;
-  secrets?: any;
+  description: string;
+  config: {
+    queue: string;
+    soft_time_limit: number;
+  };
+  params: Record<string, Param>;
+  secrets: Record<string, Secret>;
   verification?: {
-    configured?: boolean;
+    configured: boolean;
     error_message?: string;
-    missing_secrets?: string[];
+    missing_secrets: string[];
   };
 }
 

@@ -23,12 +23,27 @@ export class AnalyzerConfigService extends PluginService {
 
   private async init(): Promise<void> {
     try {
-      this.rawAnalyzerConfig = (await this._http
+      const response = await this._http
         .get(
           'https://raw.githubusercontent.com/intelowlproject/IntelOwl/develop/configuration/analyzer_config.json',
           { responseType: 'json' }
         )
-        .toPromise()) as IRawAnalyzerConfig;
+        .toPromise();
+
+      // for the demo
+      this.rawAnalyzerConfig = Object.entries(response).reduce(
+        (acc, [name, configObj]) => ({
+          ...acc,
+          [name]: {
+            ...configObj,
+            name,
+            verification: this._verificationChoices[
+              Math.floor(Math.random() * 3)
+            ],
+          },
+        }),
+        {}
+      );
       this.makeAnalyzersList();
     } catch (e) {
       console.error(e);
@@ -46,18 +61,12 @@ export class AnalyzerConfigService extends PluginService {
     };
 
     Object.entries(this.rawAnalyzerConfig).forEach(([key, obj]) => {
-      const acObj = {
-        ...obj,
-        // for the demo
-        name: key,
-        verification: this._verificationChoices[Math.floor(Math.random() * 3)],
-      };
       // filter on basis of type
       if (obj.type === 'file') {
-        analyzers.file.push(acObj);
+        analyzers.file.push(obj);
       } else {
         obj.observable_supported.forEach((clsfn: string) => {
-          analyzers[clsfn].push(acObj);
+          analyzers[clsfn].push(obj);
         });
       }
     });
@@ -66,11 +75,6 @@ export class AnalyzerConfigService extends PluginService {
 
   constructTableData(): any[] {
     return Object.entries(this.rawAnalyzerConfig).map(([name, obj]) => {
-      // for the demo
-      obj.name = name;
-      obj.verification = this._verificationChoices[
-        Math.floor(Math.random() * 3)
-      ];
       if (obj.type === 'observable') {
         obj['supports'] = obj['observable_supported'];
       } else {

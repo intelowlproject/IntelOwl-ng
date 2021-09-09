@@ -1,20 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { first } from 'rxjs/operators';
-import { IConnectorConfig } from 'src/app/@core/models/models';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 import {
-  JSONRenderComponent,
-  PluginHealthCheckButtonRenderComponent,
   TickCrossExtraRenderComponent,
   TickCrossRenderComponent,
   TLPRenderComponent,
-  SecretsDictCellComponent,
   DescriptionRenderComponent,
+  PopoverOnCellHoverComponent,
 } from 'src/app/@theme/components/smart-table/smart-table';
+import {
+  PluginHealthCheckButtonRenderComponent,
+  PluginInfoCardComponent,
+} from '../../lib/components';
 
 @Component({
-  templateUrl: './connectors-table.component.html',
+  template: `
+    <nb-card
+      fullWidth
+      [nbSpinner]="showSpinnerBool"
+      nbSpinnerStatus="primary"
+      nbSpinnerSize="large"
+    >
+      <nb-card-header>
+        <span>Connectors - count: {{ tableSource.count() }}</span>
+      </nb-card-header>
+      <nb-card-body>
+        <ng2-smart-table [settings]="tableSettings" [source]="tableSource">
+        </ng2-smart-table>
+      </nb-card-body>
+    </nb-card>
+  `,
 })
 export class ConnectorsTableComponent implements OnInit {
   // ng2-smart-table data source
@@ -22,7 +38,7 @@ export class ConnectorsTableComponent implements OnInit {
   showSpinnerBool: boolean = false;
 
   // ng2-smart-table settings
-  settings = {
+  tableSettings = {
     actions: {
       add: false,
       edit: false,
@@ -39,8 +55,17 @@ export class ConnectorsTableComponent implements OnInit {
       description: {
         title: 'Description',
         type: 'custom',
-        width: '25%',
         renderComponent: DescriptionRenderComponent,
+      },
+      moreInfo: {
+        title: 'More Info',
+        type: 'custom',
+        filter: false,
+        valuePrepareFunction: (c, r) => ({
+          component: PluginInfoCardComponent,
+          context: { pluginInfo: r },
+        }),
+        renderComponent: PopoverOnCellHoverComponent,
       },
       disabled: {
         title: 'Active',
@@ -64,20 +89,6 @@ export class ConnectorsTableComponent implements OnInit {
         type: 'custom',
         renderComponent: TLPRenderComponent,
       },
-      config: {
-        title: 'Configurations Added',
-        type: 'custom',
-        width: '20%',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: JSONRenderComponent,
-      },
-      secrets: {
-        title: 'Secrets',
-        type: 'custom',
-        width: '20%',
-        filterFunction: JSONRenderComponent.filterFunction,
-        renderComponent: SecretsDictCellComponent,
-      },
       healthCheck: {
         title: 'Health Check',
         filter: false,
@@ -94,13 +105,11 @@ export class ConnectorsTableComponent implements OnInit {
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
     // rxjs/first() -> take first and complete observable
-    this.connectorService.connectorsList$
-      .pipe(first())
-      .subscribe((res: IConnectorConfig[]) => {
-        this.tableSource.load(res);
-        // default alphabetically sort.
-        this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-        this.showSpinnerBool = false; // spinner off
-      });
+    this.connectorService.connectorsList$.pipe(first()).subscribe((res) => {
+      this.tableSource.load(res);
+      // default alphabetically sort.
+      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+      this.showSpinnerBool = false; // spinner off
+    });
   }
 }

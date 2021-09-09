@@ -4,6 +4,8 @@
   >
   <nb-card-body>
     <json-editor [data]="data" [options]="editorOptions"></json-editor>
+    <!-- inject template here when extended -->
+    <ng-content></ng-content>
   </nb-card-body>
   <nb-card-footer>
     <button (click)="save()" size="small" nbButton status="primary">
