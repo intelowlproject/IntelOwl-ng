@@ -1,17 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JobService } from '../../../@core/services/job.service';
+import { trigger, transition, useAnimation } from '@angular/animations';
+import { Subscription } from 'rxjs';
+import { LocalDataSource } from 'ng2-smart-table';
+import { flash } from 'ng-animate';
+import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import {
   JobStatusIconRenderComponent,
   PluginActionsRenderComponent,
 } from '../../../@theme/components/smart-table/smart-table';
 import { Job } from '../../../@core/models/models';
-import { LocalDataSource } from 'ng2-smart-table';
-import { Subscription } from 'rxjs';
-import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
-import { trigger, transition, useAnimation } from '@angular/animations';
-import { flash } from 'ng-animate';
-import { ToastService } from 'src/app/@core/services/toast.service';
+import { JobService } from '../../../@core/services/job.service';
 import { AnalyzerConfigService } from 'src/app/@core/services/analyzer-config.service';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 
@@ -165,7 +164,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
   constructor(
     private readonly activateRoute: ActivatedRoute,
     private readonly jobService: JobService,
-    private readonly toastr: ToastService,
     private readonly analyzerService: AnalyzerConfigService,
     private readonly connectorService: ConnectorConfigService
   ) {
@@ -328,13 +326,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
     )
       this.imageResult = json.screenshot;
     else this.imageResult = '';
-  }
-
-  goToTop(): void {
-    document.getElementsByClassName('layout-container')[0].scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
   }
 
   ngOnDestroy(): void {

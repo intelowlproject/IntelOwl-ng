@@ -7,7 +7,17 @@ import { NbMenuItem } from '@nebular/theme';
   template: `
     <ngx-one-column-layout>
       <nb-menu [items]="menu"></nb-menu>
-      <router-outlet></router-outlet>
+      <router-outlet>
+        <button
+          nbButton
+          id="goto-top-btn"
+          size="medium"
+          status="info"
+          (click)="goToTop()"
+          nbTooltip="Scroll To Top"
+        >
+          <nb-icon icon="arrow-upward-outline"></nb-icon></button
+      ></router-outlet>
     </ngx-one-column-layout>
   `,
 })
@@ -26,23 +36,18 @@ export class PagesComponent {
       group: true,
     },
     {
-      title: 'Table View',
+      title: 'View',
       icon: 'list-outline',
       link: '/pages/analyzers/table',
-    },
-    {
-      title: 'Tree View',
-      icon: 'funnel',
-      link: '/pages/analyzers/tree',
     },
     {
       title: 'Connectors Management',
       group: true,
     },
     {
-      title: 'Table View',
+      title: 'View',
       icon: 'list-outline',
-      link: '/pages/connectors',
+      link: '/pages/connectors/table',
     },
     {
       title: 'Scans Management',
@@ -59,4 +64,11 @@ export class PagesComponent {
       link: '/pages/scan/file',
     },
   ];
+
+  goToTop(): void {
+    document.getElementsByClassName('layout-container')[0].scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
 }

@@ -21,7 +21,12 @@ import { ImageVisualizerComponent } from './components/image-visualizer/image-vi
 import { ThemeSwitcherComponent } from './components/header/theme-switcher/theme-switcher.component';
 import { SocialLinksComponent } from './components/social-links/social-links.component';
 
-import { CapitalizePipe, TimingPipe, NumberWithCommasPipe } from './pipes';
+import {
+  CapitalizePipe,
+  MarkdownPipe,
+  TimingPipe,
+  NumberWithCommasPipe,
+} from './pipes';
 import {
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
@@ -56,7 +61,7 @@ const COMPONENTS = [
   SocialLinksComponent,
 ];
 
-const PIPES = [CapitalizePipe, TimingPipe, NumberWithCommasPipe];
+const PIPES = [CapitalizePipe, MarkdownPipe, TimingPipe, NumberWithCommasPipe];
 
 // modules that will be reused across all child modules.
 const MODULES_TO_EXPORT = [CommonModule, NbIconModule, NbCardModule];

@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
+import { first } from 'rxjs/operators';
 import { LocalDataSource } from 'ng2-smart-table';
+import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
 import {
   TickCrossRenderComponent,
   TickCrossExtraRenderComponent,
-  JSONRenderComponent,
-  PluginHealthCheckButtonRenderComponent,
-  SecretsDictCellComponent,
   ListCellComponent,
-  TooltipOnCellHoverComponent,
+  PopoverOnCellHoverComponent,
 } from '../../../../@theme/components/smart-table/smart-table';
-import { first } from 'rxjs/operators';
+import {
+  PluginInfoCardComponent,
+  PluginHealthCheckButtonRenderComponent,
+} from '../../lib/components';
 
 @Component({
   template: `
@@ -19,6 +20,9 @@ import { first } from 'rxjs/operators';
       nbSpinnerStatus="primary"
       nbSpinnerSize="large"
     >
+      <nb-card-header>
+        <span>Analyzers - count: {{ tableSource.count() }}</span>
+      </nb-card-header>
       <nb-card-body>
         <ng2-smart-table [settings]="tableSettings" [source]="tableSource">
         </ng2-smart-table>
@@ -52,7 +56,11 @@ export class AnalyzersTableComponent implements OnInit {
         type: 'custom',
         width: '5%',
         filter: false,
-        renderComponent: TooltipOnCellHoverComponent,
+        valuePrepareFunction: (c, r) => ({
+          component: PluginInfoCardComponent,
+          context: { pluginInfo: r },
+        }),
+        renderComponent: PopoverOnCellHoverComponent,
       },
       disabled: {
         title: 'Active',
@@ -155,18 +163,12 @@ export class AnalyzersTableComponent implements OnInit {
     this.showSpinnerBool = true; // spinner on
     // rxjs/first() -> take first and complete observable
     // analyzerList available => rawAnalyzerConfig initialized
-    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) =>
-      this.init().then(
-        () => (this.showSpinnerBool = false) // spinner off
-      )
-    );
-  }
-
-  private init(): Promise<void> {
-    const data: any[] = this.analyzerService.constructTableData();
-    this.tableSource.load(data);
-    // default alphabetically sort.
-    this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-    return Promise.resolve();
+    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) => {
+      const data: any[] = this.analyzerService.constructTableData();
+      this.tableSource.load(data);
+      // default alphabetically sort.
+      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+      this.showSpinnerBool = false; // spinner off
+    });
   }
 }

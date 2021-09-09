@@ -1,9 +1,16 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { AnalyzersManagementComponent } from './analyzers-management/analyzers-management.component';
-import { AnalyzersTableComponent } from './analyzers-management/analyzers-table/analyzers-table.component';
-import { AnalyzersTreeComponent } from './analyzers-management/analyzers-tree/analyzers-tree.component';
-import { ConnectorsTableComponent } from './connectors-table/connectors-table.component';
+import { ConnectorsManagementComponent } from './connectors-management/connectors-management';
+import {
+  AnalyzersTableComponent,
+  AnalyzersTreeComponent,
+  AnalyzersCardsComponent,
+} from './analyzers-management/tabs';
+import {
+  ConnectorsTableComponent,
+  ConnectorsCardsComponent,
+} from './connectors-management/tabs';
 
 const routes: Routes = [
   {
@@ -18,11 +25,25 @@ const routes: Routes = [
         path: 'tree',
         component: AnalyzersTreeComponent,
       },
+      {
+        path: 'cards',
+        component: AnalyzersCardsComponent,
+      },
     ],
   },
   {
     path: 'connectors',
-    component: ConnectorsTableComponent,
+    component: ConnectorsManagementComponent,
+    children: [
+      {
+        path: 'table',
+        component: ConnectorsTableComponent,
+      },
+      {
+        path: 'cards',
+        component: ConnectorsCardsComponent,
+      },
+    ],
   },
 ];
 

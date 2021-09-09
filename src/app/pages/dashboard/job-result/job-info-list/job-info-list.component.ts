@@ -9,4 +9,14 @@ import { Job } from 'src/app/@core/models/models';
 export class JobInfoListComponent {
   // Current Job Data
   @Input() jobObj: Job;
+
+  get runtimeConfiguration(): Record<string, Record<string, any>> {
+    return this.jobObj.analyzer_reports.reduce(
+      (acc, { name, runtime_configuration: runtimeConf }) => ({
+        ...acc,
+        [name]: runtimeConf,
+      }),
+      {}
+    );
+  }
 }
