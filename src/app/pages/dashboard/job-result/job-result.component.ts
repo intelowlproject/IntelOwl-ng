@@ -328,13 +328,6 @@ export class JobResultComponent implements OnInit, OnDestroy {
     else this.imageResult = '';
   }
 
-  goToTop(): void {
-    document.getElementsByClassName('layout-container')[0].scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  }
-
   ngOnDestroy(): void {
     // cancel job result polling
     this.pollInterval && clearInterval(this.pollInterval);
