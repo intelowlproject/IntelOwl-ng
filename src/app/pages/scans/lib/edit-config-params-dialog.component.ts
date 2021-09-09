@@ -59,7 +59,7 @@ export class EditConfigParamsDialogComponent implements OnInit, OnChanges {
   }
 
   public isEmptyObject(obj: any): boolean {
-    return Object.keys(obj).length == 0;
+    return Object.keys(obj).length === 0;
   }
 
   private updatejsonInputData(): void {
