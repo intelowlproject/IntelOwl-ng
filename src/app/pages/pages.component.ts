@@ -26,23 +26,18 @@ export class PagesComponent {
       group: true,
     },
     {
-      title: 'Table View',
+      title: 'View',
       icon: 'list-outline',
       link: '/pages/analyzers/table',
-    },
-    {
-      title: 'Tree View',
-      icon: 'funnel',
-      link: '/pages/analyzers/tree',
     },
     {
       title: 'Connectors Management',
       group: true,
     },
     {
-      title: 'Table View',
+      title: 'View',
       icon: 'list-outline',
-      link: '/pages/connectors',
+      link: '/pages/connectors/table',
     },
     {
       title: 'Scans Management',

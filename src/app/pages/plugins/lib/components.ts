@@ -76,6 +76,7 @@ export class PluginConfigDictRenderComponent {
 
 // Component to render card with plugin info
 @Component({
+  selector: `plugin-info-card`,
   template: `
     <nb-card class="bg-dark mb-0">
       <nb-card-header>

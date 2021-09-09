@@ -20,6 +20,9 @@ import {
       nbSpinnerStatus="primary"
       nbSpinnerSize="large"
     >
+      <nb-card-header>
+        <span>Analyzers - count: {{ tableSource.count() }}</span>
+      </nb-card-header>
       <nb-card-body>
         <ng2-smart-table [settings]="tableSettings" [source]="tableSource">
         </ng2-smart-table>
@@ -160,18 +163,12 @@ export class AnalyzersTableComponent implements OnInit {
     this.showSpinnerBool = true; // spinner on
     // rxjs/first() -> take first and complete observable
     // analyzerList available => rawAnalyzerConfig initialized
-    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) =>
-      this.init().then(
-        () => (this.showSpinnerBool = false) // spinner off
-      )
-    );
-  }
-
-  private init(): Promise<void> {
-    const data: any[] = this.analyzerService.constructTableData();
-    this.tableSource.load(data);
-    // default alphabetically sort.
-    this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
-    return Promise.resolve();
+    this.analyzerService.analyzersList$.pipe(first()).subscribe((res) => {
+      const data: any[] = this.analyzerService.constructTableData();
+      this.tableSource.load(data);
+      // default alphabetically sort.
+      this.tableSource.setSort([{ field: 'name', direction: 'asc' }]);
+      this.showSpinnerBool = false; // spinner off
+    });
   }
 }
