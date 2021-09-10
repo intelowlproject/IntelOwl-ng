@@ -13,7 +13,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { EchartsTreeComponent } from '../../@theme/components/echarts-tree/echarts-tree.component';
 import {
   TickCrossRenderComponent,
-  TickCrossExtraRenderComponent,
+  ConfiguredIconComponent,
   JSONRenderComponent,
   TLPRenderComponent,
   ListCellComponent,
@@ -74,7 +74,7 @@ import { PluginsRoutingModule } from './plugins-routing.module';
     // theme/ smart table components
     EchartsTreeComponent,
     TickCrossRenderComponent,
-    TickCrossExtraRenderComponent,
+    ConfiguredIconComponent,
     JSONRenderComponent,
     TLPRenderComponent,
     ListCellComponent,

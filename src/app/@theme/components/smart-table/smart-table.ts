@@ -105,24 +105,22 @@ export class TickCrossRenderComponent implements ViewCell, OnInit {
     <span *ngIf="!iconName">{{ value }}</span>
   `,
 })
-export class TickCrossExtraRenderComponent implements ViewCell, OnInit {
+export class ConfiguredIconComponent implements ViewCell, OnInit {
   iconName: string;
   iconStatus: string;
   tooltip: string;
   tooltipStatus: string;
 
-  @Input() value: any; // some object
+  @Input() value: any; // boolean
   @Input() rowData: any;
 
   ngOnInit() {
-    const tick = this.value.tick;
-
-    if (tick === true) {
+    if (this.value === true) {
       this.tooltip = 'Ready to use!';
       this.iconName = 'checkmark-circle-2-outline';
       this.iconStatus = 'success';
     } else {
-      this.tooltip = this.value.tooltip;
+      this.tooltip = this.rowData.verification.error_message;
       this.tooltipStatus = 'danger';
       this.iconName = 'close-circle-outline';
       this.iconStatus = 'danger';
@@ -323,3 +321,23 @@ export class PopoverOnCellHoverComponent implements ViewCell {
     return this.value?.context;
   }
 }
+
+export const tableBooleanFilter: any = {
+  type: 'list',
+  config: {
+    list: [
+      { value: true, title: 'Yes' },
+      { value: false, title: 'No' },
+    ],
+  },
+};
+
+export const tableBooleanInverseFilter: any = {
+  type: 'list',
+  config: {
+    list: [
+      { value: false, title: 'Yes' },
+      { value: true, title: 'No' },
+    ],
+  },
+};
