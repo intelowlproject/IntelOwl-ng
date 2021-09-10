@@ -4,9 +4,11 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { AnalyzerConfigService } from '../../../../@core/services/analyzer-config.service';
 import {
   TickCrossRenderComponent,
-  TickCrossExtraRenderComponent,
+  ConfiguredIconComponent,
   ListCellComponent,
   PopoverOnCellHoverComponent,
+  tableBooleanFilter,
+  tableBooleanInverseFilter,
 } from '../../../../@theme/components/smart-table/smart-table';
 import {
   PluginInfoCardComponent,
@@ -56,6 +58,7 @@ export class AnalyzersTableComponent implements OnInit {
         type: 'custom',
         width: '5%',
         filter: false,
+        sort: false,
         valuePrepareFunction: (c, r) => ({
           component: PluginInfoCardComponent,
           context: { pluginInfo: r },
@@ -66,7 +69,8 @@ export class AnalyzersTableComponent implements OnInit {
         title: 'Active',
         type: 'custom',
         width: '3%',
-        filter: false,
+        filter: tableBooleanInverseFilter,
+        sort: false,
         valuePrepareFunction: (c, r) => !c, // disabled = !active
         renderComponent: TickCrossRenderComponent,
       },
@@ -75,11 +79,9 @@ export class AnalyzersTableComponent implements OnInit {
         type: 'custom',
         width: '3%',
         filter: false,
-        valuePrepareFunction: (c, r) => ({
-          tick: r.verification.configured,
-          tooltip: r.verification.error_message,
-        }),
-        renderComponent: TickCrossExtraRenderComponent,
+        sort: false,
+        valuePrepareFunction: (c, r) => r.verification.configured,
+        renderComponent: ConfiguredIconComponent,
       },
       type: {
         title: 'Type',
@@ -105,38 +107,24 @@ export class AnalyzersTableComponent implements OnInit {
         title: 'External Service',
         type: 'custom',
         width: '3%',
-        filter: {
-          type: 'list',
-          config: {
-            list: [
-              { value: true, title: 'Yes' },
-              { value: false, title: 'No' },
-            ],
-          },
-        },
+        filter: tableBooleanFilter,
+        sort: false,
         renderComponent: TickCrossRenderComponent,
       },
       leaks_info: {
         title: 'Leaks Info',
         type: 'custom',
         width: '3%',
-        filter: {
-          type: 'list',
-          config: {
-            list: [
-              { value: true, title: 'Yes' },
-              { value: false, title: 'No' },
-            ],
-          },
-        },
+        filter: tableBooleanFilter,
+        sort: false,
         renderComponent: TickCrossRenderComponent,
       },
       healthCheck: {
         title: 'Health Check',
+        type: 'custom',
         width: '3%',
         filter: false,
         sort: false,
-        type: 'custom',
         renderComponent: PluginHealthCheckButtonRenderComponent,
         valuePrepareFunction: (c, r) => ({
           status: c,

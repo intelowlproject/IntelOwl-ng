@@ -3,11 +3,12 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { first } from 'rxjs/operators';
 import { ConnectorConfigService } from 'src/app/@core/services/connector-config.service';
 import {
-  TickCrossExtraRenderComponent,
   TickCrossRenderComponent,
+  ConfiguredIconComponent,
   TLPRenderComponent,
   DescriptionRenderComponent,
   PopoverOnCellHoverComponent,
+  tableBooleanInverseFilter,
 } from 'src/app/@theme/components/smart-table/smart-table';
 import {
   PluginHealthCheckButtonRenderComponent,
@@ -61,6 +62,7 @@ export class ConnectorsTableComponent implements OnInit {
         title: 'More Info',
         type: 'custom',
         filter: false,
+        sort: false,
         valuePrepareFunction: (c, r) => ({
           component: PluginInfoCardComponent,
           context: { pluginInfo: r },
@@ -69,20 +71,19 @@ export class ConnectorsTableComponent implements OnInit {
       },
       disabled: {
         title: 'Active',
-        filter: false,
         type: 'custom',
+        filter: tableBooleanInverseFilter,
+        sort: false,
         valuePrepareFunction: (c, r) => !c, // disabled = !active
         renderComponent: TickCrossRenderComponent,
       },
       configured: {
         title: 'Configured',
-        filter: false,
         type: 'custom',
-        valuePrepareFunction: (c, r) => ({
-          tick: r.verification.configured,
-          tooltip: r.verification.error_message,
-        }),
-        renderComponent: TickCrossExtraRenderComponent,
+        filter: false,
+        sort: false,
+        valuePrepareFunction: (c, r) => r.verification.configured,
+        renderComponent: ConfiguredIconComponent,
       },
       maximum_tlp: {
         title: 'Maximum TLP',
