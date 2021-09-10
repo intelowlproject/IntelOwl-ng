@@ -127,6 +127,9 @@ export class JobResultComponent implements OnDestroy {
     this.sub = this.activateRoute.params.subscribe((res) =>
       this.initData(parseInt(res.jobId))
     );
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.modes = ['text', 'tree'];
+    this.editorOptions.onEditable = () => false;
   }
 
   private initData(jobId: number): void {
