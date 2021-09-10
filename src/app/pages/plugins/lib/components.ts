@@ -20,7 +20,10 @@ import { ViewCell } from 'ng2-smart-table';
           <span>{{ secret.key }}</span>
           &nbsp;(<code class="small">{{ secret.value.env_var_key }}</code
           >)
-          <dd class="text-muted">{{ secret.value.description }}</dd>
+          <dd
+            class="text-muted"
+            [innerHtml]="secret.value.description | markdown"
+          ></dd>
         </li>
       </ul>
       <span *ngIf="!isConfigValid()" class="font-italic text-muted">null</span>
@@ -44,7 +47,10 @@ export class PluginSecretsDictRenderComponent {
           <span>{{ param.key }}: </span>
           <code>{{ param.value.value | json }}</code>
           &nbsp;<em class="text-muted">({{ param.value.type }})</em>
-          <dd class="text-muted">{{ param.value.description }}</dd>
+          <dd
+            class="text-muted"
+            [innerHtml]="param.value.description | markdown"
+          ></dd>
         </li>
       </ul>
       <span *ngIf="!isConfigValid()" class="font-italic text-muted">null</span>
@@ -78,7 +84,7 @@ export class PluginConfigDictRenderComponent {
 @Component({
   selector: `plugin-info-card`,
   template: `
-    <nb-card class="bg-dark mb-0">
+    <nb-card class="plugin-info-card">
       <nb-card-header>
         <span>{{ pluginInfo?.name }} </span>
         <code class="font-italic small">

@@ -1,14 +1,22 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import marked from 'marked';
+
+// constants
+const mdRenderer = new marked.Renderer();
+mdRenderer.link = (href, title, text) =>
+  `<a target="_blank" href="${href}" title="${title}" rel="noreferrer noopener">${text}</a>`;
 
 @Pipe({
   name: 'markdown',
+  pure: true,
 })
 export class MarkdownPipe implements PipeTransform {
-  transform(value: any, args?: any[]): any {
-    if (value && value.length > 0) {
-      return marked(value);
-    }
-    return value;
+  constructor(private sanitized: DomSanitizer) {}
+
+  transform(value: string): any {
+    const html = marked.parseInline(value, { renderer: mdRenderer });
+    const output = this.sanitized.bypassSecurityTrustHtml(html);
+    return output;
   }
 }
