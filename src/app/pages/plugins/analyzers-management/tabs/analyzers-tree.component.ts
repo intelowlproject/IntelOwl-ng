@@ -29,47 +29,40 @@ export class AnalyzersTreeComponent implements OnInit {
 
   ngOnInit(): void {
     this.showSpinnerBool = true; // spinner on
-    // rxjs/first() -> take first and complete observable
     this.analyzerService.analyzersList$
       .pipe(first())
-      .subscribe((aList: IAnalyzersList) =>
-        this.initTreeData(aList).then(
-          () => (this.showSpinnerBool = false) // spinner off
-        )
-      );
-  }
-
-  private async initTreeData(aList: IAnalyzersList): Promise<void> {
-    this.treeData = {
-      name: 'IntelOwl',
-      children: [
-        {
-          name: 'Observable Analyzers',
+      .subscribe((aList: IAnalyzersList) => {
+        this.treeData = {
+          name: 'IntelOwl',
           children: [
             {
-              name: 'IP',
-              children: aList['ip'],
+              name: 'Observable Analyzers',
+              children: [
+                {
+                  name: 'IP',
+                  children: aList['ip'],
+                },
+                {
+                  name: 'URL',
+                  children: aList['url'],
+                },
+                {
+                  name: 'Domain',
+                  children: aList['domain'],
+                },
+                {
+                  name: 'Hash',
+                  children: aList['hash'],
+                },
+              ],
             },
             {
-              name: 'URL',
-              children: aList['url'],
-            },
-            {
-              name: 'Domain',
-              children: aList['domain'],
-            },
-            {
-              name: 'Hash',
-              children: aList['hash'],
+              name: 'File Analyzers',
+              children: aList['file'],
             },
           ],
-        },
-        {
-          name: 'File Analyzers',
-          children: aList['file'],
-        },
-      ],
-    };
-    return Promise.resolve();
+        };
+        this.showSpinnerBool = false; // spinner off
+      });
   }
 }

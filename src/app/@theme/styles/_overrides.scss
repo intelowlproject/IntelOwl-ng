@@ -52,4 +52,14 @@
     display: inline;
     border-left: 1px inset #151a30;
   }
+
+  .plugin-info-card {
+    max-width: 800px;
+    background-color: nb-theme(background-basic-color-3);
+    border-color: nb-theme(border-basic-color-1);
+    nb-card-header {
+      border-color: nb-theme(border-basic-color-1);
+    }
+    margin-bottom: 0;
+  }
 }

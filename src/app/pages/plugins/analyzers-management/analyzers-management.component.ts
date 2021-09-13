@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   template: `
     <!---- https://lotr.fandom.com/wiki/One_Ring -->
-    <h5>One API to rule them all. Here's a list of integrated services.</h5>
+    <h5>One API to rule them all. Here's a list of integrated analyzers.</h5>
     <nb-alert class="mt-3" status="info">
       <span><nb-icon icon="bulb-outline"></nb-icon></span>
       <span
@@ -30,15 +30,15 @@ export class AnalyzersManagementComponent {
       responsive: true,
     },
     {
-      title: 'Tree',
-      route: './tree',
-      icon: 'funnel',
-      responsive: true,
-    },
-    {
       title: 'Cards',
       route: './cards',
       icon: 'archive',
+      responsive: true,
+    },
+    {
+      title: 'Tree',
+      route: './tree',
+      icon: 'funnel',
       responsive: true,
     },
   ];
