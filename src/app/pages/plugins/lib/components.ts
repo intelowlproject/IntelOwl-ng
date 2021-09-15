@@ -17,9 +17,19 @@ import { ViewCell } from 'ng2-smart-table';
     <div>
       <ul *ngIf="isConfigValid()">
         <li *ngFor="let secret of pluginSecrets | keyvalue; trackBy: trackByFn">
-          <span>{{ secret.key }}</span>
-          &nbsp;(<code class="small">{{ secret.value.env_var_key }}</code
-          >)
+          <span>
+            {{ secret.key }}
+            &nbsp; (<code class="small">{{ secret.value.env_var_key }}</code
+            >) &nbsp;
+            <nb-tag
+              *ngIf="secret.value.required"
+              size="tiny"
+              appearance="outline"
+              status="warning"
+              text="required"
+              removeable="false"
+            ></nb-tag>
+          </span>
           <dd
             class="text-muted"
             [innerHtml]="secret.value.description | markdown"
