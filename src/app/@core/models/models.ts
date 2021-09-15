@@ -70,6 +70,7 @@ interface Param {
 interface Secret {
   env_var_key: string;
   description: string;
+  required: boolean;
 }
 
 export interface IAbstractConfig {
