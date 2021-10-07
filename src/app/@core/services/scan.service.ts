@@ -78,7 +78,7 @@ export class ScanService extends HttpService<any> {
       analyzers_requested: data.analyzers_requested,
       connectors_requested: data.connectors_requested,
       tlp: data.tlp,
-      tags_id: data.tags_id || [],
+      tags_labels: data.tags_labels || [],
     };
     if (type === 'observable') {
       obj.is_sample = false;

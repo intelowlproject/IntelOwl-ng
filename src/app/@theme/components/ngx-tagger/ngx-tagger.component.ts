@@ -40,8 +40,8 @@ export class NgxTaggerComponent implements OnInit, OnDestroy {
   }
 
   close(): void {
-    const tagstoOutput: number[] = new Array();
-    this.selectedTags.forEach((tag) => tagstoOutput.push(tag.id));
+    const tagstoOutput: string[] = new Array();
+    this.selectedTags.forEach((tag) => tagstoOutput.push(tag.label));
     this.onClose.emit(tagstoOutput);
     this.popover.hide();
   }

@@ -16,7 +16,7 @@ export class ScanFileComponent {
       connectors_requested: [],
       tlp: 'WHITE',
       check_existing_or_force: 'check_all',
-      tags_id: [],
+      tags_labels: [],
       runtime_configuration: {},
     } as IScanForm;
   }
