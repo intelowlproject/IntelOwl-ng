@@ -6,7 +6,7 @@ export interface IScanForm {
   tlp?: 'WHITE' | 'GREEN' | 'AMBER' | 'RED';
   check_existing_or_force?: string;
   // extra config
-  tags_id: number[];
+  tags_labels: string[];
   classification: 'ip' | 'domain' | 'hash' | 'url' | 'generic' | 'file';
   runtime_configuration?: Object;
   // for observable form
