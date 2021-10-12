@@ -137,8 +137,8 @@
             <div class="form-group">
               <nb-radio-group
                 [(ngModel)]="formData.check_existing_or_force"
-                class="d-flex justify-content-between"
                 name="check-existing-or-force-new"
+                class="d-flex justify-content-start flex-column flex-sm-row"
               >
                 <nb-radio
                   nbTooltip="analysis won't be repeated if already exists as running or reported without fails"
@@ -160,40 +160,36 @@
             <div class="form-group">
               <nb-radio-group
                 [(ngModel)]="formData.tlp"
-                class="d-flex justify-content-around"
                 name="tlp"
+                class="d-flex justify-content-start flex-column flex-sm-row"
               >
                 <nb-radio
-                  class="col-md-3"
                   nbTooltip="use all analyzers"
                   value="WHITE"
                   [ngStyle]="{ color: tlpColors.WHITE }"
                   ><span [ngStyle]="{ color: tlpColors.WHITE }"
-                    >TLP:WHITE</span
+                    >WHITE</span
                   ></nb-radio
                 >
                 <nb-radio
-                  class="col-md-3"
                   nbTooltip="disable analyzers that could impact privacy"
                   value="GREEN"
                   ><span [ngStyle]="{ color: tlpColors.GREEN }"
-                    >TLP:GREEN</span
+                    >GREEN</span
                   ></nb-radio
                 >
                 <nb-radio
-                  class="col-md-3"
                   nbTooltip="disable analyzers that could impact privacy and limit view permissions to my group"
                   value="AMBER"
                   ><span [ngStyle]="{ color: tlpColors.AMBER }"
-                    >TLP:AMBER</span
+                    >AMBER</span
                   ></nb-radio
                 >
                 <nb-radio
-                  class="col-md-3"
                   nbTooltip="disable analyzers that could impact privacy, limit view permissions to my group and do not use any external service"
                   value="RED"
                   ><span [ngStyle]="{ color: tlpColors.RED }"
-                    >TLP:RED</span
+                    >RED</span
                   ></nb-radio
                 >
               </nb-radio-group>
