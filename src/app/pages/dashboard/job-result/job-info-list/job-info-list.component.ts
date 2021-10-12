@@ -12,10 +12,13 @@ export class JobInfoListComponent {
 
   get runtimeConfiguration(): Record<string, Record<string, any>> {
     return this.jobObj.analyzer_reports.reduce(
-      (acc, { name, runtime_configuration: runtimeConf }) => ({
-        ...acc,
-        [name]: runtimeConf,
-      }),
+      (acc, { name, runtime_configuration: runtimeConf }) =>
+        Object.keys(runtimeConf).length > 0
+          ? {
+              ...acc,
+              [name]: runtimeConf,
+            }
+          : acc,
       {}
     );
   }
