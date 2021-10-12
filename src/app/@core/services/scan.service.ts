@@ -74,7 +74,6 @@ export class ScanService extends HttpService<any> {
 
   private async _newScan(data: IScanForm, type: string): Promise<any> {
     const obj: any = {
-      md5: data.md5,
       analyzers_requested: data.analyzers_requested,
       connectors_requested: data.connectors_requested,
       tlp: data.tlp,
