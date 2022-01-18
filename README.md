@@ -1,6 +1,8 @@
+> :warning: This repository has been archived. IntelOwl has a new GUI written in React.js and its code lives inside the [main repository](https://github.com/intelowlproject/IntelOwl/tree/dev-v4/frontend) only.
+
+
 # IntelOwl-ng
 
-[![Travis build status](https://api.travis-ci.com/intelowlproject/IntelOwl-ng.svg?branch=master&status=passed)](https://travis-ci.com/github/intelowlproject/IntelOwl-ng/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/intelowlproject/IntelOwl-ng.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/intelowlproject/IntelOwl-ng/context:javascript)
 [![CodeFactor](https://www.codefactor.io/repository/github/intelowlproject/intelowl-ng/badge)](https://www.codefactor.io/repository/github/intelowlproject/intelowl-ng)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
@@ -14,7 +16,7 @@ Built with [Angular 10](https://github.com/angular/angular) on top of [ngx-admin
 
 #### Demo
 
-[Live Demo](https://intelowlclient.firebaseapp.com/) hosted on firebase. (_Last Updated for IntelOwl v2.0.0_)
+[Live Demo](https://intelowlclient.firebaseapp.com/) hosted on firebase. (_Last Updated for IntelOwl v3.0.0_)
 
 ## Features
 
