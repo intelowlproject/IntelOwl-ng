@@ -1,3 +1,6 @@
+> :warning: This repository has been archived. IntelOwl has a new GUI written in React.js and its code lives inside the [main repository](https://github.com/intelowlproject/IntelOwl/tree/dev-v4/frontend) only.
+
+
 # IntelOwl-ng
 
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/intelowlproject/IntelOwl-ng.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/intelowlproject/IntelOwl-ng/context:javascript)
